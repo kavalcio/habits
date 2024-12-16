@@ -1,80 +1,137 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import './App.css';
 
-import { init, tx, id, lookup } from '@instantdb/react'
+import { id, init, lookup, tx } from '@instantdb/react';
+import { useMemo, useState } from 'react';
 
 // DO NOT COMMIT
-const APP_ID = 'asd'
+const APP_ID = 'asd';
 
 type Habit = {
   id: string;
-  activity: string;
-  filled: boolean;
-  date: string;
+  name: string;
+  user: string;
+  events: Event[];
+  isArchived: boolean;
+  color: string;
   createdAt: string;
-}
+};
+
+type Event = {
+  id: string;
+  createdAt: string;
+  date: string;
+  habit: string;
+  isCompleted: boolean;
+};
 
 type User = {
   id: string;
   name: string;
   email: string;
-}
+  habits: Habit[];
+  createdAt: string;
+};
 
 type Schema = {
   users: User;
   habits: Habit;
-}
+  events: Event;
+};
 
 const db = init<Schema>({ appId: APP_ID });
 
+// TODO: fetch and write user-specific data
+// TODO: get api key from env
+// TODO: prevent duplicate records somehow. maybe index events by `${userId}_${habitId}_${date}`?
+// TODO: test offline mode
+// TODO: add undo feature? and/or a history of changes
 function App() {
-  const [count, setCount] = useState(0)
-
   const { user } = db.useAuth();
 
   const { data, isLoading, error } = db.useQuery({
-    habits: {},
+    habits: {
+      events: {},
+    },
   });
 
-  console.log({data, isLoading, error});
+  // Index habits by their id and events by their date
+  const formattedData = data?.habits?.reduce((acc: any, habit: Habit) => {
+    acc[habit.name] = { ...habit, events: {} };
+    habit.events.forEach((event) => {
+      acc[habit.name].events[event.date] = event;
+    });
+    return acc;
+  }, {});
 
-  // console.log(new Date().toLocaleDateString("en-CA", {year:"numeric", month: "2-digit", day:"2-digit"}));
-  console.log(new Date().toISOString());
+  console.log({ data, formattedData });
+
+  const dates = useMemo(() => {
+    const d = [];
+    for (let i = 0; i < 7; i++) {
+      const date = new Date();
+      date.setDate(date.getDate() - i);
+      d.push(
+        date.toLocaleDateString('en-CA', {
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit',
+        }),
+      );
+    }
+    return d;
+  }, []);
+
   return (
     <>
-      {data?.habits?.map((habit: any) => (
-        <button onClick={() => {
-          db.transact([tx.habits[habit.id].merge({
-            filled: !habit.filled,
-          })]);
-        }}>
-          <p key={habit.id}>{habit.activity} - {habit.filled ? 'filled' : 'not filled'} - date: {habit.date}</p>
-        </button>
-      ))}
-      <div className="card">
-        <button onClick={() => {
-          setCount((count) => count + 1);
-          const date = new Date();
-          db.transact([tx.habits[id()].update({
-            activity: 'workout',
-            filled: true,
-            date: date.toLocaleDateString("en-CA", {year:"numeric", month: "2-digit", day:"2-digit"}),
-            createdAt: date.toISOString(),
-          })]);
-        }}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
+      <div style={{ display: 'flex', flexDirection: 'row' }}>
+        {data?.habits?.map((habit: Habit) => (
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+            }}
+          >
+            <p>Habit: {habit.name}</p>
+            {dates.map((date) => (
+              <button
+                style={{
+                  backgroundColor: formattedData?.[habit.name]?.events?.[date]
+                    ?.isCompleted
+                    ? 'darkgreen'
+                    : 'orange',
+                }}
+                onClick={() => {
+                  const existingEventId =
+                    formattedData?.[habit.name]?.events?.[date]?.id;
+                  if (existingEventId) {
+                    db.transact([
+                      tx.events[existingEventId].merge({
+                        isCompleted:
+                          !formattedData?.[habit.name]?.events?.[date]
+                            ?.isCompleted,
+                      }),
+                    ]);
+                  } else {
+                    db.transact([
+                      tx.events[id()]
+                        .update({
+                          isCompleted: true,
+                          date,
+                          createdAt: new Date().toISOString(),
+                        })
+                        .link({ habit: habit.id }),
+                    ]);
+                  }
+                }}
+              >
+                <p>{date}</p>
+              </button>
+            ))}
+          </div>
+        ))}
       </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
     </>
-  )
+  );
 }
 
-export default App
+export default App;
