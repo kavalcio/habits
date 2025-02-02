@@ -1,8 +1,10 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 import { createHabit, fetchHabits as fetchHabitsRequest } from '@/requests';
 
+// TODO: swap to rtk query instead of react query
 export const Dashboard = () => {
   const { data, error, isPending } = useQuery(fetchHabitsRequest);
 
@@ -45,23 +47,28 @@ export const Dashboard = () => {
       </div>
 
       {data?.map((habit: any) => (
-        <div
-          key={habit.id}
-          style={{
-            display: 'flex',
-            gap: 10,
-            borderColor: habit.color,
-            borderWidth: 2,
-            borderStyle: 'solid',
-            padding: 12,
-            borderRadius: 12,
-            alignItems: 'center',
-            justifyContent: 'center',
-            // textAlign: 'center',
-          }}
-        >
-          <span>{habit.name}</span>
-        </div>
+        <Link key={habit.id} to={`/habit/${habit.id}`}>
+          <div
+            key={habit.id}
+            style={{
+              display: 'flex',
+              gap: 10,
+              borderColor: habit.color,
+              borderWidth: 2,
+              borderStyle: 'solid',
+              padding: 12,
+              borderRadius: 12,
+              alignItems: 'center',
+              justifyContent: 'center',
+              cursor: 'pointer',
+              color: 'white',
+              fontWeight: 'normal',
+              // textAlign: 'center',
+            }}
+          >
+            <span>{habit.name}</span>
+          </div>
+        </Link>
       ))}
     </div>
   );

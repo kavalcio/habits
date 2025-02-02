@@ -32,6 +32,11 @@ export const RoutesConfig = {
     NAME: 'Dashboard',
     IS_AUTHENTICATED: true,
   },
+  HABIT_OVERVIEW: {
+    PATH: '/habit/:habitId',
+    NAME: 'Habit Overview',
+    IS_AUTHENTICATED: true,
+  },
 } satisfies Record<string, RouteType>;
 
 export const Routes = R.mapObjIndexed((route) => route.PATH, RoutesConfig);
