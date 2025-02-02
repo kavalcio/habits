@@ -1,7 +1,7 @@
 import { useMutation } from '@tanstack/react-query';
 import { useState } from 'react';
 
-import { supabase } from '@/requests';
+import { register as registerRequest } from '@/requests';
 
 // TODO: figure out how to resend expired confirmation email
 export const Register = () => {
@@ -9,24 +9,7 @@ export const Register = () => {
   const [password, setPassword] = useState('');
   const [showConfirmation, setShowConfirmation] = useState(false);
 
-  const registerMutation = useMutation({
-    mutationFn: async ({
-      email,
-      password,
-    }: {
-      email: string;
-      password: string;
-    }) => {
-      const { data, error } = await supabase.auth.signUp({
-        email,
-        password,
-      });
-      if (error) {
-        throw error;
-      }
-      return data;
-    },
-  });
+  const registerMutation = useMutation(registerRequest);
 
   const onSubmit = async () => {
     try {
@@ -61,9 +44,7 @@ export const Register = () => {
                 'Something went wrong, please try again.'}
             </p>
           )}
-          <button onClick={() => registerMutation.mutate({ email, password })}>
-            Register
-          </button>
+          <button onClick={onSubmit}>Register</button>
         </>
       ) : (
         <p>Please check your email for the confirmation link.</p>
