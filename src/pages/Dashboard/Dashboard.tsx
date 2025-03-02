@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import { createHabit, fetchHabits as fetchHabitsRequest } from '@/requests';
 
 // TODO: swap to rtk query instead of react query
+// TODO: define db schema in sql in the repo
 export const Dashboard = () => {
   const { data, error, isPending } = useQuery(fetchHabitsRequest);
 
