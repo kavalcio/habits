@@ -1,7 +1,35 @@
 {
-  "files": [],
-  "references": [
-    { "path": "./tsconfig.app.json" },
-    { "path": "./tsconfig.node.json" }
-  ]
+  "compilerOptions": {
+    "target": "es5",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "noFallthroughCasesInSwitch": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "react-jsx",
+    "baseUrl": "./",
+    "paths": {
+      "@/images": ["src/assets/images/index.ts"],
+      "@/components": ["src/components/index.ts"],
+      "@/components/*": ["src/components/*"],
+      "@/config": ["src/config/index.ts"],
+      "@/constants": ["src/constants/index.ts"],
+      "@/pages": ["src/pages/index.ts"],
+      "@/requests": ["src/requests/index.ts"],
+      "@/router": ["src/router/index.ts"],
+      "@/types": ["src/types/index.ts"],
+      "@/utils": ["src/utils/index.ts"],
+    },
+    "types": ["vite/client"],
+  },
+  "include": ["src", "**/*.ts", "**/*.tsx", "**/*.js", "**/*.jsx"],
+  "exclude": ["node_modules", "src/setupTests.ts"],
 }
