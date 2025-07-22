@@ -1,3 +1,4 @@
+import { Box } from '@radix-ui/themes';
 import { Outlet } from 'react-router-dom';
 
 import { AuthWrapper } from './AuthWrapper';
@@ -5,7 +6,9 @@ import { AuthWrapper } from './AuthWrapper';
 export const AppLoader = () => {
   return (
     <AuthWrapper>
-      <Outlet />
+      <Box m={{ initial: '4', sm: '6' }}>
+        <Outlet />
+      </Box>
     </AuthWrapper>
   );
 };

@@ -1,7 +1,15 @@
-import { Button, Container, TextField } from '@radix-ui/themes';
+import {
+  Button,
+  Card,
+  Container,
+  Flex,
+  Grid,
+  Text,
+  TextField,
+} from '@radix-ui/themes';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link as RouterLink } from 'react-router-dom';
 
 import { createHabit, fetchHabits as fetchHabitsRequest } from '@/requests';
 
@@ -50,30 +58,32 @@ export const Dashboard = () => {
           </Button>
         </div>
 
-        {data?.map((habit: any) => (
-          <Link key={habit.id} to={`/habit/${habit.id}`}>
-            <div
-              key={habit.id}
-              style={{
-                display: 'flex',
-                gap: 10,
-                borderColor: habit.color,
-                borderWidth: 2,
-                borderStyle: 'solid',
-                padding: 12,
-                borderRadius: 12,
-                alignItems: 'center',
-                justifyContent: 'center',
-                cursor: 'pointer',
-                color: 'white',
-                fontWeight: 'normal',
-                // textAlign: 'center',
-              }}
-            >
-              <span>{habit.name}</span>
-            </div>
-          </Link>
-        ))}
+        <Grid
+          width="auto"
+          gap="3"
+          columns={{
+            initial: '1',
+            sm: '3',
+          }}
+        >
+          {data?.map((habit: any) => (
+            <Card asChild>
+              <RouterLink to={`/habit/${habit.id}`}>
+                <Flex height={'100%'} align="center" gap="2">
+                  <div
+                    style={{
+                      backgroundColor: habit.color,
+                      width: 20,
+                      height: 20,
+                      borderRadius: 4,
+                    }}
+                  />
+                  <Text>{habit.name}</Text>
+                </Flex>
+              </RouterLink>
+            </Card>
+          ))}
+        </Grid>
       </div>
     </Container>
   );
