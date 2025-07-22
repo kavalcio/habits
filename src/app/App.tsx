@@ -1,4 +1,4 @@
-import { Theme, ThemePanel } from '@radix-ui/themes';
+import { Theme } from '@radix-ui/themes';
 import { QueryClientProvider } from '@tanstack/react-query';
 
 import { queryClient } from '@/requests';
@@ -15,7 +15,6 @@ export const App = () => {
         radius="large"
       >
         <Router />
-        <ThemePanel />
       </Theme>
     </QueryClientProvider>
   );

@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Event } from 'src/types';
 
+import { YearGrid } from '@/components';
 import { Routes } from '@/constants';
 import {
   createEvent,
@@ -59,12 +60,11 @@ export const HabitOverview = () => {
     });
   };
 
-  console.log(eventDate);
-
   return (
     <Container>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
         <Text>{habit.name}</Text>
+        <YearGrid color={habit.color} events={events} />
         <TextField.Root
           placeholder="Habit Name"
           onChange={(e) => setHabitName(e.target.value)}
