@@ -1,26 +1,41 @@
-import { Button, Grid, Text, Tooltip } from '@radix-ui/themes';
+import { Flex, Grid, Select, Tooltip } from '@radix-ui/themes';
 import { format } from 'date-fns';
 import { useMemo, useState } from 'react';
 import { Event } from 'src/types';
 
+type DateData = {
+  date: Date;
+  formattedDate: string;
+  completed: boolean;
+};
+
+// TODO: dates are shown wrong, 1 day earlier than actual date
+// TODO: add month and day of the week legend
+// TODO: make cells clickable to add events
 export const YearGrid = ({
   color,
-  events,
+  events = [],
 }: {
   color: string;
-  events: Event[];
+  events?: Event[];
 }) => {
   const currentYear = new Date().getFullYear();
   const [selectedYear, setSelectedYear] = useState(currentYear);
 
-  // Memoized helper: get all dates for the selected year (Jan 1 to Dec 31)
+  // Get all dates for the selected year (Jan 1 to Dec 31)
   const allDates = useMemo(() => {
+    const completedDates = new Set(events.map((e: Event) => e.date));
+
     const start = new Date(selectedYear, 0, 1);
     const end = new Date(selectedYear, 11, 31);
-    const dates: Date[] = [];
+    const dates: (DateData | null)[] = [];
     const d = new Date(start);
     while (d <= end) {
-      dates.push(new Date(d));
+      dates.push({
+        date: new Date(d),
+        formattedDate: format(d, 'EEE, MMM d, yyyy'),
+        completed: completedDates.has(format(d, 'yyyy-MM-dd')),
+      });
       d.setDate(d.getDate() + 1);
     }
     // Pad to start on Sunday
@@ -34,53 +49,34 @@ export const YearGrid = ({
       dates.push(null);
     }
     return dates;
-  }, [selectedYear]);
+  }, [selectedYear, events]);
 
-  // Set of completed dates for quick lookup
-  const completedDates = useMemo(
-    () =>
-      new Set(
-        (events || []).map((e: Event) =>
-          format(new Date(e.date), 'yyyy-MM-dd'),
-        ),
-      ),
-    [events],
-  );
-
-  // Year navigation (last 5 years)
   const years = Array.from({ length: 5 }, (_, i) => currentYear - i);
 
   return (
-    <>
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-        }}
-      >
-        <Button
-          variant="ghost"
-          disabled={selectedYear === years[years.length - 1]}
-          onClick={() => setSelectedYear((y) => y - 1)}
-          size="1"
+    <Flex direction="column" gap="2" width="fit-content" mx="auto">
+      <Flex ml="auto">
+        <Select.Root
+          defaultValue={currentYear.toString()}
+          onValueChange={(e) => setSelectedYear(Number(e))}
         >
-          {'<'}
-        </Button>
-        <Text as="div" size="3" style={{ minWidth: 80, textAlign: 'center' }}>
-          {selectedYear}
-        </Text>
-        <Button
-          variant="ghost"
-          disabled={selectedYear === years[0]}
-          onClick={() => setSelectedYear((y) => y + 1)}
-          size="1"
-        >
-          {'>'}
-        </Button>
-      </div>
+          <Select.Trigger />
+          <Select.Content>
+            {years.map((year) => (
+              <Select.Item
+                key={year}
+                value={year.toString()}
+                onSelect={() => setSelectedYear(year)}
+              >
+                {year}
+              </Select.Item>
+            ))}
+          </Select.Content>
+        </Select.Root>
+      </Flex>
       <Grid columns="53" gap="4px" flow="column" width="fit-content">
-        {allDates.map((date, idx) => {
-          if (!date)
+        {allDates.map((data, idx) => {
+          if (!data)
             return (
               <div
                 key={idx}
@@ -95,17 +91,15 @@ export const YearGrid = ({
             );
           const week = Math.floor(idx / 7);
           const day = idx % 7;
-          const dateStr = format(date, 'yyyy-MM-dd');
-          const isCompleted = completedDates.has(dateStr);
           return (
-            <Tooltip content={format(date, 'EEE, MMM d, yyyy')} key={dateStr}>
+            <Tooltip key={idx} content={data.formattedDate}>
               <div
                 style={{
                   width: 12,
                   height: 12,
                   borderRadius: 2,
-                  backgroundColor: isCompleted ? color : '#2d2d2d',
-                  border: isCompleted ? '1px solid #222' : '1px solid #444',
+                  backgroundColor: data.completed ? color : '#2d2d2d',
+                  border: data.completed ? '1px solid #222' : '1px solid #444',
                   gridColumn: week + 1,
                   gridRow: day + 1,
                 }}
@@ -114,6 +108,6 @@ export const YearGrid = ({
           );
         })}
       </Grid>
-    </>
+    </Flex>
   );
 };
