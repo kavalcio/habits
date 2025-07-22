@@ -1,3 +1,4 @@
+import { Button, Text, TextField } from '@radix-ui/themes';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -62,10 +63,9 @@ export const HabitOverview = () => {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-      <span>{habit.name}</span>
-      <input
-        type="text"
-        placeholder="habit name"
+      <Text>{habit.name}</Text>
+      <TextField.Root
+        placeholder="Habit Name"
         onChange={(e) => setHabitName(e.target.value)}
       />
       <input
@@ -73,15 +73,21 @@ export const HabitOverview = () => {
         placeholder="habit color"
         onChange={(e) => setHabitColor(e.target.value)}
       />
-      <button onClick={onUpdateHabit}>update habit</button>
-      <button onClick={onDeleteHabit}>delete habit</button>
+      <Button variant="surface" onClick={onUpdateHabit}>
+        update habit
+      </Button>
+      <Button variant="soft" onClick={onDeleteHabit}>
+        delete habit
+      </Button>
       <span style={{ marginTop: 20 }}>new event</span>
       <input
         placeholder="event date"
         type="date"
         onChange={(e) => setEventDate(e.target.value)}
       />
-      <button onClick={onCreateEvent}>create event</button>
+      <Button variant="ghost" onClick={onCreateEvent}>
+        create event
+      </Button>
       {events?.map((event: Event) => (
         <div key={event.id}>
           <span>{event.date}</span>

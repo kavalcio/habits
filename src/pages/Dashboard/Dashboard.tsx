@@ -1,3 +1,4 @@
+import { Button, Container, TextField } from '@radix-ui/themes';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
@@ -30,47 +31,50 @@ export const Dashboard = () => {
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-      <p>dis da dashboard</p>
-      {/* <p>yearly activity</p> */}
-      <input
-        type="text"
-        placeholder="habit name"
-        onChange={(e) => setHabitName(e.target.value)}
-      />
-      <input
-        type="color"
-        placeholder="habit color"
-        onChange={(e) => setHabitColor(e.target.value)}
-      />
-      <div>
-        <button onClick={onCreateHabit}>create habit</button>
-      </div>
+    <Container>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+        <p>dis da dashboard</p>
+        {/* <p>yearly activity</p> */}
+        <TextField.Root
+          placeholder="Habit Name"
+          onChange={(e) => setHabitName(e.target.value)}
+        />
+        <input
+          type="color"
+          placeholder="habit color"
+          onChange={(e) => setHabitColor(e.target.value)}
+        />
+        <div>
+          <Button variant="soft" onClick={onCreateHabit}>
+            create habit
+          </Button>
+        </div>
 
-      {data?.map((habit: any) => (
-        <Link key={habit.id} to={`/habit/${habit.id}`}>
-          <div
-            key={habit.id}
-            style={{
-              display: 'flex',
-              gap: 10,
-              borderColor: habit.color,
-              borderWidth: 2,
-              borderStyle: 'solid',
-              padding: 12,
-              borderRadius: 12,
-              alignItems: 'center',
-              justifyContent: 'center',
-              cursor: 'pointer',
-              color: 'white',
-              fontWeight: 'normal',
-              // textAlign: 'center',
-            }}
-          >
-            <span>{habit.name}</span>
-          </div>
-        </Link>
-      ))}
-    </div>
+        {data?.map((habit: any) => (
+          <Link key={habit.id} to={`/habit/${habit.id}`}>
+            <div
+              key={habit.id}
+              style={{
+                display: 'flex',
+                gap: 10,
+                borderColor: habit.color,
+                borderWidth: 2,
+                borderStyle: 'solid',
+                padding: 12,
+                borderRadius: 12,
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer',
+                color: 'white',
+                fontWeight: 'normal',
+                // textAlign: 'center',
+              }}
+            >
+              <span>{habit.name}</span>
+            </div>
+          </Link>
+        ))}
+      </div>
+    </Container>
   );
 };
