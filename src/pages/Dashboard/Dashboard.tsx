@@ -11,8 +11,8 @@ export const Dashboard = () => {
 
   const createHabitMutation = useMutation(createHabit);
 
-  const [habitName, setHabitName] = useState<string>();
-  const [habitColor, setHabitColor] = useState<string>();
+  const [habitName, setHabitName] = useState<string>('');
+  const [habitColor, setHabitColor] = useState<string>('#000000');
 
   console.log({ data, error, isPending, habitColor, habitName });
 
