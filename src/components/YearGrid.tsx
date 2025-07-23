@@ -3,6 +3,7 @@ import {
   Flex,
   Grid,
   IconButton,
+  ScrollArea,
   Select,
   Tooltip,
 } from '@radix-ui/themes';
@@ -94,7 +95,7 @@ export const YearGrid = ({
   };
 
   return (
-    <Flex direction="column" gap="2" maxWidth="100%" mx="auto" overflowX="auto">
+    <Flex direction="column" gap="2" maxWidth="100%" mx="auto">
       <Flex ml="auto">
         <Select.Root
           size="1"
@@ -115,81 +116,85 @@ export const YearGrid = ({
           </Select.Content>
         </Select.Root>
       </Flex>
-      <EditEventDialog
-        date={selectedDate || ''}
-        isEventCompleted={
-          !!allDates.find((d) => d?.date === selectedDate && d.completed)
-        }
-        onClose={() => setSelectedDate(null)}
-        onConfirm={onUpdateEvent}
-      >
-        <Flex direction="row" align="start">
-          <Flex direction="column" gap={`${GRID_GAP_SIZE}px`} mr="2">
-            {DAY_LABELS.map((label) => (
-              <span
-                key={label}
-                style={{
-                  height: `${GRID_ITEM_SIZE}px`,
-                  lineHeight: `${GRID_ITEM_SIZE}px`,
-                  fontSize: 10,
-                  textAlign: 'right',
-                  color: '#888',
-                  width: 28,
-                }}
-              >
-                {label}
-              </span>
-            ))}
-          </Flex>
-          <Grid
-            columns={`${GRID_COLUMN_COUNT}`}
-            gap={`${GRID_GAP_SIZE}px`}
-            flow="column"
-            minWidth={`${GRID_ITEM_SIZE * GRID_COLUMN_COUNT + GRID_GAP_SIZE * (GRID_COLUMN_COUNT - 1)}px`}
-          >
-            {allDates.map((data, idx) => {
-              if (!data)
-                return (
-                  <div
-                    key={idx}
-                    style={{
-                      width: `${GRID_ITEM_SIZE}px`,
-                      height: `${GRID_ITEM_SIZE}px`,
-                      borderRadius: 2,
-                      backgroundColor: 'transparent',
-                    }}
-                  />
-                );
-              const week = Math.floor(idx / 7);
-              const day = idx % 7;
-              return (
-                <Tooltip
-                  key={idx}
-                  content={data.formattedDate}
-                  delayDuration={300}
+      <ScrollArea scrollbars="horizontal" scrollHideDelay={600}>
+        <EditEventDialog
+          date={selectedDate || ''}
+          isEventCompleted={
+            !!allDates.find((d) => d?.date === selectedDate && d.completed)
+          }
+          onClose={() => setSelectedDate(null)}
+          onConfirm={onUpdateEvent}
+        >
+          <Flex direction="row" align="start" pb="4">
+            <Flex direction="column" gap={`${GRID_GAP_SIZE}px`} mr="2">
+              {DAY_LABELS.map((label) => (
+                <span
+                  key={label}
+                  style={{
+                    height: `${GRID_ITEM_SIZE}px`,
+                    lineHeight: `${GRID_ITEM_SIZE}px`,
+                    fontSize: 10,
+                    textAlign: 'right',
+                    color: '#888',
+                    width: 28,
+                  }}
                 >
-                  <Dialog.Trigger>
-                    <IconButton
-                      onClick={() => setSelectedDate(data.date)}
-                      variant={data.completed ? 'solid' : 'soft'}
-                      {...(!data.completed && { color: 'gray' })}
+                  {label}
+                </span>
+              ))}
+            </Flex>
+            <Grid
+              columns={`${GRID_COLUMN_COUNT}`}
+              gap={`${GRID_GAP_SIZE}px`}
+              flow="column"
+              minWidth={`${GRID_ITEM_SIZE * GRID_COLUMN_COUNT + GRID_GAP_SIZE * (GRID_COLUMN_COUNT - 1)}px`}
+            >
+              {allDates.map((data, idx) => {
+                if (!data)
+                  return (
+                    <div
+                      key={idx}
                       style={{
-                        flexShrink: 0,
                         width: `${GRID_ITEM_SIZE}px`,
                         height: `${GRID_ITEM_SIZE}px`,
                         borderRadius: 2,
-                        border: data.completed ? 'none' : '1px solid #2a2a2aff',
-                        gridColumn: week + 1,
-                        gridRow: day + 1,
+                        backgroundColor: 'transparent',
                       }}
                     />
-                  </Dialog.Trigger>
-                </Tooltip>
-              );
-            })}
-          </Grid>
-        </Flex>
-      </EditEventDialog>
+                  );
+                const week = Math.floor(idx / 7);
+                const day = idx % 7;
+                return (
+                  <Tooltip
+                    key={idx}
+                    content={data.formattedDate}
+                    delayDuration={300}
+                  >
+                    <Dialog.Trigger>
+                      <IconButton
+                        onClick={() => setSelectedDate(data.date)}
+                        variant={data.completed ? 'solid' : 'soft'}
+                        {...(!data.completed && { color: 'gray' })}
+                        style={{
+                          flexShrink: 0,
+                          width: `${GRID_ITEM_SIZE}px`,
+                          height: `${GRID_ITEM_SIZE}px`,
+                          borderRadius: 2,
+                          border: data.completed
+                            ? 'none'
+                            : '1px solid #2a2a2aff',
+                          gridColumn: week + 1,
+                          gridRow: day + 1,
+                        }}
+                      />
+                    </Dialog.Trigger>
+                  </Tooltip>
+                );
+              })}
+            </Grid>
+          </Flex>
+        </EditEventDialog>
+      </ScrollArea>
     </Flex>
   );
 };
