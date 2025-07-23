@@ -12,6 +12,7 @@ export const fetchEvents = (habitId?: string) => ({
     if (error) throw error;
     return data;
   },
+  enabled: !!habitId,
 });
 
 export const fetchEvent = (id: string) => ({
@@ -32,7 +33,7 @@ export const createEvent = {
     if (error) throw error;
     return data;
   },
-  onSuccess: (data) => {
+  onSuccess: () => {
     queryClient.invalidateQueries({ queryKey: ['event'] });
   },
 };
@@ -43,7 +44,7 @@ export const deleteEvent = {
     if (error) throw error;
     return data;
   },
-  onSuccess: (data) => {
+  onSuccess: () => {
     queryClient.invalidateQueries({ queryKey: ['event'] });
   },
 };
