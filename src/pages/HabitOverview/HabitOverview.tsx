@@ -64,7 +64,7 @@ export const HabitOverview = () => {
     <Container>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
         <Text>{habit.name}</Text>
-        <YearGrid color={habit.color} events={events} />
+        <YearGrid habitId={habitId} events={events} />
         <TextField.Root
           placeholder="Habit Name"
           onChange={(e) => setHabitName(e.target.value)}
