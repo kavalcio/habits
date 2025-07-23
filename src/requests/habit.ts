@@ -11,13 +11,14 @@ export const fetchHabits = {
   },
 };
 
-export const fetchHabit = (id: string) => ({
+export const fetchHabit = (id?: string) => ({
   queryKey: ['habit', { id }],
   queryFn: async () => {
     const { data, error } = await supabase.from('habit').select().eq('id', id);
     if (error) throw error;
     return data;
   },
+  enabled: !!id,
 });
 
 export const createHabit = {
@@ -29,7 +30,7 @@ export const createHabit = {
     if (error) throw error;
     return data;
   },
-  onSuccess: (data) => {
+  onSuccess: () => {
     // TODO: try to update cache on success instead of invalidating it entirely
     // console.log('onSuccess', data);
     // const newHabit = data[0];
@@ -57,11 +58,12 @@ export const updateHabit = {
     if (error) throw error;
     return data;
   },
-  onSuccess: (data) => {
+  onSuccess: () => {
     queryClient.invalidateQueries({ queryKey: ['habit'] });
   },
 };
 
+// TODO: this does not work if there are events, maybe convert it to a soft delete? would be nice to allow restoring habits
 export const deleteHabit = {
   mutationFn: async (id: string) => {
     const { error } = await supabase.from('habit').delete().eq('id', id);

@@ -1,3 +1,4 @@
+import { Button, Container, TextField } from '@radix-ui/themes';
 import { useMutation } from '@tanstack/react-query';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -5,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { Routes } from '@/constants';
 import { supabase } from '@/requests';
 
+// TODO: submit on enter key press
 export const Login = () => {
   const navigate = useNavigate();
 
@@ -44,26 +46,28 @@ export const Login = () => {
   // console.log(loginMutation);
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-      <p>login</p>
-      <a href="/register">Go to Register</a>
-      <input
-        type="text"
-        placeholder="email"
-        onChange={(e) => setEmail(e.target.value)}
-      />
-      <input
-        type="password"
-        placeholder="password"
-        onChange={(e) => setPassword(e.target.value)}
-      />
-      {loginMutation.isError && (
-        <p style={{ color: 'red' }}>
-          {loginMutation.error?.message ??
-            'Something went wrong, please try again.'}
-        </p>
-      )}
-      <button onClick={onSubmit}>Login</button>
-    </div>
+    <Container size="1">
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+        <p>login</p>
+        <a href="/register">Go to Register</a>
+        <TextField.Root
+          placeholder="email"
+          onChange={(e) => setEmail(e.target.value)}
+        />
+        <TextField.Root
+          type="password"
+          placeholder="password"
+          onChange={(e) => setPassword(e.target.value)}
+        />
+
+        {loginMutation.isError && (
+          <p style={{ color: 'red' }}>
+            {loginMutation.error?.message ??
+              'Something went wrong, please try again.'}
+          </p>
+        )}
+        <Button onClick={onSubmit}>Login</Button>
+      </div>
+    </Container>
   );
 };
