@@ -1,10 +1,19 @@
-import { Flex, Grid, IconButton, Select, Tooltip } from '@radix-ui/themes';
+import {
+  Dialog,
+  Flex,
+  Grid,
+  IconButton,
+  Select,
+  Tooltip,
+} from '@radix-ui/themes';
 import { useMutation } from '@tanstack/react-query';
 import { format } from 'date-fns';
 import { useMemo, useState } from 'react';
 import { Event } from 'src/types';
 
 import { createEvent, deleteEvent } from '@/requests';
+
+import { EditEventDialog } from './EditEventDialog';
 
 type DateData = {
   date: string;
@@ -14,7 +23,6 @@ type DateData = {
 };
 
 // TODO: add month and day of the week legend
-// TODO: make cells clickable to add events
 // TODO: prevent grid from being squished on small screens
 export const YearGrid = ({
   habitId,
@@ -25,6 +33,8 @@ export const YearGrid = ({
 }) => {
   const currentYear = new Date().getFullYear();
   const [selectedYear, setSelectedYear] = useState(currentYear);
+
+  const [selectedDate, setSelectedDate] = useState<string | null>(null);
 
   const createEventMutation = useMutation(createEvent);
   const deleteEventMutation = useMutation(deleteEvent);
@@ -37,13 +47,13 @@ export const YearGrid = ({
     const d = new Date(start);
     while (d <= end) {
       const dString = format(d, 'yyyy-MM-dd');
-      const dateEvent = events.find((e) => e.date === dString);
+      const event = events.find((e) => e.date === dString);
 
       dates.push({
         date: dString,
         formattedDate: format(d, 'EEE, MMM d, yyyy'),
-        completed: !!dateEvent,
-        eventId: dateEvent?.id,
+        completed: !!event,
+        eventId: event?.id,
       });
       d.setDate(d.getDate() + 1);
     }
@@ -62,15 +72,22 @@ export const YearGrid = ({
 
   const years = Array.from({ length: 5 }, (_, i) => currentYear - i);
 
-  const onCreateEvent = async (date: string) => {
-    await createEventMutation.mutateAsync({
-      habitId,
-      date,
-    });
-  };
-
-  const onDeleteEvent = async (eventId: string) => {
-    await deleteEventMutation.mutateAsync(eventId);
+  const onUpdateEvent = async () => {
+    try {
+      if (!selectedDate) return;
+      const dateData = allDates.find((d) => d?.date === selectedDate);
+      if (dateData?.completed) {
+        await deleteEventMutation.mutateAsync(dateData.eventId!);
+      } else {
+        await createEventMutation.mutateAsync({
+          habitId,
+          date: selectedDate,
+        });
+      }
+      setSelectedDate(null);
+    } catch (error) {
+      console.error('Error updating event:', error);
+    }
   };
 
   return (
@@ -95,45 +112,56 @@ export const YearGrid = ({
           </Select.Content>
         </Select.Root>
       </Flex>
-      <Grid columns="53" gap="3px" flow="column" width="fit-content">
-        {allDates.map((data, idx) => {
-          if (!data)
+      <EditEventDialog
+        date={selectedDate || ''}
+        isEventCompleted={
+          !!allDates.find((d) => d?.date === selectedDate && d.completed)
+        }
+        onClose={() => setSelectedDate(null)}
+        onConfirm={onUpdateEvent}
+      >
+        <Grid columns="53" gap="3px" flow="column" width="fit-content">
+          {allDates.map((data, idx) => {
+            if (!data)
+              return (
+                <div
+                  key={idx}
+                  style={{
+                    width: 12,
+                    height: 12,
+                    borderRadius: 2,
+                    backgroundColor: 'transparent',
+                  }}
+                />
+              );
+            const week = Math.floor(idx / 7);
+            const day = idx % 7;
             return (
-              <div
+              <Tooltip
                 key={idx}
-                style={{
-                  width: 12,
-                  height: 12,
-                  borderRadius: 2,
-                  backgroundColor: 'transparent',
-                }}
-              />
+                content={data.formattedDate}
+                delayDuration={300}
+              >
+                <Dialog.Trigger>
+                  <IconButton
+                    onClick={() => setSelectedDate(data.date)}
+                    variant={data.completed ? 'solid' : 'soft'}
+                    {...(!data.completed && { color: 'gray' })}
+                    style={{
+                      width: 12,
+                      height: 12,
+                      borderRadius: 2,
+                      border: data.completed ? 'none' : '1px solid #2a2a2aff',
+                      gridColumn: week + 1,
+                      gridRow: day + 1,
+                    }}
+                  />
+                </Dialog.Trigger>
+              </Tooltip>
             );
-          const week = Math.floor(idx / 7);
-          const day = idx % 7;
-          return (
-            <Tooltip key={idx} content={data.formattedDate} delayDuration={300}>
-              <IconButton
-                onClick={() =>
-                  data.completed
-                    ? onDeleteEvent(data.eventId!)
-                    : onCreateEvent(data.date)
-                }
-                variant={data.completed ? 'solid' : 'soft'}
-                {...(!data.completed && { color: 'gray' })}
-                style={{
-                  width: 12,
-                  height: 12,
-                  borderRadius: 2,
-                  border: data.completed ? 'none' : '1px solid #2a2a2aff',
-                  gridColumn: week + 1,
-                  gridRow: day + 1,
-                }}
-              />
-            </Tooltip>
-          );
-        })}
-      </Grid>
+          })}
+        </Grid>
+      </EditEventDialog>
     </Flex>
   );
 };

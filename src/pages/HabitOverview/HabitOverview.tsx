@@ -1,4 +1,11 @@
-import { Button, Container, Text, TextField } from '@radix-ui/themes';
+import {
+  Button,
+  Container,
+  Flex,
+  Heading,
+  TextField,
+  Theme,
+} from '@radix-ui/themes';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -14,6 +21,7 @@ import {
   updateHabit,
 } from '@/requests';
 
+// TODO: add custom theme override on this page that uses the habit color
 export const HabitOverview = () => {
   const navigate = useNavigate();
   const { habitId } = useParams();
@@ -61,40 +69,42 @@ export const HabitOverview = () => {
   };
 
   return (
-    <Container>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-        <Text>{habit.name}</Text>
-        <YearGrid habitId={habitId} events={events} />
-        <TextField.Root
-          placeholder="Habit Name"
-          onChange={(e) => setHabitName(e.target.value)}
-        />
-        <input
-          type="color"
-          placeholder="habit color"
-          onChange={(e) => setHabitColor(e.target.value)}
-        />
-        <Button variant="surface" onClick={onUpdateHabit}>
-          update habit
-        </Button>
-        <Button variant="soft" onClick={onDeleteHabit}>
-          delete habit
-        </Button>
-        <span style={{ marginTop: 20 }}>new event</span>
-        <input
-          placeholder="event date"
-          type="date"
-          onChange={(e) => setEventDate(e.target.value)}
-        />
-        <Button variant="soft" onClick={onCreateEvent}>
-          create event
-        </Button>
-        {events?.map((event: Event) => (
-          <div key={event.id}>
-            <span>{event.date}</span>
-          </div>
-        ))}
-      </div>
-    </Container>
+    <Theme accentColor="red">
+      <Container>
+        <Flex gap="2" direction="column">
+          <Heading size="4">{habit.name}</Heading>
+          <YearGrid habitId={habitId} events={events} />
+          <TextField.Root
+            placeholder="Habit Name"
+            onChange={(e) => setHabitName(e.target.value)}
+          />
+          <input
+            type="color"
+            placeholder="habit color"
+            onChange={(e) => setHabitColor(e.target.value)}
+          />
+          <Button variant="surface" onClick={onUpdateHabit}>
+            update habit
+          </Button>
+          <Button variant="soft" onClick={onDeleteHabit}>
+            delete habit
+          </Button>
+          <span style={{ marginTop: 20 }}>new event</span>
+          <input
+            placeholder="event date"
+            type="date"
+            onChange={(e) => setEventDate(e.target.value)}
+          />
+          <Button variant="soft" onClick={onCreateEvent}>
+            create event
+          </Button>
+          {events?.map((event: Event) => (
+            <div key={event.id}>
+              <span>{event.date}</span>
+            </div>
+          ))}
+        </Flex>
+      </Container>
+    </Theme>
   );
 };
