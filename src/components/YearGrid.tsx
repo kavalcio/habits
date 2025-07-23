@@ -15,6 +15,10 @@ import { createEvent, deleteEvent } from '@/requests';
 
 import { EditEventDialog } from './EditEventDialog';
 
+const GRID_COLUMN_COUNT = 53; // 52 weeks + 1 for padding
+const GRID_GAP_SIZE = 3;
+const GRID_ITEM_SIZE = 12;
+
 type DateData = {
   date: string;
   formattedDate: string;
@@ -23,7 +27,6 @@ type DateData = {
 };
 
 // TODO: add month and day of the week legend
-// TODO: prevent grid from being squished on small screens
 export const YearGrid = ({
   habitId,
   events = [],
@@ -91,7 +94,7 @@ export const YearGrid = ({
   };
 
   return (
-    <Flex direction="column" gap="2" maxWidth="fit-content" mx="auto">
+    <Flex direction="column" gap="2" maxWidth="100%" mx="auto" overflowX="auto">
       <Flex ml="auto">
         <Select.Root
           size="1"
@@ -120,15 +123,20 @@ export const YearGrid = ({
         onClose={() => setSelectedDate(null)}
         onConfirm={onUpdateEvent}
       >
-        <Grid columns="53" gap="3px" flow="column" width="fit-content">
+        <Grid
+          columns={`${GRID_COLUMN_COUNT}`}
+          gap={`${GRID_GAP_SIZE}px`}
+          flow="column"
+          minWidth={`${GRID_ITEM_SIZE * GRID_COLUMN_COUNT + GRID_GAP_SIZE * (GRID_COLUMN_COUNT - 1)}px`}
+        >
           {allDates.map((data, idx) => {
             if (!data)
               return (
                 <div
                   key={idx}
                   style={{
-                    width: 12,
-                    height: 12,
+                    width: `${GRID_ITEM_SIZE}px`,
+                    height: `${GRID_ITEM_SIZE}px`,
                     borderRadius: 2,
                     backgroundColor: 'transparent',
                   }}
@@ -148,8 +156,9 @@ export const YearGrid = ({
                     variant={data.completed ? 'solid' : 'soft'}
                     {...(!data.completed && { color: 'gray' })}
                     style={{
-                      width: 12,
-                      height: 12,
+                      flexShrink: 0,
+                      width: `${GRID_ITEM_SIZE}px`,
+                      height: `${GRID_ITEM_SIZE}px`,
                       borderRadius: 2,
                       border: data.completed ? 'none' : '1px solid #2a2a2aff',
                       gridColumn: week + 1,
