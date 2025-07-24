@@ -7,7 +7,7 @@ import { AppLoader } from 'src/app/AppLoader';
 
 import { Routes } from '@/constants';
 
-import { Dashboard, HabitOverview, Login, Register } from '../pages';
+import { Dashboard, HabitOverview, Login, Profile, Register } from '../pages';
 
 // TODO: add error boundary
 const router = createBrowserRouter([
@@ -39,6 +39,10 @@ const router = createBrowserRouter([
       {
         path: Routes.HABIT_OVERVIEW,
         element: <HabitOverview />,
+      },
+      {
+        path: Routes.PROFILE,
+        element: <Profile />,
       },
     ],
   },

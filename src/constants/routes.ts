@@ -12,11 +12,6 @@ export const RoutesConfig = {
     NAME: 'Root',
     IS_AUTHENTICATED: false,
   },
-  // EPISODE: {
-  //   PATH: '/episodes/:episodeId',
-  //   NAME: 'Episode',
-  //   IS_AUTHENTICATED: false,
-  // },
   LOGIN: {
     PATH: '/login',
     NAME: 'Login',
@@ -35,6 +30,11 @@ export const RoutesConfig = {
   HABIT_OVERVIEW: {
     PATH: '/habit/:habitId',
     NAME: 'Habit Overview',
+    IS_AUTHENTICATED: true,
+  },
+  PROFILE: {
+    PATH: '/profile',
+    NAME: 'Profile',
     IS_AUTHENTICATED: true,
   },
 } satisfies Record<string, RouteType>;
