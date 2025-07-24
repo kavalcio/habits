@@ -10,6 +10,7 @@ Features
 - Add ability to add tags/descriptions to events
   - e.g. muscle group for workouts
 - define db schema in sql in the repo
+- add a promo page at root '/'
 
 Notes
 - Name options

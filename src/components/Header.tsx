@@ -32,7 +32,14 @@ export const Header = ({
     >
       <Container>
         <Flex justify="between" align="center" gap="4">
-          <Text>Temper</Text>
+          <Text asChild>
+            <RouterLink
+              style={{ color: 'inherit', textDecoration: 'inherit' }}
+              to="/dashboard"
+            >
+              Temper
+            </RouterLink>
+          </Text>
           <Flex gap="4" align="center">
             <Link asChild>
               <RouterLink to="/dashboard">
