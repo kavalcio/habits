@@ -3,3 +3,26 @@ Bugs
 - Export types from supabase, use them where relevant
 - Add dark/light mode switch
 - Add custom default scrollbar style
+- Add ability to add tags/descriptions to events
+  - e.g. muscle group for workouts
+- Name options
+  - Turkish
+    - Ahenk - "harmony"
+    - Düzen - "order"
+    - Zaman – "time"
+  - Latin/Greek
+    - Ordo – “Order” or “structure”
+    - Iter – “Journey” or “path”
+    - Telos (Τέλος) – “End goal” or purpose
+    - Metis (Μῆτις) – “Wisdom through craft/practice”
+    - Praxis - applied practice; where theory becomes habit
+  - English
+    - Waypoint
+    - Chisel
+    - Forge
+    - Foundry
+    - Lathe
+    - Temper
+    - Etch
+    - Axis
+    - Keystone (already exists as a habit tracking app)

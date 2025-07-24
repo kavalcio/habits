@@ -136,7 +136,7 @@ export const YearGrid = ({
                     fontSize: 10,
                     textAlign: 'right',
                     color: '#888',
-                    width: 28,
+                    width: 23,
                   }}
                 >
                   {label}
@@ -182,7 +182,7 @@ export const YearGrid = ({
                           borderRadius: 2,
                           border: data.completed
                             ? 'none'
-                            : '1px solid #2a2a2aff',
+                            : '1px solid var(--gray-5)',
                           gridColumn: week + 1,
                           gridRow: day + 1,
                         }}
