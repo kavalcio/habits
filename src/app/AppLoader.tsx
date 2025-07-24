@@ -1,5 +1,5 @@
 import { Box, Theme, ThemePanel } from '@radix-ui/themes';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Outlet } from 'react-router-dom';
 
 import { Header } from '@/components';
@@ -7,7 +7,16 @@ import { Header } from '@/components';
 import { AuthWrapper } from './AuthWrapper';
 
 export const AppLoader = () => {
-  const [isDarkMode, setIsDarkMode] = useState(true);
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    const stored = localStorage.getItem('theme');
+    if (stored === 'dark') return true;
+    if (stored === 'light') return false;
+    return true; // default to dark
+  });
+
+  useEffect(() => {
+    localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
+  }, [isDarkMode]);
 
   return (
     <AuthWrapper>
