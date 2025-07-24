@@ -10,9 +10,9 @@ import {
 import { useMutation } from '@tanstack/react-query';
 import { format } from 'date-fns';
 import { useMemo, useState } from 'react';
-import { Event } from 'src/types';
 
 import { createEvent, deleteEvent } from '@/requests';
+import { Event } from '@/types';
 
 import { EditEventDialog } from './EditEventDialog';
 

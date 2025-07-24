@@ -3,10 +3,10 @@ import { useMutation } from '@tanstack/react-query';
 import { useState } from 'react';
 import { HexColorPicker } from 'react-colorful';
 import { useNavigate } from 'react-router-dom';
-import { Habit } from 'src/types';
 
 import { Routes } from '@/constants';
 import { createHabit, deleteHabit, updateHabit } from '@/requests';
+import { Habit } from '@/types';
 
 export const AddEditHabitDialog = ({
   children,

@@ -13,6 +13,7 @@ import { Link as RouterLink } from 'react-router-dom';
 
 import { AddEditHabitDialog } from '@/components';
 import { fetchHabits as fetchHabitsRequest } from '@/requests';
+import { Habit } from '@/types';
 
 export const Dashboard = () => {
   const { data, error, isPending } = useQuery(fetchHabitsRequest);
@@ -39,7 +40,7 @@ export const Dashboard = () => {
             sm: '3',
           }}
         >
-          {data?.map((habit: any) => (
+          {data?.map((habit: Habit) => (
             <Card asChild>
               <RouterLink to={`/habit/${habit.id}`}>
                 <Flex height={'100%'} align="center" gap="2">

@@ -5,7 +5,7 @@ Features
 - pick a custom color palette using this: https://www.radix-ui.com/colors/custom
 - Add custom favicon
 - Export types from supabase, use them where relevant
-- Add dark/light mode switch
+- add soft delete for habits, filter deleted items on fetch, allow restoring maybe?
 - Add custom page scrollbar style
 - Add ability to add tags/descriptions to events
   - e.g. muscle group for workouts
