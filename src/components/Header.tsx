@@ -1,8 +1,23 @@
-import { Box, Container, Flex, Link, Text } from '@radix-ui/themes';
+import { MoonIcon, SunIcon } from '@radix-ui/react-icons';
+import {
+  Box,
+  Button,
+  Container,
+  Flex,
+  IconButton,
+  Link,
+  Text,
+} from '@radix-ui/themes';
 import { Link as RouterLink } from 'react-router-dom';
 
 // TODO: collapse into hamburger on mobile
-export const Header = () => {
+export const Header = ({
+  isDarkMode,
+  setIsDarkMode,
+}: {
+  isDarkMode: boolean;
+  setIsDarkMode: React.Dispatch<React.SetStateAction<boolean>>;
+}) => {
   return (
     <Box
       position="sticky"
@@ -24,8 +39,20 @@ export const Header = () => {
                 <Text>Dashboard</Text>
               </RouterLink>
             </Link>
-            <Text>Today</Text>
-            <Text>Profile</Text>
+            {/* <Text>Today</Text> */}
+            <Link asChild>
+              <RouterLink to="/profile">
+                <Text>Profile</Text>
+              </RouterLink>
+            </Link>
+            <IconButton
+              variant="ghost"
+              onClick={() => setIsDarkMode((prev: boolean) => !prev)}
+            >
+              {isDarkMode ? <SunIcon /> : <MoonIcon />}
+            </IconButton>
+            {/* TODO: show login if already logged out */}
+            <Button variant="outline">Log Out</Button>
           </Flex>
         </Flex>
       </Container>
