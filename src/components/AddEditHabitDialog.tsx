@@ -49,13 +49,13 @@ export const AddEditHabitDialog = ({
     <Dialog.Root>
       <Dialog.Content maxWidth="400px">
         <Flex direction="column">
-          <Dialog.Title mr="auto">Edit Habit</Dialog.Title>
+          <Dialog.Title mr="auto">{habit ? 'Edit' : 'Add'} Habit</Dialog.Title>
           <Heading size="2" mr="auto">
             Name
           </Heading>
           <TextField.Root
             placeholder="Habit Name"
-            defaultValue={habit.name}
+            defaultValue={habit?.name ?? ''}
             onChange={(e) => setHabitName(e.target.value)}
             mt="1"
           />

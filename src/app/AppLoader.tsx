@@ -30,7 +30,7 @@ export const AppLoader = () => {
         <Box m={{ initial: '4', sm: '6' }}>
           <Outlet />
         </Box>
-        <ThemePanel />
+        {/* <ThemePanel /> */}
       </Theme>
     </AuthWrapper>
   );

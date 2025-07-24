@@ -9,6 +9,7 @@ Features
 - Add custom page scrollbar style
 - Add ability to add tags/descriptions to events
   - e.g. muscle group for workouts
+- define db schema in sql in the repo
 
 Notes
 - Name options
