@@ -3,19 +3,22 @@ import { queryClient, supabase } from './supabase';
 export const fetchHabits = {
   queryKey: ['habit'],
   queryFn: async () => {
-    const { data, error } = await supabase.from('habit').select();
+    const { data, error } = await supabase
+      .from('habit')
+      .select()
+      .eq('is_archived', false);
     if (error) throw error;
     return data;
   },
 };
 
-// TODO: filter out archived habits in the query
 export const fetchHabit = (habitId?: string) => ({
   queryKey: ['habit', { id: habitId }],
   queryFn: async () => {
     const { data, error } = await supabase
       .from('habit')
       .select()
+      .eq('is_archived', false)
       .eq('id', habitId);
     if (error) throw error;
     return data[0];

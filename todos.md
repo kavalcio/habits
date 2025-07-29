@@ -4,12 +4,10 @@ Bugs
 Features
 - pick a custom color palette using this: https://www.radix-ui.com/colors/custom
 - Add custom favicon
-- Export types from supabase, use them where relevant
-- add soft delete for habits, filter deleted items on fetch, allow restoring maybe?
+- Allow restoring archived habits, maybe from profile page
 - Add custom page scrollbar style
 - Add ability to add tags/descriptions to events
   - e.g. muscle group for workouts
-- define db schema in sql in the repo
 - add a promo page at root '/'
 
 Notes
