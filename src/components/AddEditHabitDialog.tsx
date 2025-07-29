@@ -5,15 +5,15 @@ import { HexColorPicker } from 'react-colorful';
 import { useNavigate } from 'react-router-dom';
 
 import { Routes } from '@/constants';
-import { createHabit, deleteHabit, updateHabit } from '@/requests';
-import { Habit } from '@/types';
+import { archiveHabit, createHabit, updateHabit } from '@/requests';
+import { Tables } from '@/types';
 
 export const AddEditHabitDialog = ({
   children,
   habit,
 }: {
   children: React.ReactNode;
-  habit?: Habit;
+  habit?: Tables<'habit'>;
 }) => {
   const navigate = useNavigate();
 
@@ -22,7 +22,7 @@ export const AddEditHabitDialog = ({
 
   const createHabitMutation = useMutation(createHabit);
   const updateHabitMutation = useMutation(updateHabit);
-  const deleteHabitMutation = useMutation(deleteHabit);
+  const archiveHabitMutation = useMutation(archiveHabit);
 
   const onCreateHabit = async () => {
     await createHabitMutation.mutateAsync({
@@ -40,8 +40,8 @@ export const AddEditHabitDialog = ({
     });
   };
 
-  const onDeleteHabit = async () => {
-    await deleteHabitMutation.mutateAsync(habit.id);
+  const onArchiveHabit = async () => {
+    await archiveHabitMutation.mutateAsync(habit.id);
     navigate(Routes.DASHBOARD, { replace: true });
   };
 

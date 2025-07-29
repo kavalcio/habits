@@ -1,4 +1,4 @@
-import { Box, Theme, ThemePanel } from '@radix-ui/themes';
+import { Box, Theme } from '@radix-ui/themes';
 import { useEffect, useState } from 'react';
 import { Outlet } from 'react-router-dom';
 

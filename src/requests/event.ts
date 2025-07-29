@@ -1,7 +1,8 @@
 import { queryClient, supabase } from './supabase';
 
+// TODO: need to type these responses properly
 // TODO: allow fetching all events, not just for a specific habit?
-// TODO: sort these in api or client?
+
 export const fetchEvents = (habitId?: string) => ({
   queryKey: ['event', { habitId }],
   queryFn: async () => {
@@ -20,7 +21,7 @@ export const fetchEvent = (id: string) => ({
   queryFn: async () => {
     const { data, error } = await supabase.from('event').select().eq('id', id);
     if (error) throw error;
-    return data;
+    return data[0];
   },
 });
 
@@ -31,7 +32,7 @@ export const createEvent = {
       .insert({ habit_id: habitId, date })
       .select();
     if (error) throw error;
-    return data;
+    return data[0];
   },
   onSuccess: () => {
     queryClient.invalidateQueries({ queryKey: ['event'] });
@@ -39,10 +40,9 @@ export const createEvent = {
 };
 
 export const deleteEvent = {
-  mutationFn: async (id: string) => {
-    const { data, error } = await supabase.from('event').delete().eq('id', id);
+  mutationFn: async (eventId: number) => {
+    const { error } = await supabase.from('event').delete().eq('id', eventId);
     if (error) throw error;
-    return data;
   },
   onSuccess: () => {
     queryClient.invalidateQueries({ queryKey: ['event'] });

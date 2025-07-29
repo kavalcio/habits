@@ -17,10 +17,8 @@ import { fetchEvents, fetchHabit } from '@/requests';
 export const HabitOverview = () => {
   const { habitId } = useParams();
 
-  const { data, error, isPending } = useQuery(fetchHabit(habitId));
+  const { data: habit, error, isPending } = useQuery(fetchHabit(habitId));
   const { data: events } = useQuery(fetchEvents(habitId));
-
-  const habit = data?.[0];
 
   // TODO: improve error and loading states
   if (isPending) return <div>loading...</div>;

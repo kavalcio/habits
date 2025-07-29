@@ -12,7 +12,7 @@ import { format } from 'date-fns';
 import { useMemo, useState } from 'react';
 
 import { createEvent, deleteEvent } from '@/requests';
-import { Event } from '@/types';
+import { Tables } from '@/types';
 
 import { EditEventDialog } from './EditEventDialog';
 
@@ -25,7 +25,7 @@ type DateData = {
   date: string;
   formattedDate: string;
   completed: boolean;
-  eventId?: string;
+  eventId?: number;
 };
 
 export const YearGrid = ({
@@ -33,7 +33,7 @@ export const YearGrid = ({
   events = [],
 }: {
   habitId: string;
-  events?: Event[];
+  events?: Tables<'event'>[];
 }) => {
   const currentYear = new Date().getFullYear();
   const [selectedYear, setSelectedYear] = useState(currentYear);
