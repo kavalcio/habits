@@ -1,24 +1,29 @@
 import { queryClient, supabase } from './supabase';
 
-// TODO: camelcase keys in response
-
 export const fetchHabits = {
   queryKey: ['habit'],
   queryFn: async () => {
-    const { data, error } = await supabase.from('habit').select();
+    const { data, error } = await supabase
+      .from('habit')
+      .select()
+      .eq('is_archived', false);
     if (error) throw error;
     return data;
   },
 };
 
-export const fetchHabit = (id?: string) => ({
-  queryKey: ['habit', { id }],
+export const fetchHabit = (habitId: number) => ({
+  queryKey: ['habit', { id: habitId }],
   queryFn: async () => {
-    const { data, error } = await supabase.from('habit').select().eq('id', id);
+    const { data, error } = await supabase
+      .from('habit')
+      .select()
+      .eq('is_archived', false)
+      .eq('id', habitId);
     if (error) throw error;
-    return data;
+    return data[0];
   },
-  enabled: !!id,
+  enabled: !!habitId,
 });
 
 export const createHabit = {
@@ -28,7 +33,7 @@ export const createHabit = {
       .insert({ name, color })
       .select();
     if (error) throw error;
-    return data;
+    return data[0];
   },
   onSuccess: () => {
     // TODO: try to update cache on success instead of invalidating it entirely
@@ -42,32 +47,36 @@ export const createHabit = {
 
 export const updateHabit = {
   mutationFn: async ({
-    id,
+    habitId,
     name,
     color,
   }: {
-    id: string;
+    habitId: number;
     name: string;
     color: string;
   }) => {
     const { data, error } = await supabase
       .from('habit')
       .update({ name, color })
-      .eq('id', id)
+      .eq('id', habitId)
       .select();
     if (error) throw error;
-    return data;
+    return data[0];
   },
   onSuccess: () => {
     queryClient.invalidateQueries({ queryKey: ['habit'] });
   },
 };
 
-// TODO: this does not work if there are events, maybe convert it to a soft delete? would be nice to allow restoring habits
-export const deleteHabit = {
-  mutationFn: async (id: string) => {
-    const { error } = await supabase.from('habit').delete().eq('id', id);
+export const archiveHabit = {
+  mutationFn: async (habitId: number) => {
+    const { data, error } = await supabase
+      .from('habit')
+      .update({ is_archived: true })
+      .eq('id', habitId)
+      .select();
     if (error) throw error;
+    return data[0];
   },
   onSuccess: () => {
     queryClient.invalidateQueries({ queryKey: ['habit'] });

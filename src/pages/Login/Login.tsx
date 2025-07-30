@@ -43,8 +43,6 @@ export const Login = () => {
     }
   };
 
-  // console.log(loginMutation);
-
   return (
     <Container size="1">
       <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>

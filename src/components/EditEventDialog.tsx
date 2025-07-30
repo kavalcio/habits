@@ -3,6 +3,7 @@ import { format } from 'date-fns';
 
 import { getLocalDate } from '@/utils';
 
+// TODO: prevent this dialog from closing when onConfirm fails
 export const EditEventDialog = ({
   children,
   date,

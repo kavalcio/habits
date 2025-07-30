@@ -10,9 +10,9 @@ import {
 import { useMutation } from '@tanstack/react-query';
 import { format } from 'date-fns';
 import { useMemo, useState } from 'react';
-import { Event } from 'src/types';
 
 import { createEvent, deleteEvent } from '@/requests';
+import { Tables } from '@/types';
 
 import { EditEventDialog } from './EditEventDialog';
 
@@ -25,15 +25,15 @@ type DateData = {
   date: string;
   formattedDate: string;
   completed: boolean;
-  eventId?: string;
+  eventId?: number;
 };
 
 export const YearGrid = ({
   habitId,
   events = [],
 }: {
-  habitId: string;
-  events?: Event[];
+  habitId: number;
+  events?: Tables<'event'>[];
 }) => {
   const currentYear = new Date().getFullYear();
   const [selectedYear, setSelectedYear] = useState(currentYear);
@@ -136,7 +136,7 @@ export const YearGrid = ({
                     fontSize: 10,
                     textAlign: 'right',
                     color: '#888',
-                    width: 28,
+                    width: 23,
                   }}
                 >
                   {label}
@@ -182,7 +182,7 @@ export const YearGrid = ({
                           borderRadius: 2,
                           border: data.completed
                             ? 'none'
-                            : '1px solid #2a2a2aff',
+                            : '1px solid var(--gray-5)',
                           gridColumn: week + 1,
                           gridRow: day + 1,
                         }}
