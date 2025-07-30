@@ -86,7 +86,7 @@ const AddEditHabitDialogContent = ({
     setError('');
 
     await updateHabitMutation.mutateAsync({
-      id: habit.id!,
+      habitId: habit.id!,
       name: habitName!,
       color: habitColor!,
     });
@@ -95,6 +95,7 @@ const AddEditHabitDialogContent = ({
   };
 
   const onArchiveHabit = async () => {
+    if (!habit) return;
     await archiveHabitMutation.mutateAsync(habit.id);
     navigate(Routes.DASHBOARD, { replace: true });
   };
@@ -128,11 +129,13 @@ const AddEditHabitDialogContent = ({
               </Flex>
             </Flex>
           </AlertDialog.Content>
-          <AlertDialog.Trigger>
-            <IconButton size="1" variant="soft">
-              <TrashIcon />
-            </IconButton>
-          </AlertDialog.Trigger>
+          {!!habit && (
+            <AlertDialog.Trigger>
+              <IconButton size="1" variant="soft">
+                <TrashIcon />
+              </IconButton>
+            </AlertDialog.Trigger>
+          )}
         </AlertDialog.Root>
       </Flex>
       <Heading size="2" mr="auto">

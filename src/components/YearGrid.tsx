@@ -32,7 +32,7 @@ export const YearGrid = ({
   habitId,
   events = [],
 }: {
-  habitId: string;
+  habitId: number;
   events?: Tables<'event'>[];
 }) => {
   const currentYear = new Date().getFullYear();

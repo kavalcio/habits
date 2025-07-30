@@ -12,7 +12,7 @@ export const fetchHabits = {
   },
 };
 
-export const fetchHabit = (habitId?: string) => ({
+export const fetchHabit = (habitId: number) => ({
   queryKey: ['habit', { id: habitId }],
   queryFn: async () => {
     const { data, error } = await supabase
@@ -47,18 +47,18 @@ export const createHabit = {
 
 export const updateHabit = {
   mutationFn: async ({
-    id,
+    habitId,
     name,
     color,
   }: {
-    id: string;
+    habitId: number;
     name: string;
     color: string;
   }) => {
     const { data, error } = await supabase
       .from('habit')
       .update({ name, color })
-      .eq('id', id)
+      .eq('id', habitId)
       .select();
     if (error) throw error;
     return data[0];
@@ -69,11 +69,11 @@ export const updateHabit = {
 };
 
 export const archiveHabit = {
-  mutationFn: async (id: string) => {
+  mutationFn: async (habitId: number) => {
     const { data, error } = await supabase
       .from('habit')
       .update({ is_archived: true })
-      .eq('id', id)
+      .eq('id', habitId)
       .select();
     if (error) throw error;
     return data[0];

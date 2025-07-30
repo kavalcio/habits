@@ -15,7 +15,10 @@ import { fetchEvents, fetchHabit } from '@/requests';
 
 // TODO: add custom theme override on this page that uses the habit color
 export const HabitOverview = () => {
-  const { habitId } = useParams();
+  const params = useParams();
+
+  // TODO: check for if habitId is a valid number
+  const habitId = Number(params.habitId);
 
   const { data: habit, error, isPending } = useQuery(fetchHabit(habitId));
   const { data: events } = useQuery(fetchEvents(habitId));

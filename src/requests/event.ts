@@ -3,7 +3,7 @@ import { queryClient, supabase } from './supabase';
 // TODO: need to type these responses properly
 // TODO: allow fetching all events, not just for a specific habit?
 
-export const fetchEvents = (habitId?: string) => ({
+export const fetchEvents = (habitId: number) => ({
   queryKey: ['event', { habitId }],
   queryFn: async () => {
     const { data, error } = await supabase
@@ -16,17 +16,20 @@ export const fetchEvents = (habitId?: string) => ({
   enabled: !!habitId,
 });
 
-export const fetchEvent = (id: string) => ({
-  queryKey: ['event', { id }],
+export const fetchEvent = (eventId: number) => ({
+  queryKey: ['event', { id: eventId }],
   queryFn: async () => {
-    const { data, error } = await supabase.from('event').select().eq('id', id);
+    const { data, error } = await supabase
+      .from('event')
+      .select()
+      .eq('id', eventId);
     if (error) throw error;
     return data[0];
   },
 });
 
 export const createEvent = {
-  mutationFn: async ({ habitId, date }: { habitId: string; date: string }) => {
+  mutationFn: async ({ habitId, date }: { habitId: number; date: string }) => {
     const { data, error } = await supabase
       .from('event')
       .insert({ habit_id: habitId, date })
