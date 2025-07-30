@@ -39,8 +39,8 @@ export const Dashboard = () => {
             sm: '3',
           }}
         >
-          {data?.map((habit) => (
-            <Card asChild>
+          {data?.map((habit, index) => (
+            <Card asChild key={index}>
               <RouterLink to={`/habit/${habit.id}`}>
                 <Flex height={'100%'} align="center" gap="2">
                   <div
