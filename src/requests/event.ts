@@ -1,8 +1,5 @@
 import { queryClient, supabase } from './supabase';
 
-// TODO: need to type these responses properly
-// TODO: allow fetching all events, not just for a specific habit?
-
 export const fetchEvents = (habitId: number) => ({
   queryKey: ['event', { habitId }],
   queryFn: async () => {

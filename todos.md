@@ -1,5 +1,6 @@
 Bugs
 - Trying to delete habit causes foreign key constraint if it has any events. Either make the habit delete cascade to the events, or convert it to a soft delete
+- Navigation doesn't work on prod, some issue with react router probably
 
 Features
 - pick a custom color palette using this: https://www.radix-ui.com/colors/custom
@@ -9,6 +10,8 @@ Features
 - Add ability to add tags/descriptions to events
   - e.g. muscle group for workouts
 - add a promo page at root '/'
+- allow importing events from csv
+- allow exporting events to csv
 
 Notes
 - Name options
