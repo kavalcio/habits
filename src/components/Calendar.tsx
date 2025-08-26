@@ -5,6 +5,7 @@ import {
 } from '@radix-ui/react-icons';
 import {
   Button,
+  Dialog,
   Flex,
   Grid,
   IconButton,
@@ -12,7 +13,7 @@ import {
   Tooltip,
 } from '@radix-ui/themes';
 import { format } from 'date-fns';
-import { useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 
 import { Tables } from '@/types';
 
@@ -42,12 +43,15 @@ type CalendarDate = {
   muted?: boolean;
 };
 
+// TODO: on cell hover, replace label with + or - icon to add/remove event
 export const Calendar = ({
   events,
   onDateSelect,
+  enableDialogTrigger = false,
 }: {
   events?: Tables<'event'>[];
   onDateSelect?: (date: string) => void;
+  enableDialogTrigger?: boolean;
 }) => {
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth());
@@ -134,6 +138,8 @@ export const Calendar = ({
     height: ITEM_SIZE,
   };
 
+  const CellWrapper = enableDialogTrigger ? Dialog.Trigger : React.Fragment;
+
   return (
     <Flex width={`${TOTAL_WIDTH}px`} direction="column" gap="1">
       <Flex width="100%" justify="between" gap="1">
@@ -180,35 +186,36 @@ export const Calendar = ({
       </Flex>
       {activeView === 'month' ? (
         <Grid columns="7" rows="7" gap="1">
-          {gridItemList.map(({ label, disabled, muted, date }, index) => (
-            <Button
-              key={index}
-              disabled={disabled}
-              variant={
-                disabled || muted
-                  ? 'ghost'
-                  : !!date && !!eventsIndexedByDate[date] && !muted
-                    ? 'solid'
-                    : 'soft'
-              }
-              style={{
-                ...itemSizeStyle,
-                margin: 0,
-                padding: 0,
-                ...(muted && { color: 'var(--gray-9)' }),
-                ...(date === today &&
-                  !muted && {
-                    border: '2px solid var(--white-a8)',
-                  }),
-              }}
-              onClick={() => {
-                if (date && onDateSelect) {
-                  onDateSelect(date);
+          {gridItemList.map(({ disabled, muted, date, label }, index) => (
+            <CellWrapper key={index}>
+              <Button
+                disabled={disabled}
+                variant={
+                  disabled || muted
+                    ? 'ghost'
+                    : !!date && !!eventsIndexedByDate[date] && !muted
+                      ? 'solid'
+                      : 'soft'
                 }
-              }}
-            >
-              <Text>{label}</Text>
-            </Button>
+                style={{
+                  ...itemSizeStyle,
+                  margin: 0,
+                  padding: 0,
+                  ...(muted && { color: 'var(--gray-9)' }),
+                  ...(date === today &&
+                    !muted && {
+                      border: '2px solid var(--white-a8)',
+                    }),
+                }}
+                onClick={() => {
+                  if (date && onDateSelect) {
+                    onDateSelect(date);
+                  }
+                }}
+              >
+                <Text>{label}</Text>
+              </Button>
+            </CellWrapper>
           ))}
         </Grid>
       ) : (
