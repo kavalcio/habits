@@ -43,7 +43,10 @@ export const HabitOverview = () => {
             </AddEditHabitDialog>
           </Flex>
           <YearGrid habitId={habitId} events={events} />
-          <Calendar />
+          <Calendar
+            events={events}
+            onDateSelect={(date) => console.log(date)}
+          />
         </Flex>
       </Container>
     </Theme>
