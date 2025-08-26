@@ -10,7 +10,7 @@ import {
 import { useQuery } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
 
-import { AddEditHabitDialog, YearGrid } from '@/components';
+import { AddEditHabitDialog, Calendar, YearGrid } from '@/components';
 import { fetchEvents, fetchHabit } from '@/requests';
 
 // TODO: add custom theme override on this page that uses the habit color
@@ -43,6 +43,7 @@ export const HabitOverview = () => {
             </AddEditHabitDialog>
           </Flex>
           <YearGrid habitId={habitId} events={events} />
+          <Calendar />
         </Flex>
       </Container>
     </Theme>
