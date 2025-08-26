@@ -32,7 +32,7 @@ const MONTHS = [
 ];
 const WEEK_DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
-const ITEM_SIZE = 35; // Size of each calendar item in pixels
+const ITEM_SIZE = 32; // Size of each calendar item in pixels
 const TOTAL_WIDTH = ITEM_SIZE * 7 + 4 * 6; // 259px = 35px for each day, 4px gap between days, 6px padding
 
 type CalendarDate = {
@@ -129,15 +129,24 @@ export const Calendar = ({
     return items;
   }, [selectedYear, selectedMonth]);
 
+  const itemSizeStyle = {
+    width: ITEM_SIZE,
+    height: ITEM_SIZE,
+  };
+
   return (
     <Flex width={`${TOTAL_WIDTH}px`} direction="column" gap="1">
       <Flex width="100%" justify="between" gap="1">
-        <IconButton variant="outline" onClick={() => shiftCalendar(-1)}>
+        <IconButton
+          variant="outline"
+          onClick={() => shiftCalendar(-1)}
+          style={itemSizeStyle}
+        >
           <ChevronLeftIcon />
         </IconButton>
         <Button
           variant="outline"
-          style={{ flex: 1 }}
+          style={{ flex: 1, height: ITEM_SIZE }}
           onClick={() =>
             setActiveView(activeView === 'year' ? 'month' : 'year')
           }
@@ -148,12 +157,17 @@ export const Calendar = ({
               : `${MONTHS[selectedMonth]} ${selectedYear}`}
           </Text>
         </Button>
-        <IconButton variant="outline" onClick={() => shiftCalendar(1)}>
+        <IconButton
+          variant="outline"
+          style={itemSizeStyle}
+          onClick={() => shiftCalendar(1)}
+        >
           <ChevronRightIcon />
         </IconButton>
         <Tooltip content="Reset to current date" delayDuration={300}>
           <IconButton
             variant="outline"
+            style={itemSizeStyle}
             onClick={() => {
               setSelectedYear(new Date().getFullYear());
               setSelectedMonth(new Date().getMonth());
@@ -178,8 +192,7 @@ export const Calendar = ({
                     : 'soft'
               }
               style={{
-                width: ITEM_SIZE,
-                height: ITEM_SIZE,
+                ...itemSizeStyle,
                 margin: 0,
                 padding: 0,
                 ...(muted && { color: 'var(--gray-9)' }),
