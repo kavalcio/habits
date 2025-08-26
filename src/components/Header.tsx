@@ -35,7 +35,7 @@ export const Header = ({
           <Text asChild>
             <RouterLink
               style={{ color: 'inherit', textDecoration: 'inherit' }}
-              to="/dashboard"
+              to="/"
             >
               Temper
             </RouterLink>

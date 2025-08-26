@@ -76,6 +76,8 @@ export const YearGrid = ({
 
   const years = Array.from({ length: 5 }, (_, i) => currentYear - i);
 
+  const today = format(new Date(), 'yyyy-MM-dd');
+
   const onUpdateEvent = async () => {
     try {
       if (!selectedDate) return;
@@ -180,9 +182,12 @@ export const YearGrid = ({
                           width: `${GRID_ITEM_SIZE}px`,
                           height: `${GRID_ITEM_SIZE}px`,
                           borderRadius: 2,
-                          border: data.completed
-                            ? 'none'
-                            : '1px solid var(--gray-5)',
+                          border:
+                            data.date === today
+                              ? '1.5px solid var(--white-a8)'
+                              : data.completed
+                                ? 'none'
+                                : '1px solid var(--gray-5)',
                           gridColumn: week + 1,
                           gridRow: day + 1,
                         }}
