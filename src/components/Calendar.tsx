@@ -43,18 +43,23 @@ type CalendarDate = {
   muted?: boolean;
 };
 
-// TODO: on cell hover, replace label with + or - icon to add/remove event
 export const Calendar = ({
   events,
   onDateSelect,
+  defaultInitialDate,
   enableDialogTrigger = false,
 }: {
   events?: Tables<'event'>[];
   onDateSelect?: (date: string) => void;
+  defaultInitialDate?: string;
   enableDialogTrigger?: boolean;
 }) => {
-  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
-  const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth());
+  const initialDate = defaultInitialDate
+    ? new Date(defaultInitialDate)
+    : new Date();
+
+  const [selectedYear, setSelectedYear] = useState(initialDate.getFullYear());
+  const [selectedMonth, setSelectedMonth] = useState(initialDate.getMonth());
 
   const [activeView, setActiveView] = useState<'month' | 'year'>('month');
 
