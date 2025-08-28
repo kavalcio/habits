@@ -10,7 +10,6 @@ Core Features
 - Add custom favicon
 - add a promo page at root '/'
 - Allow restoring archived habits, maybe from profile page
-  - As a part of this, convert habit deletion into a soft delete
 
 Optional Features
 - allow changing the order of habits

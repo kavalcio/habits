@@ -1,5 +1,7 @@
 import { queryClient, supabase } from './supabase';
 
+// TODO: type these functions with tanstack query types
+// TODO: in the invalidateQueries calls, pass the specific id of the habit/event if relevant
 export const fetchEvents = (habitId: number) => ({
   queryKey: ['event', { habitId }],
   queryFn: async () => {
@@ -34,8 +36,11 @@ export const createEvent = {
     if (error) throw error;
     return data[0];
   },
-  onSuccess: () => {
-    queryClient.invalidateQueries({ queryKey: ['event'] });
+  onSuccess: async () => {
+    await Promise.all([
+      queryClient.invalidateQueries({ queryKey: ['event'] }),
+      queryClient.invalidateQueries({ queryKey: ['habitWithEvents'] }),
+    ]);
   },
 };
 
@@ -44,7 +49,10 @@ export const deleteEvent = {
     const { error } = await supabase.from('event').delete().eq('id', eventId);
     if (error) throw error;
   },
-  onSuccess: () => {
-    queryClient.invalidateQueries({ queryKey: ['event'] });
+  onSuccess: async () => {
+    await Promise.all([
+      queryClient.invalidateQueries({ queryKey: ['event'] }),
+      queryClient.invalidateQueries({ queryKey: ['habitWithEvents'] }),
+    ]);
   },
 };

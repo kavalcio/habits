@@ -46,11 +46,13 @@ type CalendarDate = {
 export const Calendar = ({
   events,
   onDateSelect,
+  onReturnToToday,
   defaultInitialDate,
   enableDialogTrigger = false,
 }: {
   events?: Tables<'event'>[];
   onDateSelect?: (date: string) => void;
+  onReturnToToday?: (date: string) => void;
   defaultInitialDate?: string;
   enableDialogTrigger?: boolean;
 }) => {
@@ -183,6 +185,7 @@ export const Calendar = ({
               setSelectedYear(new Date().getFullYear());
               setSelectedMonth(new Date().getMonth());
               setActiveView('month');
+              onReturnToToday?.(today);
             }}
           >
             <ResetIcon />

@@ -1,4 +1,6 @@
 import {
+  ChevronLeftIcon,
+  ChevronRightIcon,
   Cross2Icon,
   MagnifyingGlassIcon,
   PlusIcon,
@@ -18,10 +20,13 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { format } from 'date-fns';
 import { useMemo, useState } from 'react';
 
-import { createEvent, deleteEvent, fetchHabits } from '@/requests';
+import { createEvent, deleteEvent, fetchHabitsWithEvents } from '@/requests';
+import { Tables } from '@/types';
 
 import { Calendar } from './Calendar';
 
+// TODO: add functionality to left right chevron buttons
+// TODO: date selection is a bit broken, picks day before the selected date. maybe timezone issue?
 // TODO: add placeholder components when loading
 export const DailyLogDialog = () => {
   const [selectedDate, setSelectedDate] = useState<string>(
@@ -30,7 +35,19 @@ export const DailyLogDialog = () => {
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   const [habitSearchQuery, setHabitSearchQuery] = useState('');
 
-  const { data: habits, error, isPending } = useQuery(fetchHabits);
+  const { data: habits } = useQuery(fetchHabitsWithEvents);
+  const habitsWithDateIndexedEvents = useMemo(() => {
+    return habits?.map((habit) => ({
+      ...habit,
+      event: habit.event.reduce(
+        (acc, event) => {
+          acc[event.date] = event;
+          return acc;
+        },
+        {} as Record<string, Tables<'event'>>,
+      ),
+    }));
+  }, [habits]);
 
   const createEventMutation = useMutation(createEvent);
   const deleteEventMutation = useMutation(deleteEvent);
@@ -57,11 +74,16 @@ export const DailyLogDialog = () => {
   };
 
   const filteredHabits = useMemo(() => {
-    if (!habits) return [];
-    return habits.filter((habit) =>
+    if (!habitsWithDateIndexedEvents) return [];
+    return habitsWithDateIndexedEvents.filter((habit) =>
       habit.name.toLowerCase().includes(habitSearchQuery.toLowerCase()),
     );
-  }, [habits, habitSearchQuery]);
+  }, [habitsWithDateIndexedEvents, habitSearchQuery]);
+
+  const onDateSelect = (date: string) => {
+    setSelectedDate(date);
+    setIsCalendarOpen(false);
+  };
 
   return (
     <Dialog.Root>
@@ -74,23 +96,49 @@ export const DailyLogDialog = () => {
       <Dialog.Content maxWidth="500px" minHeight="500px">
         <Dialog.Title>Log Event</Dialog.Title>
         <Flex direction="column" gap="4" align="baseline">
-          <Popover.Root open={isCalendarOpen} onOpenChange={setIsCalendarOpen}>
-            <Popover.Trigger>
-              <Button variant="outline">
-                {format(new Date(selectedDate), 'MMM dd, yyyy')}
-                <ChevronDownIcon />
-              </Button>
-            </Popover.Trigger>
-            <Popover.Content>
-              <Calendar
-                defaultInitialDate={selectedDate}
-                onDateSelect={(date) => {
-                  setSelectedDate(date);
-                  setIsCalendarOpen(false);
-                }}
-              />
-            </Popover.Content>
-          </Popover.Root>
+          <Flex gap="1" mx="auto">
+            <IconButton
+              variant="outline"
+              onClick={() => {
+                // Shift to the previous day
+                // const prevDate = new Date(selectedDate);
+                // prevDate.setDate(prevDate.getDate() - 1);
+                // setSelectedDate(format(prevDate, 'yyyy-MM-dd'));
+              }}
+            >
+              <ChevronLeftIcon />
+            </IconButton>
+            <Popover.Root
+              open={isCalendarOpen}
+              onOpenChange={setIsCalendarOpen}
+            >
+              <Popover.Trigger>
+                <Button variant="outline">
+                  {/* {format(new Date(selectedDate), 'MMM dd, yyyy')} */}
+                  {selectedDate}
+                  <ChevronDownIcon />
+                </Button>
+              </Popover.Trigger>
+              <Popover.Content>
+                <Calendar
+                  defaultInitialDate={selectedDate}
+                  onDateSelect={onDateSelect}
+                  onReturnToToday={onDateSelect}
+                />
+              </Popover.Content>
+            </Popover.Root>
+            <IconButton
+              variant="outline"
+              onClick={() => {
+                // Shift to the next day
+                // const nextDate = new Date(selectedDate);
+                // nextDate.setDate(nextDate.getDate() + 1);
+                // setSelectedDate(format(nextDate, 'yyyy-MM-dd'));
+              }}
+            >
+              <ChevronRightIcon />
+            </IconButton>
+          </Flex>
           <TextField.Root
             placeholder="Search"
             value={habitSearchQuery}
@@ -115,12 +163,18 @@ export const DailyLogDialog = () => {
             {filteredHabits.map((habit) => (
               <Button
                 key={habit.id}
-                variant="outline"
+                variant={habit.event[selectedDate] ? 'solid' : 'outline'}
                 style={{
                   height: 'auto',
                   padding: '20px',
                   justifyContent: 'flex-start',
                 }}
+                onClick={() =>
+                  onToggleEvent({
+                    eventId: habit.event[selectedDate]?.id,
+                    habitId: habit.id,
+                  })
+                }
               >
                 <div
                   style={{
