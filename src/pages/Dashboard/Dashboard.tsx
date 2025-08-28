@@ -46,8 +46,8 @@ export const Dashboard = () => {
                   <div
                     style={{
                       backgroundColor: habit.color,
-                      minWidth: 20,
-                      minHeight: 20,
+                      minWidth: 12,
+                      height: '100%',
                       borderRadius: 4,
                     }}
                   />

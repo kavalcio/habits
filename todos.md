@@ -10,6 +10,7 @@ Core Features
 - Add custom favicon
 - add a promo page at root '/'
 - Allow restoring archived habits, maybe from profile page
+- fill out profile page
 
 Optional Features
 - allow changing the order of habits
