@@ -13,6 +13,7 @@ import {
   Flex,
   IconButton,
   Popover,
+  Skeleton,
   Text,
   TextField,
 } from '@radix-ui/themes';
@@ -26,7 +27,6 @@ import { getLocalDate } from '@/utils';
 
 import { Calendar } from './Calendar';
 
-// TODO: add placeholder components when loading
 export const DailyLogDialog = () => {
   return (
     <Dialog.Root>
@@ -36,7 +36,7 @@ export const DailyLogDialog = () => {
           <Text>Log Event</Text>
         </Button>
       </Dialog.Trigger>
-      <Dialog.Content maxWidth="500px" minHeight="500px">
+      <Dialog.Content maxWidth="500px">
         <DailyLogDialogContent />
       </Dialog.Content>
     </Dialog.Root>
@@ -50,7 +50,7 @@ const DailyLogDialogContent = () => {
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   const [habitSearchQuery, setHabitSearchQuery] = useState('');
 
-  const { data: habits } = useQuery(fetchHabitsWithEvents);
+  const { data: habits, isPending } = useQuery(fetchHabitsWithEvents);
   const habitsWithDateIndexedEvents = useMemo(() => {
     return habits?.map((habit) => ({
       ...habit,
@@ -100,15 +100,6 @@ const DailyLogDialogContent = () => {
     setIsCalendarOpen(false);
   };
 
-  console.log({
-    selectedDate,
-    dateObject: new Date(selectedDate),
-    noTimezone: new Date(selectedDate).toISOString(),
-    formatted: format(new Date(selectedDate), 'MMM dd, yyyy'),
-    localDate: getLocalDate(selectedDate),
-    formlocal: format(getLocalDate(selectedDate), 'MMM dd, yyyy'),
-  });
-
   const selectedDateLabel = useMemo(() => {
     const dayOfWeek = format(getLocalDate(selectedDate), 'EEE');
     if (selectedDate === format(new Date(), 'yyyy-MM-dd')) {
@@ -124,69 +115,73 @@ const DailyLogDialogContent = () => {
   }, [selectedDate]);
 
   return (
-    <>
+    <Flex direction="column" gap="4" align="baseline" minHeight="500px">
       <Dialog.Title>Log Event</Dialog.Title>
-      <Flex direction="column" gap="4" align="baseline">
-        <Flex gap="1" mx="auto">
-          <IconButton
-            variant="outline"
-            onClick={() => {
-              const prevDate = getLocalDate(selectedDate);
-              prevDate.setDate(prevDate.getDate() - 1);
-              setSelectedDate(format(prevDate, 'yyyy-MM-dd'));
-            }}
-          >
-            <ChevronLeftIcon />
-          </IconButton>
-          <Popover.Root open={isCalendarOpen} onOpenChange={setIsCalendarOpen}>
-            <Popover.Trigger>
-              <Button variant="outline" style={{ width: 180 }}>
-                {selectedDateLabel}
-                <ChevronDownIcon style={{ marginLeft: 'auto' }} />
-              </Button>
-            </Popover.Trigger>
-            <Popover.Content>
-              <Calendar
-                defaultInitialDate={selectedDate}
-                onDateSelect={onDateSelect}
-                onReturnToToday={onDateSelect}
-              />
-            </Popover.Content>
-          </Popover.Root>
-          <IconButton
-            variant="outline"
-            onClick={() => {
-              // Shift to the next day
-              const nextDate = getLocalDate(selectedDate);
-              nextDate.setDate(nextDate.getDate() + 1);
-              setSelectedDate(format(nextDate, 'yyyy-MM-dd'));
-            }}
-          >
-            <ChevronRightIcon />
-          </IconButton>
-        </Flex>
-        <TextField.Root
-          placeholder="Search"
-          value={habitSearchQuery}
-          onChange={(e) => setHabitSearchQuery(e.target.value)}
+      <Flex gap="1" mx="auto">
+        <IconButton
+          variant="outline"
+          onClick={() => {
+            const prevDate = getLocalDate(selectedDate);
+            prevDate.setDate(prevDate.getDate() - 1);
+            setSelectedDate(format(prevDate, 'yyyy-MM-dd'));
+          }}
         >
+          <ChevronLeftIcon />
+        </IconButton>
+        <Popover.Root open={isCalendarOpen} onOpenChange={setIsCalendarOpen}>
+          <Popover.Trigger>
+            <Button variant="outline" style={{ width: 180 }}>
+              {selectedDateLabel}
+              <ChevronDownIcon style={{ marginLeft: 'auto' }} />
+            </Button>
+          </Popover.Trigger>
+          <Popover.Content>
+            <Calendar
+              defaultInitialDate={selectedDate}
+              onDateSelect={onDateSelect}
+              onReturnToToday={onDateSelect}
+            />
+          </Popover.Content>
+        </Popover.Root>
+        <IconButton
+          variant="outline"
+          onClick={() => {
+            const nextDate = getLocalDate(selectedDate);
+            nextDate.setDate(nextDate.getDate() + 1);
+            setSelectedDate(format(nextDate, 'yyyy-MM-dd'));
+          }}
+        >
+          <ChevronRightIcon />
+        </IconButton>
+      </Flex>
+      <TextField.Root
+        style={{ width: '100%' }}
+        placeholder="Search"
+        value={habitSearchQuery}
+        onChange={(e) => setHabitSearchQuery(e.target.value)}
+      >
+        <TextField.Slot>
+          <MagnifyingGlassIcon />
+        </TextField.Slot>
+        {habitSearchQuery && (
           <TextField.Slot>
-            <MagnifyingGlassIcon />
+            <IconButton
+              variant="ghost"
+              size="1"
+              onClick={() => setHabitSearchQuery('')}
+            >
+              <Cross2Icon />
+            </IconButton>
           </TextField.Slot>
-          {habitSearchQuery && (
-            <TextField.Slot>
-              <IconButton
-                variant="ghost"
-                size="1"
-                onClick={() => setHabitSearchQuery('')}
-              >
-                <Cross2Icon />
-              </IconButton>
-            </TextField.Slot>
-          )}
-        </TextField.Root>
-        <Flex direction="column" gap="2" width="100%">
-          {filteredHabits.map((habit) => (
+        )}
+      </TextField.Root>
+      <Flex direction="column" gap="2" width="100%">
+        {isPending &&
+          Array.from({ length: 3 }).map((_, index) => (
+            <Skeleton key={index} style={{ height: 65, width: '100%' }} />
+          ))}
+        {!isPending &&
+          filteredHabits.map((habit) => (
             <Button
               key={habit.id}
               variant={habit.event[selectedDate] ? 'solid' : 'outline'}
@@ -233,14 +228,15 @@ const DailyLogDialogContent = () => {
               </Flex>
             </Button>
           ))}
-          {filteredHabits.length === 0 && <Text size="2">No habits found</Text>}
-        </Flex>
-        <Flex width="100%" justify="end" gap="2" mt="auto">
-          <Dialog.Close>
-            <Button variant="soft">Done</Button>
-          </Dialog.Close>
-        </Flex>
+        {!isPending && filteredHabits.length === 0 && (
+          <Text size="2">No habits found</Text>
+        )}
       </Flex>
-    </>
+      <Flex width="100%" justify="end" gap="2" mt="auto">
+        <Dialog.Close>
+          <Button variant="soft">Done</Button>
+        </Dialog.Close>
+      </Flex>
+    </Flex>
   );
 };
