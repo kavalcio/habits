@@ -32,7 +32,7 @@ export const HabitOverview = () => {
     <Theme
     // accentColor="red"
     >
-      <Container>
+      <Container size="3">
         <Flex gap="2" direction="column">
           <Flex width="100%" align="center" gap="3">
             <Heading size="4">{habit.name}</Heading>

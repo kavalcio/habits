@@ -6,6 +6,7 @@ import {
   Dialog,
   Flex,
   Grid,
+  Heading,
   Text,
 } from '@radix-ui/themes';
 import { useQuery } from '@tanstack/react-query';
@@ -22,15 +23,20 @@ export const Dashboard = () => {
   if (!data) return <div>events not found</div>;
 
   return (
-    <Container>
+    <Container size="3">
       <Flex gap="2" direction="column">
-        <AddEditHabitDialog>
-          <Dialog.Trigger>
-            <Button variant="outline" mb="3" ml="auto">
-              <PlusIcon /> Add Habit
-            </Button>
-          </Dialog.Trigger>
-        </AddEditHabitDialog>
+        <Flex>
+          <Heading size="4" align="left">
+            Dashboard
+          </Heading>
+          <AddEditHabitDialog>
+            <Dialog.Trigger>
+              <Button variant="outline" ml="auto">
+                <PlusIcon /> Add Habit
+              </Button>
+            </Dialog.Trigger>
+          </AddEditHabitDialog>
+        </Flex>
         <Grid
           width="auto"
           gap="3"
