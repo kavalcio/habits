@@ -35,7 +35,7 @@ export const HabitOverview = () => {
       <Container>
         <Flex gap="2" direction="column">
           <Flex width="100%" align="center" gap="3">
-            <Heading size="4">Habit: {habit.name}</Heading>
+            <Heading size="4">{habit.name}</Heading>
             <AddEditHabitDialog habit={habit}>
               <Dialog.Trigger>
                 <IconButton size="1" variant="ghost">

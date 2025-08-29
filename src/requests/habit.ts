@@ -26,6 +26,32 @@ export const fetchHabit = (habitId: number) => ({
   enabled: !!habitId,
 });
 
+export const fetchHabitWithEvents = (habitId: number) => ({
+  queryKey: ['habitWithEvents', { id: habitId }],
+  queryFn: async () => {
+    const { data, error } = await supabase
+      .from('habit')
+      .select('*, event(*)')
+      .eq('is_archived', false)
+      .eq('id', habitId);
+    if (error) throw error;
+    return data[0];
+  },
+  enabled: !!habitId,
+});
+
+export const fetchHabitsWithEvents = {
+  queryKey: ['habitWithEvents'],
+  queryFn: async () => {
+    const { data, error } = await supabase
+      .from('habit')
+      .select('*, event(*)')
+      .eq('is_archived', false);
+    if (error) throw error;
+    return data;
+  },
+};
+
 export const createHabit = {
   mutationFn: async ({ name, color }: { name: string; color: string }) => {
     const { data, error } = await supabase
@@ -35,13 +61,16 @@ export const createHabit = {
     if (error) throw error;
     return data[0];
   },
-  onSuccess: () => {
+  onSuccess: async () => {
     // TODO: try to update cache on success instead of invalidating it entirely
     // console.log('onSuccess', data);
     // const newHabit = data[0];
     // if (!newHabit) return;
     // queryClient.setQueryData(['habit', { id: newHabit.id }], newHabit);
-    queryClient.invalidateQueries({ queryKey: ['habit'] });
+    await Promise.all([
+      queryClient.invalidateQueries({ queryKey: ['habit'] }),
+      queryClient.invalidateQueries({ queryKey: ['habitWithEvents'] }),
+    ]);
   },
 };
 
@@ -63,8 +92,11 @@ export const updateHabit = {
     if (error) throw error;
     return data[0];
   },
-  onSuccess: () => {
-    queryClient.invalidateQueries({ queryKey: ['habit'] });
+  onSuccess: async () => {
+    await Promise.all([
+      queryClient.invalidateQueries({ queryKey: ['habit'] }),
+      queryClient.invalidateQueries({ queryKey: ['habitWithEvents'] }),
+    ]);
   },
 };
 
@@ -78,7 +110,10 @@ export const archiveHabit = {
     if (error) throw error;
     return data[0];
   },
-  onSuccess: () => {
-    queryClient.invalidateQueries({ queryKey: ['habit'] });
+  onSuccess: async () => {
+    await Promise.all([
+      queryClient.invalidateQueries({ queryKey: ['habit'] }),
+      queryClient.invalidateQueries({ queryKey: ['habitWithEvents'] }),
+    ]);
   },
 };

@@ -1,4 +1,4 @@
-import { MoonIcon, SunIcon } from '@radix-ui/react-icons';
+import { MoonIcon, PlusIcon, SunIcon } from '@radix-ui/react-icons';
 import {
   Box,
   Button,
@@ -9,6 +9,8 @@ import {
   Text,
 } from '@radix-ui/themes';
 import { Link as RouterLink } from 'react-router-dom';
+
+import { DailyLogDialog } from './DailyLogDialog';
 
 // TODO: collapse into hamburger on mobile
 export const Header = ({
@@ -46,14 +48,14 @@ export const Header = ({
                 <Text>Dashboard</Text>
               </RouterLink>
             </Link>
-            {/* <Text>Today</Text> */}
             <Link asChild>
               <RouterLink to="/profile">
                 <Text>Profile</Text>
               </RouterLink>
             </Link>
+            <DailyLogDialog />
             <IconButton
-              variant="ghost"
+              variant="outline"
               onClick={() => setIsDarkMode((prev: boolean) => !prev)}
             >
               {isDarkMode ? <SunIcon /> : <MoonIcon />}
