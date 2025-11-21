@@ -8,12 +8,53 @@ export const register = {
     email: string;
     password: string;
   }) => {
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+    });
+    if (error) throw error;
+    return data;
+  },
+};
+
+export const login = {
+  mutationFn: async ({
+    email,
+    password,
+  }: {
+    email: string;
+    password: string;
+  }) => {
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
     if (error) throw error;
     return data;
+  },
+  onSuccess: async () => {
+    await queryClient.invalidateQueries({ queryKey: ['user'] });
+    await queryClient.invalidateQueries({ queryKey: ['session'] });
+  },
+};
+
+export const logout = {
+  mutationFn: async () => {
+    const { error } = await supabase.auth.signOut();
+    if (error) throw error;
+  },
+  onSuccess: async () => {
+    await queryClient.invalidateQueries({ queryKey: ['user'] });
+    await queryClient.invalidateQueries({ queryKey: ['session'] });
+  },
+};
+
+export const fetchSession = {
+  queryKey: ['session'],
+  queryFn: async () => {
+    const { data, error } = await supabase.auth.getSession();
+    if (error) throw error;
+    return data.session;
   },
 };
 

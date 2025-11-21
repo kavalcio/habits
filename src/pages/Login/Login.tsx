@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { Routes } from '@/constants';
-import { supabase } from '@/requests';
+import { login as loginRequest } from '@/requests';
 
 // TODO: submit on enter key press
 export const Login = () => {
@@ -13,22 +13,7 @@ export const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const loginMutation = useMutation({
-    mutationFn: async ({
-      email,
-      password,
-    }: {
-      email: string;
-      password: string;
-    }) => {
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
-      if (error) throw error;
-      return data;
-    },
-  });
+  const loginMutation = useMutation(loginRequest);
 
   const onSubmit = async () => {
     try {

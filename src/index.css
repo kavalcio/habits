@@ -35,3 +35,7 @@ body {
 	--cursor-slider-thumb-active: grabbing;
 	--cursor-switch: pointer;
 }
+
+.notistack-SnackbarContainer.z-alert {
+  z-index: 10000;
+}

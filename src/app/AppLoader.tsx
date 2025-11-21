@@ -1,4 +1,5 @@
 import { Box, Theme } from '@radix-ui/themes';
+import { SnackbarProvider } from 'notistack';
 import { useEffect, useState } from 'react';
 import { Outlet } from 'react-router-dom';
 
@@ -26,11 +27,13 @@ export const AppLoader = () => {
         panelBackground="solid"
         radius="large"
       >
-        <Header isDarkMode={isDarkMode} setIsDarkMode={setIsDarkMode} />
-        <Box m={{ initial: '4', sm: '6' }}>
-          <Outlet />
-        </Box>
-        {/* <ThemePanel /> */}
+        <SnackbarProvider classes={{ containerRoot: 'z-alert' }}>
+          <Header isDarkMode={isDarkMode} setIsDarkMode={setIsDarkMode} />
+          <Box m={{ initial: '4', sm: '6' }}>
+            <Outlet />
+          </Box>
+          {/* <ThemePanel /> */}
+        </SnackbarProvider>
       </Theme>
     </AuthWrapper>
   );
