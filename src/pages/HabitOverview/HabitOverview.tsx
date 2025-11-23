@@ -33,7 +33,7 @@ export const HabitOverview = () => {
     // accentColor="red"
     >
       <Container size="3">
-        <Flex gap="2" direction="column">
+        <Flex gap="4" direction="column">
           <Flex width="100%" align="center" gap="3">
             <Heading size="4">{habit.name}</Heading>
             <AddEditHabitDialog habit={habit}>

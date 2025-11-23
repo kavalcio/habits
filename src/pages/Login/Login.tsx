@@ -1,7 +1,16 @@
-import { Button, Container, TextField } from '@radix-ui/themes';
+import {
+  Button,
+  Container,
+  Flex,
+  Heading,
+  Link,
+  Separator,
+  Text,
+  TextField,
+} from '@radix-ui/themes';
 import { useMutation } from '@tanstack/react-query';
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
 
 import { Routes } from '@/constants';
 import { login as loginRequest } from '@/requests';
@@ -30,9 +39,15 @@ export const Login = () => {
 
   return (
     <Container size="1">
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-        <p>login</p>
-        <a href="/register">Go to Register</a>
+      <Flex direction="column" gap="3">
+        <Flex align="end" justify="between">
+          <Heading size="5">Log in</Heading>
+          <Link asChild color="blue" size="2">
+            <RouterLink to="/reset-password">
+              <Text>Forgot password?</Text>
+            </RouterLink>
+          </Link>
+        </Flex>
         <TextField.Root
           placeholder="email"
           onChange={(e) => setEmail(e.target.value)}
@@ -42,15 +57,25 @@ export const Login = () => {
           placeholder="password"
           onChange={(e) => setPassword(e.target.value)}
         />
-
         {loginMutation.isError && (
           <p style={{ color: 'red' }}>
             {loginMutation.error?.message ??
               'Something went wrong, please try again.'}
           </p>
         )}
-        <Button onClick={onSubmit}>Login</Button>
-      </div>
+        <Button onClick={onSubmit} mb="1">
+          Log in
+        </Button>
+        <Separator orientation="horizontal" style={{ width: '100%' }} />
+        <Text size="2" align="left">
+          Don't have an account?{' '}
+          <Link asChild color="blue" size="2">
+            <RouterLink to="/register">
+              <Text>Sign up</Text>
+            </RouterLink>
+          </Link>
+        </Text>
+      </Flex>
     </Container>
   );
 };

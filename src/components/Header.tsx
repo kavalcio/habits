@@ -61,7 +61,7 @@ export const Header = ({
                 <Text>Profile</Text>
               </RouterLink>
             </Link>
-            <DailyLogDialog />
+            {session && <DailyLogDialog />}
             <IconButton
               variant="outline"
               onClick={() => setIsDarkMode((prev: boolean) => !prev)}

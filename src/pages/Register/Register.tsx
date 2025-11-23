@@ -1,11 +1,20 @@
-import { Button, Container, TextField } from '@radix-ui/themes';
+import {
+  Button,
+  Container,
+  Flex,
+  Heading,
+  Link,
+  Separator,
+  Text,
+  TextField,
+} from '@radix-ui/themes';
 import { useMutation } from '@tanstack/react-query';
 import { useState } from 'react';
+import { Link as RouterLink } from 'react-router-dom';
 
 import { register as registerRequest } from '@/requests';
 
 // TODO: figure out how to resend expired confirmation email
-// TODO: submit on enter key press
 export const Register = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -28,15 +37,14 @@ export const Register = () => {
     }
   };
 
-  console.log(registerMutation);
-
   return (
     <Container size="1">
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+      <Flex direction="column" gap="3">
         {!showConfirmation ? (
           <>
-            <p>register</p>
-            <a href="/login">Go to Login</a>
+            <Flex align="end" justify="start">
+              <Heading size="5">Sign up</Heading>
+            </Flex>
             <TextField.Root
               placeholder="email"
               onChange={(e) => setEmail(e.target.value)}
@@ -57,12 +65,23 @@ export const Register = () => {
                   'Something went wrong, please try again.'}
               </p>
             )}
-            <Button onClick={onSubmit}>Register</Button>
+            <Button onClick={onSubmit} mb="1">
+              Sign up
+            </Button>
+            <Separator orientation="horizontal" style={{ width: '100%' }} />
+            <Text size="2" align="left">
+              Already an account?{' '}
+              <Link asChild color="blue" size="2">
+                <RouterLink to="/login">
+                  <Text>Log in</Text>
+                </RouterLink>
+              </Link>
+            </Text>
           </>
         ) : (
-          <p>Please check your email for the confirmation link.</p>
+          <Text>Please check your email for the confirmation link.</Text>
         )}
-      </div>
+      </Flex>
     </Container>
   );
 };
