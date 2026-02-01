@@ -21,7 +21,6 @@ import {
   updatePassword as updatePasswordRequest,
 } from '@/requests';
 
-// TODO: dont allow access to this page if not logged in
 export const ResetPassword = () => {
   const navigate = useNavigate();
   const [password, setPassword] = useState('');
@@ -32,7 +31,8 @@ export const ResetPassword = () => {
   const { data: session, isPending } = useQuery(fetchSession);
   const updatePasswordMutation = useMutation(updatePasswordRequest);
 
-  const onSubmit = async () => {
+  const onSubmit = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
     try {
       setFormError('');
       if (!password || password !== confirmPassword) {
@@ -50,11 +50,11 @@ export const ResetPassword = () => {
 
   return (
     <Container size="1">
-      <Flex direction="column" gap="3">
-        {isPending ? (
-          <Spinner />
-        ) : session ? (
-          <>
+      {isPending ? (
+        <Spinner />
+      ) : session ? (
+        <form onSubmit={onSubmit}>
+          <Flex direction="column" gap="3">
             <Flex align="end" justify="start">
               <Heading size="5">Reset Password</Heading>
             </Flex>
@@ -62,6 +62,7 @@ export const ResetPassword = () => {
               <TextField.Root
                 type={showPassword ? 'text' : 'password'}
                 placeholder="Enter new password"
+                value={password}
                 onChange={(e) => {
                   setPassword(e.target.value);
                   setFormError('');
@@ -81,6 +82,7 @@ export const ResetPassword = () => {
             <TextField.Root
               type={showPassword ? 'text' : 'password'}
               placeholder="Confirm new password"
+              value={confirmPassword}
               onChange={(e) => {
                 setConfirmPassword(e.target.value);
                 setFormError('');
@@ -88,22 +90,22 @@ export const ResetPassword = () => {
             />
             {!!formError && <FormError message={formError} />}
             <Button
-              onClick={onSubmit}
+              type="submit"
               mb="1"
               loading={updatePasswordMutation.isPending}
               disabled={updatePasswordMutation.isPending}
             >
               Update
             </Button>
-          </>
-        ) : (
-          <Text>
-            Your password reset link is invalid or has expired.
-            <br />
-            Please request a new password reset.
-          </Text>
-        )}
-      </Flex>
+          </Flex>
+        </form>
+      ) : (
+        <Text>
+          Your password reset link is invalid or has expired.
+          <br />
+          Please request a new password reset.
+        </Text>
+      )}
     </Container>
   );
 };

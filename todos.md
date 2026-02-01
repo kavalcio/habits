@@ -35,6 +35,7 @@ Improvement
 - can we memoize queries between pages? we keep refetching habit/event data
 - optimization: prefetch habit data when user hovers on the habit card on the dashboard, before they even click
 - submit login/register form on enter key press
+- add aria tags everywhere
 
 Notes
 - Name options

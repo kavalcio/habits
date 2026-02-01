@@ -29,7 +29,8 @@ export const Register = () => {
 
   const registerMutation = useMutation(registerRequest);
 
-  const onSubmit = async () => {
+  const onSubmit = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
     try {
       setFormError('');
       if (!password || password !== confirmPassword) {
@@ -46,15 +47,16 @@ export const Register = () => {
 
   return (
     <Container size="1">
-      <Flex direction="column" gap="3">
-        {!showConfirmation ? (
-          <>
+      {!showConfirmation ? (
+        <form onSubmit={onSubmit}>
+          <Flex direction="column" gap="3">
             <Flex align="end" justify="start">
               <Heading size="5">Sign up</Heading>
             </Flex>
             <TextField.Root
               placeholder="email"
               autoComplete="off"
+              value={email}
               onChange={(e) => {
                 setEmail(e.target.value);
                 setFormError('');
@@ -65,6 +67,7 @@ export const Register = () => {
                 type={showPassword ? 'text' : 'password'}
                 autoComplete="new-password"
                 placeholder="password"
+                value={password}
                 onChange={(e) => {
                   setPassword(e.target.value);
                   setFormError('');
@@ -85,6 +88,7 @@ export const Register = () => {
               type={showPassword ? 'text' : 'password'}
               autoComplete="new-password"
               placeholder="confirm password"
+              value={confirmPassword}
               onChange={(e) => {
                 setConfirmPassword(e.target.value);
                 setFormError('');
@@ -92,7 +96,7 @@ export const Register = () => {
             />
             {!!formError && <FormError message={formError} />}
             <Button
-              onClick={onSubmit}
+              type="submit"
               mb="1"
               loading={registerMutation.isPending}
               disabled={registerMutation.isPending}
@@ -108,13 +112,13 @@ export const Register = () => {
                 </RouterLink>
               </Link>
             </Text>
-          </>
-        ) : (
-          <>
-            <Text>Please check your email for the confirmation link.</Text>
-          </>
-        )}
-      </Flex>
+          </Flex>
+        </form>
+      ) : (
+        <>
+          <Text>Please check your email for the confirmation link.</Text>
+        </>
+      )}
     </Container>
   );
 };

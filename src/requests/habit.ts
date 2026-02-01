@@ -8,7 +8,7 @@ export const fetchHabits = {
       .select()
       .eq('is_archived', false);
     if (error) throw error;
-    return data;
+    return data ?? [];
   },
 };
 
@@ -21,7 +21,7 @@ export const fetchHabit = (habitId: number) => ({
       .eq('is_archived', false)
       .eq('id', habitId);
     if (error) throw error;
-    return data[0];
+    return data[0] ?? null;
   },
   enabled: !!habitId,
 });
@@ -35,7 +35,7 @@ export const fetchHabitWithEvents = (habitId: number) => ({
       .eq('is_archived', false)
       .eq('id', habitId);
     if (error) throw error;
-    return data[0];
+    return data[0] ?? null;
   },
   enabled: !!habitId,
 });
@@ -48,7 +48,7 @@ export const fetchHabitsWithEvents = {
       .select('*, event(*)')
       .eq('is_archived', false);
     if (error) throw error;
-    return data;
+    return data ?? [];
   },
 };
 
@@ -59,7 +59,7 @@ export const createHabit = {
       .insert({ name, color })
       .select();
     if (error) throw error;
-    return data[0];
+    return data[0] ?? null;
   },
   onSuccess: async () => {
     // TODO: try to update cache on success instead of invalidating it entirely
@@ -90,7 +90,7 @@ export const updateHabit = {
       .eq('id', habitId)
       .select();
     if (error) throw error;
-    return data[0];
+    return data[0] ?? null;
   },
   onSuccess: async () => {
     await Promise.all([
@@ -108,7 +108,7 @@ export const archiveHabit = {
       .eq('id', habitId)
       .select();
     if (error) throw error;
-    return data[0];
+    return data[0] ?? null;
   },
   onSuccess: async () => {
     await Promise.all([
