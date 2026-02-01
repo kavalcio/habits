@@ -10,12 +10,13 @@ import {
 } from '@radix-ui/themes';
 import { useMutation } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
-import { HexColorPicker } from 'react-colorful';
 import { useNavigate } from 'react-router-dom';
 
 import { Routes } from '@/constants';
 import { archiveHabit, createHabit, updateHabit } from '@/requests';
 import { Tables } from '@/types';
+
+import { ColorSwatchPicker } from './ColorSwatchPicker';
 
 // TODO: show error toast on success/failure
 export const AddEditHabitDialog = ({
@@ -160,7 +161,7 @@ const AddEditHabitDialogContent = ({
       <Heading size="2" mt="3" mb="1" mr="auto">
         Color
       </Heading>
-      <HexColorPicker color={habitColor} onChange={setHabitColor} />
+      <ColorSwatchPicker value={habitColor} onChange={setHabitColor} />
       <Flex width="100%" justify="end" gap="2" mt="4">
         <Dialog.Close>
           <Button variant="soft">Cancel</Button>

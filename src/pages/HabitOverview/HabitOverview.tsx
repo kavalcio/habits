@@ -61,9 +61,7 @@ export const HabitOverview = () => {
   }
 
   return (
-    <Theme
-    // accentColor="red"
-    >
+    <Theme accentColor={habit.color as any}>
       <Container size="3">
         <Flex gap="4" direction="column">
           <Flex width="100%" align="center" gap="3">

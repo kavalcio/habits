@@ -31,7 +31,6 @@ export const Login = () => {
         email,
         password,
       });
-      console.log('user', user);
       if (user) navigate(Routes.DASHBOARD);
     } catch (error) {
       console.error(error);

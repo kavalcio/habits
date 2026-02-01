@@ -2,6 +2,7 @@ Bugs
 - make header look ok on mobile
 - Trying to delete habit causes foreign key constraint if it has any events. Either make the habit delete cascade to the events, or convert it to a soft delete
 - on going away from the tab and coming back, queries get refetched. could be a config of useQuery, or could be a react shenanigan
+- some custom color dont work for the light theme, fix those
 
 Core Features
 - in dashboard view, overall progress that shows events for all habits (similar to Habitify)
