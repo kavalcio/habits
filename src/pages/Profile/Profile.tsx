@@ -28,7 +28,7 @@ import {
 export const Profile = () => {
   const navigate = useNavigate();
 
-  const { data: user, isLoading, isError, error } = useQuery(fetchUser);
+  const { data: user, isError, error } = useQuery(fetchUser);
 
   const [isEditingEmail, setIsEditingEmail] = useState(false);
   const [isEditingName, setIsEditingName] = useState(false);
