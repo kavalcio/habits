@@ -6,5 +6,4 @@ export * from './EditEventDialog';
 export * from './EventCalendar';
 export * from './FormError';
 export * from './Header';
-export * from './ScrollingActivity';
 export * from './YearGrid';
