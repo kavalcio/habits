@@ -49,6 +49,15 @@ export const logout = {
   },
 };
 
+export const resetPassword = {
+  mutationFn: async ({ email }: { email: string }) => {
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/reset-password`,
+    });
+    if (error) throw error;
+  },
+};
+
 export const fetchSession = {
   queryKey: ['session'],
   queryFn: async () => {

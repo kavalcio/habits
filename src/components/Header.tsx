@@ -28,6 +28,15 @@ export const Header = ({
   const logoutMutation = useMutation(logout);
   const { data: session, isPending } = useQuery(fetchSession);
 
+  const onLogout = async () => {
+    try {
+      await logoutMutation.mutate();
+      navigate(Routes.ROOT);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <Box
       position="sticky"
@@ -47,17 +56,17 @@ export const Header = ({
               style={{ color: 'inherit', textDecoration: 'inherit' }}
               to="/"
             >
-              Temper
+              temper
             </RouterLink>
           </Text>
           <Flex gap="4" align="center">
             <Link asChild>
-              <RouterLink to="/dashboard">
+              <RouterLink to={Routes.DASHBOARD}>
                 <Text>Dashboard</Text>
               </RouterLink>
             </Link>
             <Link asChild>
-              <RouterLink to="/profile">
+              <RouterLink to={Routes.PROFILE}>
                 <Text>Profile</Text>
               </RouterLink>
             </Link>
@@ -74,7 +83,7 @@ export const Header = ({
               </Button>
             )}
             {session && (
-              <Button variant="outline" onClick={() => logoutMutation.mutate()}>
+              <Button variant="outline" onClick={onLogout}>
                 Log Out
               </Button>
             )}

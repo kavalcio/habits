@@ -4,7 +4,6 @@ Bugs
 - on going away from the tab and coming back, queries get refetched. could be a config of useQuery, or could be a react shenanigan
 
 Core Features
-- modal for adding event. allows picking habit from a dropdown, date from a calendar (which format?)
 - in dashboard view, overall progress that shows events for all habits (similar to Habitify)
 - Some analytics and graphs on habit details page
   - rolling weekly/monthly average graph
@@ -13,7 +12,7 @@ Core Features
 - Allow restoring archived habits, maybe from profile page
 - improve the login/register pages
 - add more toast for more actions
-- password reset
+- password 
 - 404 page
 
 Optional Features

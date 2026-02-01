@@ -22,6 +22,16 @@ export const RoutesConfig = {
     NAME: 'Register',
     IS_AUTHENTICATED: false,
   },
+  FORGOT_PASSWORD: {
+    PATH: '/forgot-password',
+    NAME: 'Forgot Password',
+    IS_AUTHENTICATED: false,
+  },
+  RESET_PASSWORD: {
+    PATH: '/reset-password',
+    NAME: 'Reset Password',
+    IS_AUTHENTICATED: false,
+  },
   DASHBOARD: {
     PATH: '/dashboard',
     NAME: 'Dashboard',

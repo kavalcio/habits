@@ -1,5 +1,6 @@
 import {
   Button,
+  Callout,
   Container,
   Flex,
   Heading,
@@ -12,9 +13,11 @@ import { useMutation } from '@tanstack/react-query';
 import { useState } from 'react';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 
+import { FormError } from '@/components';
 import { Routes } from '@/constants';
 import { login as loginRequest } from '@/requests';
 
+// TODO: add button to show password
 // TODO: submit on enter key press
 export const Login = () => {
   const navigate = useNavigate();
@@ -43,7 +46,7 @@ export const Login = () => {
         <Flex align="end" justify="between">
           <Heading size="5">Log in</Heading>
           <Link asChild color="blue" size="2">
-            <RouterLink to="/reset-password">
+            <RouterLink to={Routes.FORGOT_PASSWORD}>
               <Text>Forgot password?</Text>
             </RouterLink>
           </Link>
@@ -58,10 +61,7 @@ export const Login = () => {
           onChange={(e) => setPassword(e.target.value)}
         />
         {loginMutation.isError && (
-          <p style={{ color: 'red' }}>
-            {loginMutation.error?.message ??
-              'Something went wrong, please try again.'}
-          </p>
+          <FormError message={loginMutation.error?.message} />
         )}
         <Button onClick={onSubmit} mb="1">
           Log in
@@ -70,7 +70,7 @@ export const Login = () => {
         <Text size="2" align="left">
           Don't have an account?{' '}
           <Link asChild color="blue" size="2">
-            <RouterLink to="/register">
+            <RouterLink to={Routes.REGISTER}>
               <Text>Sign up</Text>
             </RouterLink>
           </Link>
