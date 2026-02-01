@@ -63,7 +63,12 @@ export const Login = () => {
         {loginMutation.isError && (
           <FormError message={loginMutation.error?.message} />
         )}
-        <Button onClick={onSubmit} mb="1">
+        <Button
+          onClick={onSubmit}
+          mb="1"
+          loading={loginMutation.isPending}
+          disabled={loginMutation.isPending}
+        >
           Log in
         </Button>
         <Separator orientation="horizontal" style={{ width: '100%' }} />

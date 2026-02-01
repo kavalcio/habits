@@ -121,7 +121,12 @@ const AddEditHabitDialogContent = ({
                   <Button variant="soft">Cancel</Button>
                 </AlertDialog.Cancel>
                 <AlertDialog.Action>
-                  <Button color="red" onClick={onArchiveHabit}>
+                  <Button
+                    color="red"
+                    onClick={onArchiveHabit}
+                    loading={archiveHabitMutation.isPending}
+                    disabled={archiveHabitMutation.isPending}
+                  >
                     <TrashIcon />
                     Archive Habit
                   </Button>
@@ -160,7 +165,21 @@ const AddEditHabitDialogContent = ({
         <Dialog.Close>
           <Button variant="soft">Cancel</Button>
         </Dialog.Close>
-        <Button onClick={habit ? onUpdateHabit : onCreateHabit}>Save</Button>
+        <Button
+          onClick={habit ? onUpdateHabit : onCreateHabit}
+          loading={
+            habit
+              ? updateHabitMutation.isPending
+              : createHabitMutation.isPending
+          }
+          disabled={
+            habit
+              ? updateHabitMutation.isPending
+              : createHabitMutation.isPending
+          }
+        >
+          Save
+        </Button>
       </Flex>
     </Flex>
   );

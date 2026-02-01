@@ -1,8 +1,10 @@
+import { EyeClosedIcon, EyeOpenIcon } from '@radix-ui/react-icons';
 import {
   Button,
   Container,
   Flex,
   Heading,
+  IconButton,
   Link,
   Separator,
   Text,
@@ -16,7 +18,6 @@ import { FormError } from '@/components';
 import { Routes } from '@/constants';
 import { register as registerRequest } from '@/requests';
 
-// TODO: add button to show password
 // TODO: figure out how to resend expired confirmation email
 export const Register = () => {
   const [email, setEmail] = useState('');
@@ -24,11 +25,13 @@ export const Register = () => {
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [confirmPassword, setConfirmPassword] = useState('');
   const [formError, setFormError] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
 
   const registerMutation = useMutation(registerRequest);
 
   const onSubmit = async () => {
     try {
+      setFormError('');
       if (!password || password !== confirmPassword) {
         setFormError('Passwords do not match.');
         return;
@@ -51,21 +54,36 @@ export const Register = () => {
             </Flex>
             <TextField.Root
               placeholder="email"
+              autoComplete="off"
               onChange={(e) => {
                 setEmail(e.target.value);
                 setFormError('');
               }}
             />
+            <Flex direction="row" align="center" gap="2">
+              <TextField.Root
+                type={showPassword ? 'text' : 'password'}
+                autoComplete="new-password"
+                placeholder="password"
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                  setFormError('');
+                }}
+                style={{ flex: 1 }}
+              />
+              <IconButton
+                variant="soft"
+                type="button"
+                onClick={() => setShowPassword((v) => !v)}
+                aria-label={showPassword ? 'Hide password' : 'Show password'}
+                size="2"
+              >
+                {showPassword ? <EyeClosedIcon /> : <EyeOpenIcon />}
+              </IconButton>
+            </Flex>
             <TextField.Root
-              type="password"
-              placeholder="password"
-              onChange={(e) => {
-                setPassword(e.target.value);
-                setFormError('');
-              }}
-            />
-            <TextField.Root
-              type="password"
+              type={showPassword ? 'text' : 'password'}
+              autoComplete="new-password"
               placeholder="confirm password"
               onChange={(e) => {
                 setConfirmPassword(e.target.value);
@@ -73,7 +91,12 @@ export const Register = () => {
               }}
             />
             {!!formError && <FormError message={formError} />}
-            <Button onClick={onSubmit} mb="1">
+            <Button
+              onClick={onSubmit}
+              mb="1"
+              loading={registerMutation.isPending}
+              disabled={registerMutation.isPending}
+            >
               Sign up
             </Button>
             <Separator orientation="horizontal" style={{ width: '100%' }} />

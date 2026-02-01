@@ -11,7 +11,6 @@ import { useState } from 'react';
 
 import { resetPassword as resetPasswordRequest } from '@/requests';
 
-// TODO: add load state to button while mutation pending
 export const ForgotPassword = () => {
   const [email, setEmail] = useState('');
   const [showConfirmation, setShowConfirmation] = useState(false);
@@ -45,7 +44,12 @@ export const ForgotPassword = () => {
                   'Something went wrong, please try again.'}
               </p>
             )}
-            <Button onClick={onSubmit} mb="1">
+            <Button
+              onClick={onSubmit}
+              mb="1"
+              loading={resetPasswordMutation.isPending}
+              disabled={resetPasswordMutation.isPending}
+            >
               Reset
             </Button>
           </>

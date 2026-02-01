@@ -12,12 +12,22 @@ import {
 } from '@radix-ui/themes';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-import { fetchUser, updateEmail, updateName, updatePassword } from '@/requests';
+import { Routes } from '@/constants';
+import {
+  fetchUser,
+  logout,
+  updateEmail,
+  updateName,
+  updatePassword,
+} from '@/requests';
 
 // TODO: nordpass thinks pressing Edit or Cancel counts as logging in
 // TODO: show toast on error/success
 export const Profile = () => {
+  const navigate = useNavigate();
+
   const { data: user, isLoading, isError, error } = useQuery(fetchUser);
 
   const [isEditingEmail, setIsEditingEmail] = useState(false);
@@ -40,6 +50,7 @@ export const Profile = () => {
     setLastName(userLastName);
   }, [userEmail, userFirstName, userLastName]);
 
+  const logoutMutation = useMutation(logout);
   const emailMutation = useMutation(updateEmail);
   const nameMutation = useMutation(updateName);
   const passwordMutation = useMutation(updatePassword);
@@ -76,6 +87,15 @@ export const Profile = () => {
     }
   };
 
+  const onLogout = async () => {
+    try {
+      await logoutMutation.mutate();
+      navigate(Routes.ROOT);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <Container size="2">
       <Flex direction="column" gap="4">
@@ -102,9 +122,9 @@ export const Profile = () => {
               </Text>
               <Text color="gray">{userEmail}</Text>
             </Flex>
-            <Text size="2" color="gray">
-              {isLoading ? 'Loading…' : 'Signed in'}
-            </Text>
+            <Button variant="outline" onClick={onLogout}>
+              Log Out
+            </Button>
           </Flex>
         </Card>
         <Grid columns={{ initial: '1', sm: '2' }} gap="4">
@@ -119,6 +139,7 @@ export const Profile = () => {
             isConfirmDisabled={
               !email || email === userEmail || emailMutation.isPending
             }
+            isConfirmLoading={emailMutation.isPending}
           >
             <Heading size="3">Email</Heading>
             <TextField.Root
@@ -142,6 +163,7 @@ export const Profile = () => {
               (firstName === userFirstName && lastName === userLastName) ||
               nameMutation.isPending
             }
+            isConfirmLoading={nameMutation.isPending}
           >
             <Heading size="3">Name</Heading>
             <TextField.Root
@@ -171,6 +193,7 @@ export const Profile = () => {
               password !== confirmPassword ||
               passwordMutation.isPending
             }
+            isConfirmLoading={passwordMutation.isPending}
           >
             <Heading size="3">Password</Heading>
             <TextField.Root
@@ -217,6 +240,7 @@ const ProfileForm = ({
   onConfirm,
   onEdit,
   isConfirmDisabled = false,
+  isConfirmLoading = false,
 }: {
   children: React.ReactNode;
   isEditing: boolean;
@@ -224,6 +248,7 @@ const ProfileForm = ({
   onConfirm: () => void;
   onEdit?: () => void;
   isConfirmDisabled?: boolean;
+  isConfirmLoading?: boolean;
 }) => (
   <Card style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
     <Flex direction="column" gap="3" flexGrow="1">
@@ -234,7 +259,11 @@ const ProfileForm = ({
             <Button variant="soft" onClick={onCancel}>
               Cancel
             </Button>
-            <Button onClick={onConfirm} disabled={isConfirmDisabled}>
+            <Button
+              onClick={onConfirm}
+              disabled={isConfirmDisabled}
+              loading={isConfirmLoading}
+            >
               Confirm
             </Button>
           </>

@@ -1,4 +1,4 @@
-import { MoonIcon, SunIcon } from '@radix-ui/react-icons';
+import { MoonIcon, PersonIcon, SunIcon } from '@radix-ui/react-icons';
 import {
   Box,
   Button,
@@ -8,11 +8,11 @@ import {
   Link,
   Text,
 } from '@radix-ui/themes';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 
 import { Routes } from '@/constants';
-import { fetchSession, logout } from '@/requests';
+import { fetchSession } from '@/requests';
 
 import { DailyLogDialog } from './DailyLogDialog';
 
@@ -25,17 +25,7 @@ export const Header = ({
   setIsDarkMode: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   const navigate = useNavigate();
-  const logoutMutation = useMutation(logout);
   const { data: session, isPending } = useQuery(fetchSession);
-
-  const onLogout = async () => {
-    try {
-      await logoutMutation.mutate();
-      navigate(Routes.ROOT);
-    } catch (error) {
-      console.error(error);
-    }
-  };
 
   return (
     <Box
@@ -65,11 +55,6 @@ export const Header = ({
                 <Text>Dashboard</Text>
               </RouterLink>
             </Link>
-            <Link asChild>
-              <RouterLink to={Routes.PROFILE}>
-                <Text>Profile</Text>
-              </RouterLink>
-            </Link>
             {session && <DailyLogDialog />}
             <IconButton
               variant="outline"
@@ -83,9 +68,11 @@ export const Header = ({
               </Button>
             )}
             {session && (
-              <Button variant="outline" onClick={onLogout}>
-                Log Out
-              </Button>
+              <IconButton variant="outline" asChild>
+                <RouterLink to={Routes.PROFILE}>
+                  <PersonIcon />
+                </RouterLink>
+              </IconButton>
             )}
           </Flex>
         </Flex>
