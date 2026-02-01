@@ -3,29 +3,32 @@ import {
   Container,
   Flex,
   Heading,
-  Link,
-  Separator,
+  Spinner,
   Text,
   TextField,
 } from '@radix-ui/themes';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { enqueueSnackbar } from 'notistack';
 import { useState } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import { FormError } from '@/components';
 import { Routes } from '@/constants';
-import { register as registerRequest } from '@/requests';
+import {
+  fetchSession,
+  updatePassword as updatePasswordRequest,
+} from '@/requests';
 
 // TODO: add button to show password
-// TODO: figure out how to resend expired confirmation email
-export const Register = () => {
-  const [email, setEmail] = useState('');
+// TODO: dont allow access to this page if not logged in
+export const ResetPassword = () => {
+  const navigate = useNavigate();
   const [password, setPassword] = useState('');
-  const [showConfirmation, setShowConfirmation] = useState(false);
   const [confirmPassword, setConfirmPassword] = useState('');
   const [formError, setFormError] = useState('');
 
-  const registerMutation = useMutation(registerRequest);
+  const { data: session, isPending } = useQuery(fetchSession);
+  const updatePasswordMutation = useMutation(updatePasswordRequest);
 
   const onSubmit = async () => {
     try {
@@ -33,8 +36,9 @@ export const Register = () => {
         setFormError('Passwords do not match.');
         return;
       }
-      await registerMutation.mutateAsync({ email, password });
-      setShowConfirmation(true);
+      await updatePasswordMutation.mutateAsync({ password });
+      enqueueSnackbar('Password updated successfully.', { variant: 'success' });
+      navigate(Routes.DASHBOARD, { replace: true });
     } catch (error) {
       setFormError((error as Error)?.message ?? 'Something went wrong.');
       console.error(error);
@@ -44,21 +48,16 @@ export const Register = () => {
   return (
     <Container size="1">
       <Flex direction="column" gap="3">
-        {!showConfirmation ? (
+        {isPending ? (
+          <Spinner />
+        ) : session ? (
           <>
             <Flex align="end" justify="start">
-              <Heading size="5">Sign up</Heading>
+              <Heading size="5">Reset Password</Heading>
             </Flex>
             <TextField.Root
-              placeholder="email"
-              onChange={(e) => {
-                setEmail(e.target.value);
-                setFormError('');
-              }}
-            />
-            <TextField.Root
               type="password"
-              placeholder="password"
+              placeholder="Enter new password"
               onChange={(e) => {
                 setPassword(e.target.value);
                 setFormError('');
@@ -66,7 +65,7 @@ export const Register = () => {
             />
             <TextField.Root
               type="password"
-              placeholder="confirm password"
+              placeholder="Confirm new password"
               onChange={(e) => {
                 setConfirmPassword(e.target.value);
                 setFormError('');
@@ -74,22 +73,15 @@ export const Register = () => {
             />
             {!!formError && <FormError message={formError} />}
             <Button onClick={onSubmit} mb="1">
-              Sign up
+              Update
             </Button>
-            <Separator orientation="horizontal" style={{ width: '100%' }} />
-            <Text size="2" align="left">
-              Already an account?{' '}
-              <Link asChild color="blue" size="2">
-                <RouterLink to={Routes.LOGIN}>
-                  <Text>Log in</Text>
-                </RouterLink>
-              </Link>
-            </Text>
           </>
         ) : (
-          <>
-            <Text>Please check your email for the confirmation link.</Text>
-          </>
+          <Text>
+            Your password reset link is invalid or has expired.
+            <br />
+            Please request a new password reset.
+          </Text>
         )}
       </Flex>
     </Container>

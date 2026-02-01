@@ -1,4 +1,4 @@
-import { MoonIcon, PlusIcon, SunIcon } from '@radix-ui/react-icons';
+import { MoonIcon, SunIcon } from '@radix-ui/react-icons';
 import {
   Box,
   Button,
@@ -8,7 +8,11 @@ import {
   Link,
   Text,
 } from '@radix-ui/themes';
-import { Link as RouterLink } from 'react-router-dom';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
+
+import { Routes } from '@/constants';
+import { fetchSession, logout } from '@/requests';
 
 import { DailyLogDialog } from './DailyLogDialog';
 
@@ -20,6 +24,19 @@ export const Header = ({
   isDarkMode: boolean;
   setIsDarkMode: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
+  const navigate = useNavigate();
+  const logoutMutation = useMutation(logout);
+  const { data: session, isPending } = useQuery(fetchSession);
+
+  const onLogout = async () => {
+    try {
+      await logoutMutation.mutate();
+      navigate(Routes.ROOT);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <Box
       position="sticky"
@@ -39,29 +56,37 @@ export const Header = ({
               style={{ color: 'inherit', textDecoration: 'inherit' }}
               to="/"
             >
-              Temper
+              temper
             </RouterLink>
           </Text>
           <Flex gap="4" align="center">
             <Link asChild>
-              <RouterLink to="/dashboard">
+              <RouterLink to={Routes.DASHBOARD}>
                 <Text>Dashboard</Text>
               </RouterLink>
             </Link>
             <Link asChild>
-              <RouterLink to="/profile">
+              <RouterLink to={Routes.PROFILE}>
                 <Text>Profile</Text>
               </RouterLink>
             </Link>
-            <DailyLogDialog />
+            {session && <DailyLogDialog />}
             <IconButton
               variant="outline"
               onClick={() => setIsDarkMode((prev: boolean) => !prev)}
             >
               {isDarkMode ? <SunIcon /> : <MoonIcon />}
             </IconButton>
-            {/* TODO: show login if already logged out */}
-            <Button variant="outline">Log Out</Button>
+            {!isPending && !session && (
+              <Button variant="outline" onClick={() => navigate(Routes.LOGIN)}>
+                Log In
+              </Button>
+            )}
+            {session && (
+              <Button variant="outline" onClick={onLogout}>
+                Log Out
+              </Button>
+            )}
           </Flex>
         </Flex>
       </Container>

@@ -1,11 +1,23 @@
-import { Button, Container, TextField } from '@radix-ui/themes';
+import {
+  Button,
+  Callout,
+  Container,
+  Flex,
+  Heading,
+  Link,
+  Separator,
+  Text,
+  TextField,
+} from '@radix-ui/themes';
 import { useMutation } from '@tanstack/react-query';
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
 
+import { FormError } from '@/components';
 import { Routes } from '@/constants';
-import { supabase } from '@/requests';
+import { login as loginRequest } from '@/requests';
 
+// TODO: add button to show password
 // TODO: submit on enter key press
 export const Login = () => {
   const navigate = useNavigate();
@@ -13,22 +25,7 @@ export const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const loginMutation = useMutation({
-    mutationFn: async ({
-      email,
-      password,
-    }: {
-      email: string;
-      password: string;
-    }) => {
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
-      if (error) throw error;
-      return data;
-    },
-  });
+  const loginMutation = useMutation(loginRequest);
 
   const onSubmit = async () => {
     try {
@@ -45,9 +42,15 @@ export const Login = () => {
 
   return (
     <Container size="1">
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-        <p>login</p>
-        <a href="/register">Go to Register</a>
+      <Flex direction="column" gap="3">
+        <Flex align="end" justify="between">
+          <Heading size="5">Log in</Heading>
+          <Link asChild color="blue" size="2">
+            <RouterLink to={Routes.FORGOT_PASSWORD}>
+              <Text>Forgot password?</Text>
+            </RouterLink>
+          </Link>
+        </Flex>
         <TextField.Root
           placeholder="email"
           onChange={(e) => setEmail(e.target.value)}
@@ -57,15 +60,22 @@ export const Login = () => {
           placeholder="password"
           onChange={(e) => setPassword(e.target.value)}
         />
-
         {loginMutation.isError && (
-          <p style={{ color: 'red' }}>
-            {loginMutation.error?.message ??
-              'Something went wrong, please try again.'}
-          </p>
+          <FormError message={loginMutation.error?.message} />
         )}
-        <Button onClick={onSubmit}>Login</Button>
-      </div>
+        <Button onClick={onSubmit} mb="1">
+          Log in
+        </Button>
+        <Separator orientation="horizontal" style={{ width: '100%' }} />
+        <Text size="2" align="left">
+          Don't have an account?{' '}
+          <Link asChild color="blue" size="2">
+            <RouterLink to={Routes.REGISTER}>
+              <Text>Sign up</Text>
+            </RouterLink>
+          </Link>
+        </Text>
+      </Flex>
     </Container>
   );
 };

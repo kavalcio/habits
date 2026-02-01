@@ -1,16 +1,19 @@
 Bugs
 - make header look ok on mobile
 - Trying to delete habit causes foreign key constraint if it has any events. Either make the habit delete cascade to the events, or convert it to a soft delete
+- on going away from the tab and coming back, queries get refetched. could be a config of useQuery, or could be a react shenanigan
 
 Core Features
-- modal for adding event. allows picking habit from a dropdown, date from a calendar (which format?)
 - in dashboard view, overall progress that shows events for all habits (similar to Habitify)
 - Some analytics and graphs on habit details page
   - rolling weekly/monthly average graph
 - Add custom favicon
 - add a promo page at root '/'
 - Allow restoring archived habits, maybe from profile page
-- fill out profile page
+- improve the login/register pages
+- add more toast for more actions
+- password 
+- 404 page
 
 Optional Features
 - allow changing the order of habits
@@ -25,10 +28,13 @@ Optional Features
 - allow adding tags/quantifiers/qualifiers to events?
   - e.g. muscle group for workouts
   - allow filtering/grouping by these qualifiers/quantifiers?
+- google oauth
 
 Improvement
+- use Callout element when showing error on screen
 - can we memoize queries between pages? we keep refetching habit/event data
 - optimization: prefetch habit data when user hovers on the habit card on the dashboard, before they even click
+- submit login/register form on enter key press
 
 Notes
 - Name options

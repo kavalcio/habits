@@ -6,7 +6,15 @@ import { AppLoader } from 'src/app/AppLoader';
 
 import { Routes } from '@/constants';
 
-import { Dashboard, HabitOverview, Login, Profile, Register } from '../pages';
+import {
+  Dashboard,
+  ForgotPassword,
+  HabitOverview,
+  Login,
+  Profile,
+  Register,
+  ResetPassword,
+} from '../pages';
 
 const router = createBrowserRouter([
   {
@@ -25,6 +33,14 @@ const router = createBrowserRouter([
       {
         path: Routes.REGISTER,
         element: <Register />,
+      },
+      {
+        path: Routes.FORGOT_PASSWORD,
+        element: <ForgotPassword />,
+      },
+      {
+        path: Routes.RESET_PASSWORD,
+        element: <ResetPassword />,
       },
       {
         path: Routes.DASHBOARD,
