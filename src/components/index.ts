@@ -1,4 +1,5 @@
 export * from './AddEditHabitDialog';
+export * from './ArchivedHabitsDialog';
 export * from './Calendar';
 export * from './ColorSwatchPicker';
 export * from './DailyLogDialog';

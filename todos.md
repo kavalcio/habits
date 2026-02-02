@@ -10,19 +10,15 @@ Core Features
   - rolling weekly/monthly average graph
 - Add custom favicon
 - add a promo page at root '/'
-- Allow restoring archived habits, maybe from profile page
-- improve the login/register pages
 - add more toast for more actions
-- password 
 - 404 page
 
 Optional Features
+- allow pinning habits, and only show pinned habits on dashboard
 - allow changing the order of habits
 - undo button that reverts last event addition/removal
-- day/week/month/year view somewhere?
 - some animation on the home page. maybe an abacus-like line of boxes (similar to the progress box in the yearly grid) that move to the left or right on a string
   - maybe use anime.js
-- pick a custom color palette using this: https://www.radix-ui.com/colors/custom
 - Add custom page scrollbar style
 - allow importing events from csv
 - allow exporting events to csv

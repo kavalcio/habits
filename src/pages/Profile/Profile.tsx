@@ -14,6 +14,7 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import { ArchivedHabitsDialog } from '@/components';
 import { Routes } from '@/constants';
 import {
   fetchUser,
@@ -228,6 +229,15 @@ export const Profile = () => {
             </Flex>
           </Flex>
         </Card> */}
+        <Card>
+          <Flex direction="column" gap="3">
+            <Heading size="3">Archived Habits</Heading>
+            <Text>
+              View and restore habits that you have previously archived.
+            </Text>
+            <ArchivedHabitsDialog />
+          </Flex>
+        </Card>
       </Flex>
     </Container>
   );

@@ -12,6 +12,18 @@ export const fetchHabits = {
   },
 };
 
+export const fetchArchivedHabits = {
+  queryKey: ['archivedHabit'],
+  queryFn: async () => {
+    const { data, error } = await supabase
+      .from('habit')
+      .select()
+      .eq('is_archived', true);
+    if (error) throw error;
+    return data ?? [];
+  },
+};
+
 export const fetchHabit = (habitId: number) => ({
   queryKey: ['habit', { id: habitId }],
   queryFn: async () => {
@@ -114,6 +126,26 @@ export const archiveHabit = {
     await Promise.all([
       queryClient.invalidateQueries({ queryKey: ['habit'] }),
       queryClient.invalidateQueries({ queryKey: ['habitWithEvents'] }),
+      queryClient.invalidateQueries({ queryKey: ['archivedHabit'] }),
+    ]);
+  },
+};
+
+export const restoreHabit = {
+  mutationFn: async (habitId: number) => {
+    const { data, error } = await supabase
+      .from('habit')
+      .update({ is_archived: false })
+      .eq('id', habitId)
+      .select();
+    if (error) throw error;
+    return data[0] ?? null;
+  },
+  onSuccess: async () => {
+    await Promise.all([
+      queryClient.invalidateQueries({ queryKey: ['habit'] }),
+      queryClient.invalidateQueries({ queryKey: ['habitWithEvents'] }),
+      queryClient.invalidateQueries({ queryKey: ['archivedHabit'] }),
     ]);
   },
 };
