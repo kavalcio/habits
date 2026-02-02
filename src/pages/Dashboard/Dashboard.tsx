@@ -12,7 +12,7 @@ import {
 import { useQuery } from '@tanstack/react-query';
 import { Link as RouterLink } from 'react-router-dom';
 
-import { AddEditHabitDialog } from '@/components';
+import { AddEditHabitDialog, ScrollingActivity } from '@/components';
 import { fetchHabits as fetchHabitsRequest } from '@/requests';
 
 export const Dashboard = () => {
@@ -37,6 +37,7 @@ export const Dashboard = () => {
             </Dialog.Trigger>
           </AddEditHabitDialog>
         </Flex>
+        {/* <ScrollingActivity /> */}
         <Grid
           width="auto"
           gap="3"
