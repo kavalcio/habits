@@ -8,7 +8,19 @@ export const fetchHabits = {
       .select()
       .eq('is_archived', false);
     if (error) throw error;
-    return data;
+    return data ?? [];
+  },
+};
+
+export const fetchArchivedHabits = {
+  queryKey: ['archivedHabit'],
+  queryFn: async () => {
+    const { data, error } = await supabase
+      .from('habit')
+      .select()
+      .eq('is_archived', true);
+    if (error) throw error;
+    return data ?? [];
   },
 };
 
@@ -21,7 +33,7 @@ export const fetchHabit = (habitId: number) => ({
       .eq('is_archived', false)
       .eq('id', habitId);
     if (error) throw error;
-    return data[0];
+    return data[0] ?? null;
   },
   enabled: !!habitId,
 });
@@ -35,7 +47,7 @@ export const fetchHabitWithEvents = (habitId: number) => ({
       .eq('is_archived', false)
       .eq('id', habitId);
     if (error) throw error;
-    return data[0];
+    return data[0] ?? null;
   },
   enabled: !!habitId,
 });
@@ -48,7 +60,7 @@ export const fetchHabitsWithEvents = {
       .select('*, event(*)')
       .eq('is_archived', false);
     if (error) throw error;
-    return data;
+    return data ?? [];
   },
 };
 
@@ -59,7 +71,7 @@ export const createHabit = {
       .insert({ name, color })
       .select();
     if (error) throw error;
-    return data[0];
+    return data[0] ?? null;
   },
   onSuccess: async () => {
     // TODO: try to update cache on success instead of invalidating it entirely
@@ -90,7 +102,7 @@ export const updateHabit = {
       .eq('id', habitId)
       .select();
     if (error) throw error;
-    return data[0];
+    return data[0] ?? null;
   },
   onSuccess: async () => {
     await Promise.all([
@@ -108,12 +120,32 @@ export const archiveHabit = {
       .eq('id', habitId)
       .select();
     if (error) throw error;
-    return data[0];
+    return data[0] ?? null;
   },
   onSuccess: async () => {
     await Promise.all([
       queryClient.invalidateQueries({ queryKey: ['habit'] }),
       queryClient.invalidateQueries({ queryKey: ['habitWithEvents'] }),
+      queryClient.invalidateQueries({ queryKey: ['archivedHabit'] }),
+    ]);
+  },
+};
+
+export const restoreHabit = {
+  mutationFn: async (habitId: number) => {
+    const { data, error } = await supabase
+      .from('habit')
+      .update({ is_archived: false })
+      .eq('id', habitId)
+      .select();
+    if (error) throw error;
+    return data[0] ?? null;
+  },
+  onSuccess: async () => {
+    await Promise.all([
+      queryClient.invalidateQueries({ queryKey: ['habit'] }),
+      queryClient.invalidateQueries({ queryKey: ['habitWithEvents'] }),
+      queryClient.invalidateQueries({ queryKey: ['archivedHabit'] }),
     ]);
   },
 };

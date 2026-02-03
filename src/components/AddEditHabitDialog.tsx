@@ -6,16 +6,19 @@ import {
   Flex,
   Heading,
   IconButton,
+  Text,
   TextField,
+  useThemeContext,
 } from '@radix-ui/themes';
 import { useMutation } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
-import { HexColorPicker } from 'react-colorful';
 import { useNavigate } from 'react-router-dom';
 
 import { Routes } from '@/constants';
 import { archiveHabit, createHabit, updateHabit } from '@/requests';
 import { Tables } from '@/types';
+
+import { ColorSwatchPicker } from './ColorSwatchPicker';
 
 // TODO: show error toast on success/failure
 export const AddEditHabitDialog = ({
@@ -44,6 +47,7 @@ const AddEditHabitDialogContent = ({
   setIsOpen: (newIsOpen: boolean) => void;
 }) => {
   const navigate = useNavigate();
+  const theme = useThemeContext();
 
   const [habitName, setHabitName] = useState<string>();
   const [habitColor, setHabitColor] = useState<string>();
@@ -110,18 +114,32 @@ const AddEditHabitDialogContent = ({
           <AlertDialog.Content>
             <Flex direction="column" align="start" gap="2">
               <AlertDialog.Title align="left">
-                Are you sure you want to archive this habit?
+                Archive{' '}
+                <Text weight="bold" color={theme.accentColor}>
+                  {habit?.name ?? 'this habit'}
+                </Text>
+                ?
               </AlertDialog.Title>
               <AlertDialog.Description size="2" align="left">
-                This will remove the habit from your dashboard and archive it.
-                You can restore it later if needed.
+                This will remove the habit from your dashboard.
+                <br />
+                You can restore it later from the{' '}
+                <Text weight="bold" color={theme.accentColor}>
+                  Profile
+                </Text>{' '}
+                page if needed.
               </AlertDialog.Description>
               <Flex width="100%" justify="end" gap="2" mt="4">
                 <AlertDialog.Cancel>
                   <Button variant="soft">Cancel</Button>
                 </AlertDialog.Cancel>
                 <AlertDialog.Action>
-                  <Button color="red" onClick={onArchiveHabit}>
+                  <Button
+                    color="red"
+                    onClick={onArchiveHabit}
+                    loading={archiveHabitMutation.isPending}
+                    disabled={archiveHabitMutation.isPending}
+                  >
                     <TrashIcon />
                     Archive Habit
                   </Button>
@@ -155,12 +173,26 @@ const AddEditHabitDialogContent = ({
       <Heading size="2" mt="3" mb="1" mr="auto">
         Color
       </Heading>
-      <HexColorPicker color={habitColor} onChange={setHabitColor} />
+      <ColorSwatchPicker value={habitColor} onChange={setHabitColor} />
       <Flex width="100%" justify="end" gap="2" mt="4">
         <Dialog.Close>
           <Button variant="soft">Cancel</Button>
         </Dialog.Close>
-        <Button onClick={habit ? onUpdateHabit : onCreateHabit}>Save</Button>
+        <Button
+          onClick={habit ? onUpdateHabit : onCreateHabit}
+          loading={
+            habit
+              ? updateHabitMutation.isPending
+              : createHabitMutation.isPending
+          }
+          disabled={
+            habit
+              ? updateHabitMutation.isPending
+              : createHabitMutation.isPending
+          }
+        >
+          Save
+        </Button>
       </Flex>
     </Flex>
   );

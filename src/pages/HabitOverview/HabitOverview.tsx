@@ -1,37 +1,70 @@
 import { Pencil1Icon } from '@radix-ui/react-icons';
 import {
+  Callout,
   Container,
   Dialog,
   Flex,
   Heading,
   IconButton,
+  Spinner,
+  Text,
   Theme,
 } from '@radix-ui/themes';
 import { useQuery } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
 
-import { AddEditHabitDialog, EventCalendar, YearGrid } from '@/components';
-import { fetchEvents, fetchHabit } from '@/requests';
+import {
+  AddEditHabitDialog,
+  EventCalendar,
+  FormError,
+  YearGrid,
+} from '@/components';
+import { fetchHabitWithEvents } from '@/requests';
 
-// TODO: add custom theme override on this page that uses the habit color
 export const HabitOverview = () => {
   const params = useParams();
 
   // TODO: check for if habitId is a valid number
   const habitId = Number(params.habitId);
 
-  const { data: habit, error, isPending } = useQuery(fetchHabit(habitId));
-  const { data: events } = useQuery(fetchEvents(habitId));
+  const {
+    data: habit,
+    error,
+    isPending,
+  } = useQuery(fetchHabitWithEvents(habitId));
+  const { event: events = [] } = habit || {};
 
-  // TODO: improve error and loading states
-  if (isPending) return <div>loading...</div>;
-  if (error) return <div>error: {error.message}</div>;
-  if (!habit || !habitId) return <div>habit not found</div>;
+  if (isPending) {
+    return (
+      <Flex align="center" justify="center" style={{ minHeight: 300 }}>
+        <Spinner size="3" />
+      </Flex>
+    );
+  }
+  if (error) {
+    return (
+      <Container size="1">
+        <FormError message="Error loading habit" />
+      </Container>
+    );
+  }
+  if (!habit || !habitId || isNaN(habitId)) {
+    return (
+      <Container size="1">
+        <Callout.Root color="gray">
+          <Callout.Icon />
+          <Callout.Text>
+            <Text color="gray">
+              The habit you are looking for does not exist.
+            </Text>
+          </Callout.Text>
+        </Callout.Root>
+      </Container>
+    );
+  }
 
   return (
-    <Theme
-    // accentColor="red"
-    >
+    <Theme accentColor={habit.color as any}>
       <Container size="3">
         <Flex gap="4" direction="column">
           <Flex width="100%" align="center" gap="3">

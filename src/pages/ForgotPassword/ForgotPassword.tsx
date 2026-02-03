@@ -11,14 +11,14 @@ import { useState } from 'react';
 
 import { resetPassword as resetPasswordRequest } from '@/requests';
 
-// TODO: add load state to button while mutation pending
 export const ForgotPassword = () => {
   const [email, setEmail] = useState('');
   const [showConfirmation, setShowConfirmation] = useState(false);
 
   const resetPasswordMutation = useMutation(resetPasswordRequest);
 
-  const onSubmit = async () => {
+  const onSubmit = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
     try {
       await resetPasswordMutation.mutateAsync({ email });
       setShowConfirmation(true);
@@ -29,15 +29,18 @@ export const ForgotPassword = () => {
 
   return (
     <Container size="1">
-      <Flex direction="column" gap="3">
-        {!showConfirmation ? (
-          <>
+      {!showConfirmation ? (
+        <form onSubmit={onSubmit}>
+          <Flex direction="column" gap="3">
             <Flex align="end" justify="start">
               <Heading size="5">Forgot Password</Heading>
             </Flex>
             <TextField.Root
               placeholder="email"
+              value={email}
               onChange={(e) => setEmail(e.target.value)}
+              type="email"
+              required
             />
             {resetPasswordMutation.isError && (
               <p style={{ color: 'red' }}>
@@ -45,19 +48,24 @@ export const ForgotPassword = () => {
                   'Something went wrong, please try again.'}
               </p>
             )}
-            <Button onClick={onSubmit} mb="1">
+            <Button
+              type="submit"
+              mb="1"
+              loading={resetPasswordMutation.isPending}
+              disabled={resetPasswordMutation.isPending}
+            >
               Reset
             </Button>
-          </>
-        ) : (
-          <Text>
-            If an account with that email exists, a password reset link has been
-            sent.
-            <br />
-            Please check your email.
-          </Text>
-        )}
-      </Flex>
+          </Flex>
+        </form>
+      ) : (
+        <Text>
+          If an account with that email exists, a password reset link has been
+          sent.
+          <br />
+          Please check your email.
+        </Text>
+      )}
     </Container>
   );
 };

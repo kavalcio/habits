@@ -51,7 +51,7 @@ export const Dashboard = () => {
                 <Flex height={'100%'} align="center" gap="2">
                   <div
                     style={{
-                      backgroundColor: habit.color,
+                      backgroundColor: `var(--${habit.color}-9)`,
                       minWidth: 12,
                       height: '100%',
                       borderRadius: 4,
