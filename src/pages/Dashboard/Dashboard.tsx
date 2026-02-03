@@ -30,6 +30,12 @@ export const Dashboard = () => {
           <Heading size="4" align="left">
             Dashboard
           </Heading>
+        </Flex>
+        <ScrollingActivity />
+        <Flex mt="7">
+          <Heading size="4" align="left">
+            Habits
+          </Heading>
           <AddEditHabitDialog>
             <Dialog.Trigger>
               <Button variant="outline" ml="auto">
@@ -38,7 +44,6 @@ export const Dashboard = () => {
             </Dialog.Trigger>
           </AddEditHabitDialog>
         </Flex>
-        {/* <ScrollingActivity /> */}
         <Grid
           width="auto"
           gap="3"

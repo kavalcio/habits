@@ -1,24 +1,25 @@
 Bugs
-- make header look ok on mobile
 - Trying to delete habit causes foreign key constraint if it has any events. Either make the habit delete cascade to the events, or convert it to a soft delete
 - on going away from the tab and coming back, queries get refetched. could be a config of useQuery, or could be a react shenanigan
-- some custom color dont work for the light theme, fix those
+- some custom colors dont work for the light theme, fix those
 
 Core Features
 - in dashboard view, overall progress that shows events for all habits (similar to Habitify)
 - Some analytics and graphs on habit details page
   - rolling weekly/monthly average graph
 - Add custom favicon
-- add a promo page at root '/'
-- add more toast for more actions
+- add a promo/index page at root '/'
+- add more toasts for more actions
 - 404 page
+- error boundary page
 
 Optional Features
 - allow pinning habits, and only show pinned habits on dashboard
-- allow changing the order of habits
+- allow changing the order of habits (at least the pinned ones)
 - undo button that reverts last event addition/removal
 - some animation on the home page. maybe an abacus-like line of boxes (similar to the progress box in the yearly grid) that move to the left or right on a string
   - maybe use anime.js
+  - maybe add the same animation to page logo on the top left, but only play when hovered
 - Add custom page scrollbar style
 - allow importing events from csv
 - allow exporting events to csv
@@ -26,6 +27,7 @@ Optional Features
   - e.g. muscle group for workouts
   - allow filtering/grouping by these qualifiers/quantifiers?
 - google oauth
+- allow picking an icon for each habit
 
 Improvement
 - use Callout element when showing error on screen
