@@ -31,10 +31,9 @@ export const DailyLogDialog = () => {
   return (
     <Dialog.Root>
       <Dialog.Trigger>
-        <Button variant="outline">
+        <IconButton variant="outline">
           <PlusIcon />
-          <Text>Log Event</Text>
-        </Button>
+        </IconButton>
       </Dialog.Trigger>
       <Dialog.Content maxWidth="500px">
         <DailyLogDialogContent />

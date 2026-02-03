@@ -1,5 +1,6 @@
 import { ChevronLeftIcon, ChevronRightIcon } from '@radix-ui/react-icons';
 import {
+  Box,
   Flex,
   Grid,
   IconButton,
@@ -14,6 +15,8 @@ import { useMemo, useState } from 'react';
 import { createEvent, deleteEvent, fetchHabitsWithEvents } from '@/requests';
 import { Tables } from '@/types';
 
+const BORDER_WIDTH = '0.5px';
+const THICK_BORDER_WIDTH = '0.5px';
 const TIME_WINDOW_DAYS = 14;
 // const TIME_WINDOW_DAYS = 7;
 
@@ -56,6 +59,8 @@ export const ScrollingActivity = () => {
     return habits;
   }, [habitsWithEvents, weekStart]);
 
+  const habitCount = habitsWithDateList.length;
+
   console.log('habitsWithDateList', habitsWithDateList);
 
   return (
@@ -93,19 +98,26 @@ export const ScrollingActivity = () => {
         {Array.from({ length: TIME_WINDOW_DAYS }, (_, i) => {
           const dateObj = addDays(weekStart, i);
           return (
-            <Text
+            <Tooltip
               key={i}
-              size="1"
-              weight="medium"
-              style={{
-                textAlign: 'center',
-              }}
+              content={format(dateObj, 'EEE, MMM d, yyyy')}
+              delayDuration={300}
             >
-              {format(dateObj, 'EEE')}
-            </Text>
+              <Text
+                key={i}
+                size="1"
+                weight="medium"
+                mb="2"
+                style={{
+                  textAlign: 'center',
+                }}
+              >
+                {format(dateObj, 'EEE')}
+              </Text>
+            </Tooltip>
           );
         })}
-        {habitsWithDateList.map((habit) => (
+        {habitsWithDateList.map((habit, row) => (
           <>
             <Tooltip key={habit.id} content={habit.name} delayDuration={300}>
               <Text
@@ -117,45 +129,91 @@ export const ScrollingActivity = () => {
                   textAlign: 'left',
                   overflow: 'hidden',
                   textOverflow: 'ellipsis',
-                  whiteSpace: 'nowrap',
-                  // display: '-webkit-box',
-                  // WebkitLineClamp: 2,
-                  // WebkitBoxOrient: 'vertical',
+                  display: '-webkit-box',
+                  WebkitLineClamp: 2,
+                  WebkitBoxOrient: 'vertical',
                 }}
               >
                 {habit?.name}
               </Text>
             </Tooltip>
-            {habit.dateList.map((data) => (
-              <Tooltip
-                key={data.date}
-                content={data.formattedDate}
-                delayDuration={300}
+            {habit.dateList.map((data, col) => (
+              <Flex
+                m="auto"
+                style={{
+                  height: 36,
+                  width: '100%',
+                  borderColor: '#818181',
+                  borderTopWidth: 0,
+                  borderBottomWidth: row === habitCount - 1 ? 0 : BORDER_WIDTH,
+                  borderLeftWidth: 0,
+                  borderRightWidth:
+                    col === TIME_WINDOW_DAYS - 1 ? 0 : BORDER_WIDTH,
+                  borderStyle: 'solid',
+                }}
               >
-                <IconButton
-                  variant={data.completed ? 'solid' : 'surface'}
-                  // variant="surface"
-                  color={(data.completed ? habit.color : 'gray') as any}
-                  style={{
-                    height: 32,
-                    width: '100%',
-                    borderRadius: 0,
-                    // borderRadius: 4,
-                    // border:
-                    //   data.date === today
-                    //     ? '2px solid var(--accent-9)'
-                    //     : data.completed
-                    //       ? 'none'
-                    //       : '1px solid var(--gray-5)',
-                    fontWeight: 600,
-                    // border: '5px solid red',
-                    // border: 'none',
-                  }}
-                  aria-label={data.formattedDate}
-                >
-                  {/* {DAY_LABELS[idx % 7]} */}
-                </IconButton>
-              </Tooltip>
+                {data.completed ? (
+                  <Box
+                    m="2"
+                    style={{
+                      backgroundColor: `var(--${habit.color}-8)`,
+                      flex: 1,
+                      borderRadius: 4,
+                    }}
+                  />
+                ) : (
+                  <Box
+                    m="auto"
+                    style={{
+                      backgroundColor: '#818181',
+                      width: 4,
+                      height: 4,
+                      borderRadius: '50%',
+                    }}
+                  />
+                )}
+              </Flex>
+              // {/* <IconButton
+              //   // variant="soft"
+              //   variant={data.completed ? 'surface' : 'soft'}
+              //   // variant="surface"
+              //   color={(data.completed ? habit.color : 'gray') as any}
+              //   // color={habit.color as any}
+              //   style={{
+              //     height: 32,
+              //     width: '100%',
+              //     borderRadius: 0,
+              //     // borderRadius: 4,
+              //     // border:
+              //     //   data.date === today
+              //     //     ? '2px solid var(--accent-9)'
+              //     //     : data.completed
+              //     //       ? 'none'
+              //     //       : '1px solid var(--gray-5)',
+              //     fontWeight: 600,
+              //     // border: '0.5px solid gray',
+              //     borderColor: '#818181',
+              //     // borderColor: data.completed ? 'var(--accent-7)' : 'gray',
+              //     borderTopWidth: row === 0 ? BORDER_WIDTH : 0,
+              //     borderBottomWidth:
+              //       row === habitCount - 1
+              //         ? BORDER_WIDTH
+              //         : THICK_BORDER_WIDTH,
+              //     borderLeftWidth: col === 0 ? THICK_BORDER_WIDTH : 0,
+              //     borderRightWidth:
+              //       col === TIME_WINDOW_DAYS - 1
+              //         ? THICK_BORDER_WIDTH
+              //         : BORDER_WIDTH,
+              //     borderStyle: 'solid',
+              //     // ...(data.completed
+              //     //   ? { backgroundColor: 'var(--accent-10)' }
+              //     //   : {}),
+              //     // backgroundColor: data.completed
+              //     //   ? 'var(--accent-10)'
+              //     //   : 'var(--accent-2)',
+              //   }}
+              //   aria-label={data.formattedDate}
+              // ></IconButton> */}
             ))}
           </>
         ))}
