@@ -232,7 +232,7 @@ export const Profile = () => {
         <Card>
           <Flex direction="column" gap="3">
             <Heading size="3">Archived Habits</Heading>
-            <Text>
+            <Text size="2">
               View and restore habits that you have previously archived.
             </Text>
             <ArchivedHabitsDialog />

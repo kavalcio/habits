@@ -18,6 +18,7 @@ import { fetchHabits as fetchHabitsRequest } from '@/requests';
 export const Dashboard = () => {
   const { data, error, isPending } = useQuery(fetchHabitsRequest);
 
+  // TODO: use proper loading/error states
   if (isPending) return <div>loading...</div>;
   if (error) return <div>error: {error.message}</div>;
   if (!data) return <div>events not found</div>;

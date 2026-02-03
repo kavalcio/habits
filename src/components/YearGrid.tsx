@@ -1,3 +1,4 @@
+import { ChevronLeftIcon, ChevronRightIcon } from '@radix-ui/react-icons';
 import {
   Dialog,
   Flex,
@@ -74,7 +75,7 @@ export const YearGrid = ({
     return dates;
   }, [selectedYear, events]);
 
-  const years = Array.from({ length: 5 }, (_, i) => currentYear - i);
+  const years = Array.from({ length: 10 }, (_, i) => currentYear - i);
 
   const today = format(new Date(), 'yyyy-MM-dd');
 
@@ -98,10 +99,19 @@ export const YearGrid = ({
 
   return (
     <Flex direction="column" gap="2" maxWidth="100%" mx="auto">
-      <Flex ml="auto">
+      <Flex ml="auto" gap="1" align="center">
+        <IconButton
+          onClick={() => setSelectedYear((y) => y - 1)}
+          variant="outline"
+          aria-label="Previous year"
+          size="1"
+          disabled={selectedYear <= years[years.length - 1]}
+        >
+          <ChevronLeftIcon />
+        </IconButton>
         <Select.Root
           size="1"
-          defaultValue={currentYear.toString()}
+          value={`${selectedYear}`}
           onValueChange={(e) => setSelectedYear(Number(e))}
         >
           <Select.Trigger />
@@ -117,6 +127,15 @@ export const YearGrid = ({
             ))}
           </Select.Content>
         </Select.Root>
+        <IconButton
+          onClick={() => setSelectedYear((y) => y + 1)}
+          variant="outline"
+          aria-label="Next year"
+          size="1"
+          disabled={selectedYear >= years[0]}
+        >
+          <ChevronRightIcon />
+        </IconButton>
       </Flex>
       <ScrollArea scrollbars="horizontal" scrollHideDelay={600}>
         <EditEventDialog
