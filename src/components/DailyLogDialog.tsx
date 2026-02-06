@@ -198,7 +198,7 @@ const DailyLogDialogContent = () => {
             >
               <div
                 style={{
-                  backgroundColor: habit.color,
+                  backgroundColor: `var(--${habit.color}-9)`,
                   minWidth: 20,
                   // height: '100%',
                   minHeight: 20,

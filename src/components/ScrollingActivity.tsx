@@ -1,32 +1,27 @@
 import { ChevronLeftIcon, ChevronRightIcon } from '@radix-ui/react-icons';
-import {
-  Box,
-  Flex,
-  Grid,
-  IconButton,
-  ScrollArea,
-  Text,
-  Tooltip,
-} from '@radix-ui/themes';
+import { Box, Flex, Grid, IconButton, Text, Tooltip } from '@radix-ui/themes';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { addDays, addWeeks, format, startOfWeek, subWeeks } from 'date-fns';
+import { addDays, format, startOfWeek, subDays } from 'date-fns';
 import { useMemo, useState } from 'react';
 
 import { createEvent, deleteEvent, fetchHabitsWithEvents } from '@/requests';
 import { Tables } from '@/types';
 
 const BORDER_WIDTH = '0.5px';
-const THICK_BORDER_WIDTH = '0.5px';
 const TIME_WINDOW_DAYS = 14;
 // const TIME_WINDOW_DAYS = 7;
 
+// TODO: Add button to go to today
 // TODO: allow changing time window (7 days, 14 days, 30 days)
-// TODO: highlight current day on top row of the grid
+// TODO: highlight current day somehow
 // TODO: can we stagger event data fetch (by date), instead of fetching all at once?
 export const ScrollingActivity = () => {
   // Start with current week
   const [weekStart, setWeekStart] = useState(() =>
-    startOfWeek(new Date(), { weekStartsOn: 0 }),
+    addDays(
+      startOfWeek(new Date(), { weekStartsOn: 0 }),
+      -(TIME_WINDOW_DAYS - 7),
+    ),
   );
   const today = format(new Date(), 'yyyy-MM-dd');
 
@@ -61,25 +56,24 @@ export const ScrollingActivity = () => {
 
   const habitCount = habitsWithDateList.length;
 
-  console.log('habitsWithDateList', habitsWithDateList);
-
   return (
     <Flex direction="column" gap="3" maxWidth="100%">
       <Flex align="center" justify="between">
         <IconButton
-          onClick={() => setWeekStart(subWeeks(weekStart, 1))}
-          variant="soft"
+          onClick={() => setWeekStart(subDays(weekStart, TIME_WINDOW_DAYS))}
+          variant="outline"
           aria-label="Previous week"
         >
           <ChevronLeftIcon />
         </IconButton>
+        {/* TODO: format this date range text to look nicer */}
         <Text>
           {format(weekStart, 'MMM d, yyyy')} -{' '}
           {format(addDays(weekStart, TIME_WINDOW_DAYS - 1), 'MMM d, yyyy')}
         </Text>
         <IconButton
-          onClick={() => setWeekStart(addWeeks(weekStart, 1))}
-          variant="soft"
+          onClick={() => setWeekStart(addDays(weekStart, TIME_WINDOW_DAYS))}
+          variant="outline"
           aria-label="Next week"
         >
           <ChevronRightIcon />
@@ -109,10 +103,18 @@ export const ScrollingActivity = () => {
                 weight="medium"
                 mb="2"
                 style={{
+                  color: [0, 6].includes(dateObj.getDay())
+                    ? 'var(--gray-8)'
+                    : 'inherit',
                   textAlign: 'center',
+                  // add underline for today
+                  textDecoration:
+                    format(dateObj, 'yyyy-MM-dd') === today
+                      ? 'underline'
+                      : 'none',
                 }}
               >
-                {format(dateObj, 'EEE')}
+                {format(dateObj, 'EEEEE d')}
               </Text>
             </Tooltip>
           );
@@ -150,6 +152,20 @@ export const ScrollingActivity = () => {
                   borderRightWidth:
                     col === TIME_WINDOW_DAYS - 1 ? 0 : BORDER_WIDTH,
                   borderStyle: 'solid',
+                  // backgroundColor: [0, 6].includes(
+                  //   addDays(weekStart, col).getDay(),
+                  // )
+                  //   ? 'var(--gray-2)'
+                  //   : data.date === today
+                  //     ? 'var(--accent-3)'
+                  //     : 'transparent',
+                  backgroundColor: [0, 6].includes(
+                    addDays(weekStart, col).getDay(),
+                  )
+                    ? 'var(--gray-2)'
+                    : 'transparent',
+                  // backgroundColor:
+                  //   data.date === today ? 'var(--gray-2)' : 'transparent',
                 }}
               >
                 {data.completed ? (
@@ -173,47 +189,6 @@ export const ScrollingActivity = () => {
                   />
                 )}
               </Flex>
-              // {/* <IconButton
-              //   // variant="soft"
-              //   variant={data.completed ? 'surface' : 'soft'}
-              //   // variant="surface"
-              //   color={(data.completed ? habit.color : 'gray') as any}
-              //   // color={habit.color as any}
-              //   style={{
-              //     height: 32,
-              //     width: '100%',
-              //     borderRadius: 0,
-              //     // borderRadius: 4,
-              //     // border:
-              //     //   data.date === today
-              //     //     ? '2px solid var(--accent-9)'
-              //     //     : data.completed
-              //     //       ? 'none'
-              //     //       : '1px solid var(--gray-5)',
-              //     fontWeight: 600,
-              //     // border: '0.5px solid gray',
-              //     borderColor: '#818181',
-              //     // borderColor: data.completed ? 'var(--accent-7)' : 'gray',
-              //     borderTopWidth: row === 0 ? BORDER_WIDTH : 0,
-              //     borderBottomWidth:
-              //       row === habitCount - 1
-              //         ? BORDER_WIDTH
-              //         : THICK_BORDER_WIDTH,
-              //     borderLeftWidth: col === 0 ? THICK_BORDER_WIDTH : 0,
-              //     borderRightWidth:
-              //       col === TIME_WINDOW_DAYS - 1
-              //         ? THICK_BORDER_WIDTH
-              //         : BORDER_WIDTH,
-              //     borderStyle: 'solid',
-              //     // ...(data.completed
-              //     //   ? { backgroundColor: 'var(--accent-10)' }
-              //     //   : {}),
-              //     // backgroundColor: data.completed
-              //     //   ? 'var(--accent-10)'
-              //     //   : 'var(--accent-2)',
-              //   }}
-              //   aria-label={data.formattedDate}
-              // ></IconButton> */}
             ))}
           </>
         ))}
