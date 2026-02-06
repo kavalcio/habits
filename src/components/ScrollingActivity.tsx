@@ -1,4 +1,8 @@
-import { ChevronLeftIcon, ChevronRightIcon } from '@radix-ui/react-icons';
+import {
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  ResetIcon,
+} from '@radix-ui/react-icons';
 import { Box, Flex, Grid, IconButton, Text, Tooltip } from '@radix-ui/themes';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { addDays, format, startOfWeek, subDays } from 'date-fns';
@@ -58,16 +62,17 @@ export const ScrollingActivity = () => {
 
   return (
     <Flex direction="column" gap="3" maxWidth="100%">
-      <Flex align="center" justify="between">
+      <Flex align="center" justify="center" gap="2">
         <IconButton
           onClick={() => setWeekStart(subDays(weekStart, TIME_WINDOW_DAYS))}
           variant="outline"
           aria-label="Previous week"
+          ml="6"
         >
           <ChevronLeftIcon />
         </IconButton>
         {/* TODO: format this date range text to look nicer */}
-        <Text>
+        <Text size="2">
           {format(weekStart, 'MMM d, yyyy')} -{' '}
           {format(addDays(weekStart, TIME_WINDOW_DAYS - 1), 'MMM d, yyyy')}
         </Text>
@@ -77,6 +82,19 @@ export const ScrollingActivity = () => {
           aria-label="Next week"
         >
           <ChevronRightIcon />
+        </IconButton>
+        <IconButton
+          variant="outline"
+          onClick={() =>
+            setWeekStart(
+              addDays(
+                startOfWeek(new Date(), { weekStartsOn: 0 }),
+                -(TIME_WINDOW_DAYS - 7),
+              ),
+            )
+          }
+        >
+          <ResetIcon />
         </IconButton>
       </Flex>
       <Grid

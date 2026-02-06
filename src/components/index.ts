@@ -5,6 +5,7 @@ export * from './ColorSwatchPicker';
 export * from './DailyLogDialog';
 export * from './EditEventDialog';
 export * from './EventCalendar';
+export * from './Footer';
 export * from './FormError';
 export * from './Header';
 export * from './ScrollingActivity';

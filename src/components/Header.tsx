@@ -46,7 +46,7 @@ export const Header = ({
         borderBottom: '1px solid var(--gray-4)',
       }}
     >
-      <Container>
+      <Container size="3">
         <Flex justify="between" align="center" gap="4">
           <Text asChild>
             <RouterLink

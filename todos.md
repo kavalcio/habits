@@ -1,14 +1,13 @@
 Bugs
-- Trying to delete habit causes foreign key constraint if it has any events. Either make the habit delete cascade to the events, or convert it to a soft delete
 - on going away from the tab and coming back, queries get refetched. could be a config of useQuery, or could be a react shenanigan
 - some custom colors dont work for the light theme, fix those
 
 Core Features
-- in dashboard view, overall progress that shows events for all habits (similar to Habitify)
 - Some analytics and graphs on habit details page
   - rolling weekly/monthly average graph
-- Add custom favicon
+- Create a logo, use in header and favicon
 - add a promo/index page at root '/'
+  - or merge root and dashboard into one
 - add more toasts for more actions
 - 404 page
 - error boundary page
@@ -32,9 +31,11 @@ Optional Features
 Improvement
 - use Callout element when showing error on screen
 - can we memoize queries between pages? we keep refetching habit/event data
+  - This might already be a thing
 - optimization: prefetch habit data when user hovers on the habit card on the dashboard, before they even click
 - submit login/register form on enter key press
 - add aria tags everywhere
+- Daily Log dialog looks a bit outdated now, polish it
 
 Notes
 - Name options
