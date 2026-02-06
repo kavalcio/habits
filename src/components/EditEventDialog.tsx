@@ -1,4 +1,4 @@
-import { Button, Dialog, Flex, Strong } from '@radix-ui/themes';
+import { Button, Dialog, Flex, Strong, Text } from '@radix-ui/themes';
 import { format } from 'date-fns';
 
 import { getLocalDate } from '@/utils';
@@ -7,22 +7,33 @@ import { getLocalDate } from '@/utils';
 export const EditEventDialog = ({
   children,
   date,
+  habitName,
   isEventCompleted,
   onClose,
   onConfirm,
 }: {
   children: React.ReactNode;
   date?: string;
+  habitName?: string;
   isEventCompleted: boolean;
-  onClose: () => void;
+  onClose?: () => void;
   onConfirm: () => void;
 }) => {
   return (
-    <Dialog.Root onOpenChange={(open) => !open && onClose()}>
+    <Dialog.Root onOpenChange={(open) => !open && onClose?.()}>
       <Dialog.Content maxWidth="320px">
         <Flex direction="column" align="start">
-          <Dialog.Title size="4">
-            {isEventCompleted ? 'Remove' : 'Add'} Activity
+          <Dialog.Title size="4" align="left">
+            {isEventCompleted ? 'Remove' : 'Add'} activity
+            {!!habitName && (
+              <Text>
+                {' '}
+                for{' '}
+                <Strong style={{ color: 'var(--accent-10)' }}>
+                  {habitName}
+                </Strong>
+              </Text>
+            )}
           </Dialog.Title>
           <Dialog.Description size="2" align="left">
             Are you sure you want to {isEventCompleted ? 'remove' : 'add'}{' '}
