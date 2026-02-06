@@ -20,6 +20,7 @@ const router = createBrowserRouter([
   {
     path: Routes.ROOT,
     element: <AppLoader />,
+    // TODO: replace with proper error element
     errorElement: <div>Error...</div>,
     children: [
       {

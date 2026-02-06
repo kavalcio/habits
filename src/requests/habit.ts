@@ -57,6 +57,7 @@ export const fetchHabitsWithEvents = {
   queryFn: async () => {
     const { data, error } = await supabase
       .from('habit')
+      // TODO: maybe add an optional date range for events here?
       .select('*, event(*)')
       .eq('is_archived', false);
     if (error) throw error;

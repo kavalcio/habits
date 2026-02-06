@@ -1,24 +1,25 @@
 Bugs
-- make header look ok on mobile
-- Trying to delete habit causes foreign key constraint if it has any events. Either make the habit delete cascade to the events, or convert it to a soft delete
 - on going away from the tab and coming back, queries get refetched. could be a config of useQuery, or could be a react shenanigan
-- some custom color dont work for the light theme, fix those
+- some custom colors dont work for the light theme, fix those
 
 Core Features
-- in dashboard view, overall progress that shows events for all habits (similar to Habitify)
 - Some analytics and graphs on habit details page
   - rolling weekly/monthly average graph
-- Add custom favicon
-- add a promo page at root '/'
-- add more toast for more actions
+- Create a logo, use in header and favicon
+- add a promo/index page at root '/'
+  - or merge root and dashboard into one
+- add more toasts for more actions
 - 404 page
+- error boundary page
+- clean up loading/error states of pages
 
 Optional Features
 - allow pinning habits, and only show pinned habits on dashboard
-- allow changing the order of habits
+- allow changing the order of habits (at least the pinned ones)
 - undo button that reverts last event addition/removal
 - some animation on the home page. maybe an abacus-like line of boxes (similar to the progress box in the yearly grid) that move to the left or right on a string
   - maybe use anime.js
+  - maybe add the same animation to page logo on the top left, but only play when hovered
 - Add custom page scrollbar style
 - allow importing events from csv
 - allow exporting events to csv
@@ -26,13 +27,18 @@ Optional Features
   - e.g. muscle group for workouts
   - allow filtering/grouping by these qualifiers/quantifiers?
 - google oauth
+- allow picking an icon for each habit
+- pick custom font
 
 Improvement
 - use Callout element when showing error on screen
 - can we memoize queries between pages? we keep refetching habit/event data
+  - This might already be a thing
 - optimization: prefetch habit data when user hovers on the habit card on the dashboard, before they even click
 - submit login/register form on enter key press
 - add aria tags everywhere
+- Daily Log dialog looks a bit outdated now, polish it
+- for the dashboard scrollingactivity, can we stagger event data fetch (by date), instead of fetching all at once?
 
 Notes
 - Name options

@@ -3,7 +3,7 @@ import { SnackbarProvider } from 'notistack';
 import { useEffect, useState } from 'react';
 import { Outlet } from 'react-router-dom';
 
-import { Header } from '@/components';
+import { Footer, Header } from '@/components';
 
 import { AuthWrapper } from './AuthWrapper';
 
@@ -32,7 +32,8 @@ export const AppLoader = () => {
           <Box m={{ initial: '4', sm: '6' }}>
             <Outlet />
           </Box>
-          {/* <ThemePanel /> */}
+          {/* TODO: put footer at bottom of screen even if page is shorter than screen. i.e. extend page to full view height */}
+          <Footer />
         </SnackbarProvider>
       </Theme>
     </AuthWrapper>

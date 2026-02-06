@@ -1,3 +1,4 @@
+import { ChevronLeftIcon, ChevronRightIcon } from '@radix-ui/react-icons';
 import {
   Dialog,
   Flex,
@@ -5,6 +6,7 @@ import {
   IconButton,
   ScrollArea,
   Select,
+  Text,
   Tooltip,
 } from '@radix-ui/themes';
 import { useMutation } from '@tanstack/react-query';
@@ -20,6 +22,20 @@ const GRID_COLUMN_COUNT = 53; // 52 weeks + 1 for padding
 const GRID_GAP_SIZE = 3;
 const GRID_ITEM_SIZE = 12;
 const DAY_LABELS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+const MONTH_LABELS = [
+  'Jan',
+  'Feb',
+  'Mar',
+  'Apr',
+  'May',
+  'Jun',
+  'Jul',
+  'Aug',
+  'Sep',
+  'Oct',
+  'Nov',
+  'Dec',
+];
 
 type DateData = {
   date: string;
@@ -74,7 +90,7 @@ export const YearGrid = ({
     return dates;
   }, [selectedYear, events]);
 
-  const years = Array.from({ length: 5 }, (_, i) => currentYear - i);
+  const years = Array.from({ length: 10 }, (_, i) => currentYear - i);
 
   const today = format(new Date(), 'yyyy-MM-dd');
 
@@ -98,10 +114,19 @@ export const YearGrid = ({
 
   return (
     <Flex direction="column" gap="2" maxWidth="100%" mx="auto">
-      <Flex ml="auto">
+      <Flex ml="auto" gap="1" align="center">
+        <IconButton
+          onClick={() => setSelectedYear((y) => y - 1)}
+          variant="outline"
+          aria-label="Previous year"
+          size="1"
+          disabled={selectedYear <= years[years.length - 1]}
+        >
+          <ChevronLeftIcon />
+        </IconButton>
         <Select.Root
           size="1"
-          defaultValue={currentYear.toString()}
+          value={`${selectedYear}`}
           onValueChange={(e) => setSelectedYear(Number(e))}
         >
           <Select.Trigger />
@@ -117,6 +142,15 @@ export const YearGrid = ({
             ))}
           </Select.Content>
         </Select.Root>
+        <IconButton
+          onClick={() => setSelectedYear((y) => y + 1)}
+          variant="outline"
+          aria-label="Next year"
+          size="1"
+          disabled={selectedYear >= years[0]}
+        >
+          <ChevronRightIcon />
+        </IconButton>
       </Flex>
       <ScrollArea scrollbars="horizontal" scrollHideDelay={600}>
         <EditEventDialog
@@ -127,10 +161,10 @@ export const YearGrid = ({
           onClose={() => setSelectedDate(null)}
           onConfirm={onUpdateEvent}
         >
-          <Flex direction="row" align="start" pb="4">
+          <Flex direction="row" align="start" mb="1">
             <Flex direction="column" gap={`${GRID_GAP_SIZE}px`} mr="2">
               {DAY_LABELS.map((label) => (
-                <span
+                <Text
                   key={label}
                   style={{
                     height: `${GRID_ITEM_SIZE}px`,
@@ -142,7 +176,7 @@ export const YearGrid = ({
                   }}
                 >
                   {label}
-                </span>
+                </Text>
               ))}
             </Flex>
             <Grid
@@ -197,6 +231,21 @@ export const YearGrid = ({
                 );
               })}
             </Grid>
+          </Flex>
+          <Flex gap="1" align="center" justify="between" ml="6" pb="4">
+            {MONTH_LABELS.map((label) => (
+              <Text
+                key={label}
+                style={{
+                  fontSize: 10,
+                  color: '#888',
+                  width: `${GRID_ITEM_SIZE * 4 + GRID_GAP_SIZE * 3}px`,
+                  textAlign: 'center',
+                }}
+              >
+                {label}
+              </Text>
+            ))}
           </Flex>
         </EditEventDialog>
       </ScrollArea>

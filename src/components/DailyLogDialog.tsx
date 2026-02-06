@@ -7,6 +7,7 @@ import {
   PlusIcon,
 } from '@radix-ui/react-icons';
 import {
+  Box,
   Button,
   ChevronDownIcon,
   Dialog,
@@ -30,12 +31,21 @@ import { Calendar } from './Calendar';
 export const DailyLogDialog = () => {
   return (
     <Dialog.Root>
-      <Dialog.Trigger>
-        <Button variant="outline">
-          <PlusIcon />
-          <Text>Log Event</Text>
-        </Button>
-      </Dialog.Trigger>
+      <Box display={{ initial: 'none', xs: 'block' }}>
+        <Dialog.Trigger>
+          <IconButton variant="outline">
+            <PlusIcon />
+          </IconButton>
+        </Dialog.Trigger>
+      </Box>
+      <Box display={{ initial: 'block', xs: 'none' }}>
+        <Dialog.Trigger>
+          <Button variant="outline" style={{ width: '100%' }}>
+            <PlusIcon />
+            Log Activity
+          </Button>
+        </Dialog.Trigger>
+      </Box>
       <Dialog.Content maxWidth="500px">
         <DailyLogDialogContent />
       </Dialog.Content>
@@ -116,7 +126,7 @@ const DailyLogDialogContent = () => {
 
   return (
     <Flex direction="column" gap="4" align="baseline" minHeight="500px">
-      <Dialog.Title>Log Event</Dialog.Title>
+      <Dialog.Title>Log Activity</Dialog.Title>
       <Flex gap="1" mx="auto">
         <IconButton
           variant="outline"
@@ -199,7 +209,7 @@ const DailyLogDialogContent = () => {
             >
               <div
                 style={{
-                  backgroundColor: habit.color,
+                  backgroundColor: `var(--${habit.color}-9)`,
                   minWidth: 20,
                   // height: '100%',
                   minHeight: 20,

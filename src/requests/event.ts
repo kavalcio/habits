@@ -39,7 +39,7 @@ export const createEvent = {
     return data[0];
   },
   onSuccess: async () => {
-    enqueueSnackbar('Event created', { variant: 'success' });
+    enqueueSnackbar('Activity created', { variant: 'success' });
     await Promise.all([
       queryClient.invalidateQueries({ queryKey: ['event'] }),
       queryClient.invalidateQueries({ queryKey: ['habitWithEvents'] }),
