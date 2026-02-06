@@ -6,6 +6,7 @@ import {
   IconButton,
   ScrollArea,
   Select,
+  Text,
   Tooltip,
 } from '@radix-ui/themes';
 import { useMutation } from '@tanstack/react-query';
@@ -21,6 +22,20 @@ const GRID_COLUMN_COUNT = 53; // 52 weeks + 1 for padding
 const GRID_GAP_SIZE = 3;
 const GRID_ITEM_SIZE = 12;
 const DAY_LABELS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+const MONTH_LABELS = [
+  'Jan',
+  'Feb',
+  'Mar',
+  'Apr',
+  'May',
+  'Jun',
+  'Jul',
+  'Aug',
+  'Sep',
+  'Oct',
+  'Nov',
+  'Dec',
+];
 
 type DateData = {
   date: string;
@@ -146,10 +161,10 @@ export const YearGrid = ({
           onClose={() => setSelectedDate(null)}
           onConfirm={onUpdateEvent}
         >
-          <Flex direction="row" align="start" pb="4">
+          <Flex direction="row" align="start" mb="1">
             <Flex direction="column" gap={`${GRID_GAP_SIZE}px`} mr="2">
               {DAY_LABELS.map((label) => (
-                <span
+                <Text
                   key={label}
                   style={{
                     height: `${GRID_ITEM_SIZE}px`,
@@ -161,7 +176,7 @@ export const YearGrid = ({
                   }}
                 >
                   {label}
-                </span>
+                </Text>
               ))}
             </Flex>
             <Grid
@@ -216,6 +231,21 @@ export const YearGrid = ({
                 );
               })}
             </Grid>
+          </Flex>
+          <Flex gap="1" align="center" justify="between" ml="6" pb="4">
+            {MONTH_LABELS.map((label) => (
+              <Text
+                key={label}
+                style={{
+                  fontSize: 10,
+                  color: '#888',
+                  width: `${GRID_ITEM_SIZE * 4 + GRID_GAP_SIZE * 3}px`,
+                  textAlign: 'center',
+                }}
+              >
+                {label}
+              </Text>
+            ))}
           </Flex>
         </EditEventDialog>
       </ScrollArea>
