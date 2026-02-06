@@ -11,6 +11,7 @@ Core Features
 - add more toasts for more actions
 - 404 page
 - error boundary page
+- clean up loading/error states of pages
 
 Optional Features
 - allow pinning habits, and only show pinned habits on dashboard
@@ -27,6 +28,7 @@ Optional Features
   - allow filtering/grouping by these qualifiers/quantifiers?
 - google oauth
 - allow picking an icon for each habit
+- pick custom font
 
 Improvement
 - use Callout element when showing error on screen
@@ -36,6 +38,7 @@ Improvement
 - submit login/register form on enter key press
 - add aria tags everywhere
 - Daily Log dialog looks a bit outdated now, polish it
+- for the dashboard scrollingactivity, can we stagger event data fetch (by date), instead of fetching all at once?
 
 Notes
 - Name options

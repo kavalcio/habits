@@ -1,22 +1,11 @@
-import { PlusIcon } from '@radix-ui/react-icons';
-import {
-  Button,
-  Card,
-  Container,
-  Dialog,
-  Flex,
-  Grid,
-  Heading,
-  Text,
-} from '@radix-ui/themes';
+import { Container, Flex } from '@radix-ui/themes';
 import { useQuery } from '@tanstack/react-query';
-import { Link as RouterLink } from 'react-router-dom';
 
-import { AddEditHabitDialog, ScrollingActivity } from '@/components';
-import { fetchHabits as fetchHabitsRequest } from '@/requests';
+import { HabitList, ScrollingActivity } from '@/components';
+import { fetchHabitsWithEvents } from '@/requests';
 
 export const Dashboard = () => {
-  const { data, error, isPending } = useQuery(fetchHabitsRequest);
+  const { data = [], error, isPending } = useQuery(fetchHabitsWithEvents);
 
   // TODO: use proper loading/error states
   if (isPending) return <div>loading...</div>;
@@ -25,51 +14,9 @@ export const Dashboard = () => {
 
   return (
     <Container size="3">
-      <Flex gap="2" direction="column">
-        <Flex>
-          <Heading size="4" align="left">
-            Dashboard
-          </Heading>
-        </Flex>
-        <ScrollingActivity />
-        <Flex mt="7">
-          <Heading size="4" align="left">
-            Habits
-          </Heading>
-          <AddEditHabitDialog>
-            <Dialog.Trigger>
-              <Button variant="outline" ml="auto">
-                <PlusIcon /> Add Habit
-              </Button>
-            </Dialog.Trigger>
-          </AddEditHabitDialog>
-        </Flex>
-        <Grid
-          width="auto"
-          gap="3"
-          columns={{
-            initial: '1',
-            sm: '3',
-          }}
-        >
-          {data?.map((habit, index) => (
-            <Card asChild key={index}>
-              <RouterLink to={`/habit/${habit.id}`}>
-                <Flex height={'100%'} align="center" gap="2">
-                  <div
-                    style={{
-                      backgroundColor: `var(--${habit.color}-9)`,
-                      minWidth: 12,
-                      height: '100%',
-                      borderRadius: 4,
-                    }}
-                  />
-                  <Text>{habit.name}</Text>
-                </Flex>
-              </RouterLink>
-            </Card>
-          ))}
-        </Grid>
+      <Flex gap="8" direction="column">
+        <ScrollingActivity habitsWithEvents={data} />
+        <HabitList habits={data} />
       </Flex>
     </Container>
   );

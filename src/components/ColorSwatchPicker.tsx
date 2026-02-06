@@ -21,10 +21,7 @@ export const ColorSwatchPicker = ({
           style={{
             width: 28,
             height: 28,
-            border:
-              value === color
-                ? `2px solid var(--${color}-6)`
-                : '2px solid var(--gray-8)',
+            border: value === color ? `2px solid var(--${color}-6)` : 'none',
             background: `var(--${color}-9)`,
             outline:
               value === color
