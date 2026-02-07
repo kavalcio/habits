@@ -31,11 +31,11 @@ export const AbacusRow = ({
             { to: 450, ease: 'in(1.5)', duration: DURATION / 3 },
             { to: -100, ease: 'none', duration: 0 },
           ],
-          opacity: [
-            { from: 0, to: 1, ease: 'in', duration: DURATION / 3 },
-            { to: 1, ease: 'none', duration: DURATION },
-            { to: 0, ease: 'in', duration: DURATION / 3 },
-          ],
+          // opacity: [
+          //   { from: 0, to: 1, ease: 'in', duration: DURATION / 3 },
+          //   { to: 1, ease: 'none', duration: DURATION },
+          //   { to: 0, ease: 'in', duration: DURATION / 3 },
+          // ],
           loop: true,
           loopDelay: 0,
           reversed,
@@ -53,7 +53,23 @@ export const AbacusRow = ({
   }, [setScopes, id, reversed]);
 
   return (
-    <div ref={root}>
+    <div
+      ref={root}
+      style={{
+        position: 'relative',
+        height: 44,
+      }}
+    >
+      <div
+        style={{
+          position: 'absolute',
+          top: '50%',
+          left: 0,
+          width: '100%',
+          height: 2,
+          backgroundColor: 'var(--accent-8)',
+        }}
+      />
       {Array.from({ length: ITEM_COUNT }).map((_, i) => (
         <div
           key={i}
