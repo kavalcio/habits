@@ -1,3 +1,5 @@
+import { enqueueSnackbar } from 'notistack';
+
 import { queryClient, supabase } from './supabase';
 
 export const fetchHabits = {
@@ -143,10 +145,14 @@ export const restoreHabit = {
     return data[0] ?? null;
   },
   onSuccess: async () => {
+    enqueueSnackbar('Habit restored', { variant: 'success' });
     await Promise.all([
       queryClient.invalidateQueries({ queryKey: ['habit'] }),
       queryClient.invalidateQueries({ queryKey: ['habitWithEvents'] }),
       queryClient.invalidateQueries({ queryKey: ['archivedHabit'] }),
     ]);
+  },
+  onError: async () => {
+    enqueueSnackbar('Failed to restore habit', { variant: 'error' });
   },
 };

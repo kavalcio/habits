@@ -59,7 +59,7 @@ export const Profile = () => {
   const onSaveEmail = async () => {
     if (!email || email === userEmail) return;
     try {
-      await emailMutation.mutateAsync({ email });
+      await emailMutation.mutateAsync({ email: email.trim() });
       setIsEditingEmail(false);
     } catch (e) {
       console.error(e);
@@ -69,7 +69,10 @@ export const Profile = () => {
   const onSaveName = async () => {
     if (firstName === userFirstName && lastName === userLastName) return;
     try {
-      await nameMutation.mutateAsync({ firstName, lastName });
+      await nameMutation.mutateAsync({
+        firstName: firstName.trim(),
+        lastName: lastName.trim(),
+      });
       setIsEditingName(false);
     } catch (e) {
       console.error(e);

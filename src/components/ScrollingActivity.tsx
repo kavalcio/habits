@@ -17,13 +17,11 @@ import {
   Text,
   Tooltip,
 } from '@radix-ui/themes';
-import { useMutation } from '@tanstack/react-query';
 import { addDays, format, startOfWeek, subDays } from 'date-fns';
 import { Fragment, useMemo, useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 
 import { Routes } from '@/constants';
-import { createEvent, deleteEvent } from '@/requests';
 import { HabitWithEvents } from '@/types';
 
 import { EditEventDialog } from './EditEventDialog';
@@ -41,32 +39,6 @@ export const ScrollingActivity = ({
     addDays(startOfWeek(new Date(), { weekStartsOn: 0 }), -(dateSpan - 7)),
   );
   const today = format(new Date(), 'yyyy-MM-dd');
-
-  const createEventMutation = useMutation(createEvent);
-  const deleteEventMutation = useMutation(deleteEvent);
-
-  const onUpdateEvent = async ({
-    eventId,
-    habitId,
-    date,
-  }: {
-    eventId: number | null;
-    habitId: number;
-    date: string;
-  }) => {
-    try {
-      if (eventId) {
-        await deleteEventMutation.mutateAsync(eventId);
-      } else {
-        await createEventMutation.mutateAsync({
-          habitId,
-          date,
-        });
-      }
-    } catch (error) {
-      console.error('Error updating event:', error);
-    }
-  };
 
   const habitsWithDateList = useMemo(() => {
     const habits = habitsWithEvents.map((habit) => {
@@ -259,13 +231,6 @@ export const ScrollingActivity = ({
                   date={data.date}
                   habit={habit}
                   event={data.event}
-                  onConfirm={() =>
-                    onUpdateEvent({
-                      eventId: data.event?.id || null,
-                      habitId: habit.id,
-                      date: data.date,
-                    })
-                  }
                 >
                   <Flex
                     m="auto"

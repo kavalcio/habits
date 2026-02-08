@@ -75,7 +75,7 @@ const AddEditHabitDialogContent = ({
     setError('');
 
     await createHabitMutation.mutateAsync({
-      name: habitName,
+      name: habitName.trim(),
       color: habitColor,
     });
 
