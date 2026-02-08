@@ -19,7 +19,7 @@ import {
 } from '@radix-ui/themes';
 import { useMutation } from '@tanstack/react-query';
 import { addDays, format, startOfWeek, subDays } from 'date-fns';
-import { useMemo, useState } from 'react';
+import { Fragment, useMemo, useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 
 import { Routes } from '@/constants';
@@ -226,8 +226,8 @@ export const ScrollingActivity = ({
             );
           })}
           {habitsWithDateList.map((habit, row) => (
-            <>
-              <Tooltip key={habit.id} content={habit.name} delayDuration={1000}>
+            <Fragment key={habit.id}>
+              <Tooltip content={habit.name} delayDuration={1000}>
                 <Text
                   size="1"
                   mr="1"
@@ -257,6 +257,7 @@ export const ScrollingActivity = ({
               </Tooltip>
               {habit.dateList.map((data, col) => (
                 <EditEventDialog
+                  key={col}
                   date={data.date}
                   isEventCompleted={!!data.eventId}
                   habitName={habit.name}
@@ -335,7 +336,7 @@ export const ScrollingActivity = ({
                   </Flex>
                 </EditEventDialog>
               ))}
-            </>
+            </Fragment>
           ))}
         </Grid>
       </ScrollArea>
