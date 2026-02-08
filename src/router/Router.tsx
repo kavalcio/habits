@@ -10,6 +10,7 @@ import {
   Dashboard,
   ForgotPassword,
   HabitOverview,
+  Home,
   Login,
   Profile,
   Register,
@@ -25,7 +26,7 @@ const router = createBrowserRouter([
     children: [
       {
         path: Routes.ROOT,
-        element: <div>Hello world</div>,
+        element: <Home />,
       },
       {
         path: Routes.LOGIN,
