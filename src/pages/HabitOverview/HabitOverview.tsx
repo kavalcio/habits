@@ -32,7 +32,6 @@ export const HabitOverview = () => {
     error,
     isPending,
   } = useQuery(fetchHabitWithEvents(habitId));
-  const { event: events = [] } = habit || {};
 
   if (isPending) {
     return (
@@ -77,8 +76,8 @@ export const HabitOverview = () => {
               </Dialog.Trigger>
             </AddEditHabitDialog>
           </Flex>
-          <YearGrid habitId={habitId} events={events} />
-          <EventCalendar habitId={habitId} events={events} />
+          <YearGrid habit={habit} />
+          <EventCalendar habit={habit} />
         </Flex>
       </Container>
     </Theme>

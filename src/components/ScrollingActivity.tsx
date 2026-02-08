@@ -24,7 +24,7 @@ import { Link as RouterLink } from 'react-router-dom';
 
 import { Routes } from '@/constants';
 import { createEvent, deleteEvent } from '@/requests';
-import { Tables } from '@/types';
+import { HabitWithEvents } from '@/types';
 
 import { EditEventDialog } from './EditEventDialog';
 
@@ -34,7 +34,7 @@ const TIME_WINDOW_OPTIONS = [7, 14, 21];
 export const ScrollingActivity = ({
   habitsWithEvents,
 }: {
-  habitsWithEvents: (Tables<'habit'> & { event?: Tables<'event'>[] })[];
+  habitsWithEvents: HabitWithEvents[];
 }) => {
   const [dateSpan, setDateSpan] = useState(TIME_WINDOW_OPTIONS[1]);
   const [weekStart, setWeekStart] = useState(() =>
@@ -73,14 +73,12 @@ export const ScrollingActivity = ({
       const dateList = Array.from({ length: dateSpan }, (_, i) => {
         const dateObj = addDays(weekStart, i);
         const dateStr = format(dateObj, 'yyyy-MM-dd');
-        const event = habit.event?.find(
-          (e: Tables<'event'>) => e.date === dateStr,
-        );
+        const event = habit.event?.find((e) => e.date === dateStr);
         return {
           date: dateStr,
           formattedDate: format(dateObj, 'EEE, MMM d, yyyy'),
           completed: !!event,
-          eventId: event?.id,
+          event: event,
         };
       });
       return {
@@ -259,11 +257,11 @@ export const ScrollingActivity = ({
                 <EditEventDialog
                   key={col}
                   date={data.date}
-                  isEventCompleted={!!data.eventId}
-                  habitName={habit.name}
+                  habit={habit}
+                  event={data.event}
                   onConfirm={() =>
                     onUpdateEvent({
-                      eventId: data.eventId || null,
+                      eventId: data.event?.id || null,
                       habitId: habit.id,
                       date: data.date,
                     })

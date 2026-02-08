@@ -23,7 +23,7 @@ import { format } from 'date-fns';
 import { useMemo, useState } from 'react';
 
 import { createEvent, deleteEvent, fetchHabitsWithEvents } from '@/requests';
-import { Tables } from '@/types';
+import { Event } from '@/types';
 import { getLocalDate } from '@/utils';
 
 import { Calendar } from './Calendar';
@@ -69,7 +69,7 @@ const DailyLogDialogContent = () => {
           acc[event.date] = event;
           return acc;
         },
-        {} as Record<string, Tables<'event'>>,
+        {} as Record<string, Event>,
       ),
     }));
   }, [habits]);

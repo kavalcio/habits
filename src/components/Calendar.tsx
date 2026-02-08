@@ -15,7 +15,7 @@ import {
 import { format } from 'date-fns';
 import React, { useMemo, useState } from 'react';
 
-import { Tables } from '@/types';
+import { Event } from '@/types';
 
 const MONTHS = [
   'January',
@@ -50,7 +50,7 @@ export const Calendar = ({
   defaultInitialDate,
   enableDialogTrigger = false,
 }: {
-  events?: Tables<'event'>[];
+  events?: Event[];
   onDateSelect?: (date: string) => void;
   onReturnToToday?: (date: string) => void;
   defaultInitialDate?: string;
@@ -78,7 +78,7 @@ export const Calendar = ({
   const today = format(new Date(), 'yyyy-MM-dd');
 
   const eventsIndexedByDate = useMemo(() => {
-    const indexed: Record<string, Tables<'event'>> = {};
+    const indexed: Record<string, Event> = {};
     events?.forEach((event) => {
       indexed[event.date] = event;
     });
@@ -212,8 +212,8 @@ export const Calendar = ({
                   ...(muted && { color: 'var(--gray-9)' }),
                   ...(date === today &&
                     !muted && {
-                      border: '2px solid var(--white-a8)',
-                    }),
+                    border: '2px solid var(--white-a8)',
+                  }),
                 }}
                 onClick={() => {
                   if (date && onDateSelect) {

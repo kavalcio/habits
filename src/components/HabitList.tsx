@@ -11,11 +11,11 @@ import {
 } from '@radix-ui/themes';
 import { Link as RouterLink } from 'react-router-dom';
 
-import { Tables } from '@/types';
+import { Habit } from '@/types';
 
 import { AddEditHabitDialog } from './AddEditHabitDialog';
 
-export const HabitList = ({ habits }: { habits: Tables<'habit'>[] }) => {
+export const HabitList = ({ habits }: { habits: Habit[] }) => {
   return (
     <Box>
       <Flex mb="3">
