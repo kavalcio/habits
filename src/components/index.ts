@@ -1,3 +1,5 @@
+export * from './AbacusAnimation';
+export * from './AbacusRow';
 export * from './AddEditHabitDialog';
 export * from './ArchivedHabitsDialog';
 export * from './Calendar';
