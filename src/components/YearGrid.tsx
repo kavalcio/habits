@@ -14,7 +14,7 @@ import { format } from 'date-fns';
 import { useMemo, useState } from 'react';
 
 import { createEvent, deleteEvent } from '@/requests';
-import { Tables } from '@/types';
+import { Event, HabitWithEvents } from '@/types';
 
 import { EditEventDialog } from './EditEventDialog';
 
@@ -41,16 +41,11 @@ type DateData = {
   date: string;
   formattedDate: string;
   completed: boolean;
-  eventId?: number;
+  event?: Event;
 };
 
-export const YearGrid = ({
-  habitId,
-  events = [],
-}: {
-  habitId: number;
-  events?: Tables<'event'>[];
-}) => {
+export const YearGrid = ({ habit }: { habit: HabitWithEvents }) => {
+  const { event: events = [] } = habit || {};
   const currentYear = new Date().getFullYear();
   const [selectedYear, setSelectedYear] = useState(currentYear);
 
@@ -73,7 +68,7 @@ export const YearGrid = ({
         date: dString,
         formattedDate: format(d, 'EEE, MMM d, yyyy'),
         completed: !!event,
-        eventId: event?.id,
+        event,
       });
       d.setDate(d.getDate() + 1);
     }
@@ -99,10 +94,10 @@ export const YearGrid = ({
       if (!selectedDate) return;
       const dateData = allDates.find((d) => d?.date === selectedDate);
       if (dateData?.completed) {
-        await deleteEventMutation.mutateAsync(dateData.eventId!);
+        await deleteEventMutation.mutateAsync(dateData.event!.id);
       } else {
         await createEventMutation.mutateAsync({
-          habitId,
+          habitId: habit.id,
           date: selectedDate,
         });
       }
@@ -155,9 +150,8 @@ export const YearGrid = ({
       <ScrollArea scrollbars="horizontal" scrollHideDelay={600}>
         <EditEventDialog
           date={selectedDate || ''}
-          isEventCompleted={
-            !!allDates.find((d) => d?.date === selectedDate && d.completed)
-          }
+          habit={habit}
+          event={allDates.find((d) => d?.date === selectedDate)?.event}
           onClose={() => setSelectedDate(null)}
           onConfirm={onUpdateEvent}
         >

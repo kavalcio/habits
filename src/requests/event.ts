@@ -9,7 +9,7 @@ export const fetchEvents = (habitId: number) => ({
   queryFn: async () => {
     const { data, error } = await supabase
       .from('event')
-      .select()
+      .select('*, event_tag(*)')
       .eq('habit_id', habitId);
     if (error) throw error;
     return data;
@@ -22,7 +22,7 @@ export const fetchEvent = (eventId: number) => ({
   queryFn: async () => {
     const { data, error } = await supabase
       .from('event')
-      .select()
+      .select('*, event_tag(*)')
       .eq('id', eventId);
     if (error) throw error;
     return data[0];

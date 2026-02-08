@@ -2,18 +2,13 @@ import { useMutation } from '@tanstack/react-query';
 import { useState } from 'react';
 
 import { createEvent, deleteEvent } from '@/requests';
-import { Tables } from '@/types';
+import { HabitWithEvents } from '@/types';
 
 import { Calendar } from './Calendar';
 import { EditEventDialog } from './EditEventDialog';
 
-export const EventCalendar = ({
-  habitId,
-  events,
-}: {
-  habitId: number;
-  events?: Tables<'event'>[];
-}) => {
+export const EventCalendar = ({ habit }: { habit: HabitWithEvents }) => {
+  const { id: habitId, event: events = [] } = habit || {};
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
 
   const createEventMutation = useMutation(createEvent);
@@ -39,8 +34,9 @@ export const EventCalendar = ({
   return (
     <EditEventDialog
       date={selectedDate || ''}
-      isEventCompleted={
-        !!selectedDate && !!events?.find((e) => e.date === selectedDate)
+      habit={habit}
+      event={
+        selectedDate ? events?.find((e) => e.date === selectedDate) : undefined
       }
       onClose={() => setSelectedDate(null)}
       onConfirm={onUpdateEvent}

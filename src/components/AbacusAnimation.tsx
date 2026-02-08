@@ -1,4 +1,4 @@
-import { Box, Container, Heading, Text } from '@radix-ui/themes';
+import { Box, Container, Heading } from '@radix-ui/themes';
 import { JSAnimation, Scope } from 'animejs';
 import { useEffect, useRef, useState } from 'react';
 
@@ -7,7 +7,7 @@ import { AbacusRow } from './AbacusRow';
 const ABACUS_ROWS = [
   { id: 1, reversed: false },
   { id: 2, reversed: true },
-  { id: 3, reversed: false },
+  { id: 3, reversed: false, empty: true },
   { id: 4, reversed: true },
   { id: 5, reversed: false },
 ];
@@ -60,7 +60,7 @@ export const AbacusAnimation = () => {
           overflow: 'hidden',
         }}
       >
-        {ABACUS_ROWS.map(({ id, reversed }, index) => (
+        {ABACUS_ROWS.map(({ id, reversed, empty }, index) => (
           <div
             key={id}
             style={{
@@ -69,26 +69,22 @@ export const AbacusAnimation = () => {
               width: '100%',
             }}
           >
-            <AbacusRow id={id} setScopes={setScopes} reversed={reversed} />
+            {!empty && (
+              <AbacusRow id={id} setScopes={setScopes} reversed={reversed} />
+            )}
           </div>
         ))}
-        {/* <div
+        <div
           style={{
             position: 'absolute',
             top: '50%',
             left: '50%',
             transform: 'translate(-50%, -50%)',
-            pointerEvents: 'none',
-            padding: 80,
-            // background: 'radial-gradient(#e66465, transparent)',
-            // background:
-            //   'radial-gradient(ellipse at 50%,color(display-p3 0.067 0.07 0.063) 40%, transparent 75%)',
-            // background:
-            //   'linear-gradient(0, 0, 10px, color(display-p3 0.067 0.07 0.063))',
+            userSelect: 'none',
           }}
         >
           <Heading size="8">temper</Heading>
-        </div> */}
+        </div>
         <div
           style={{
             position: 'absolute',

@@ -19,12 +19,12 @@ import {
 } from '@radix-ui/themes';
 import { useMutation } from '@tanstack/react-query';
 import { addDays, format, startOfWeek, subDays } from 'date-fns';
-import { useMemo, useState } from 'react';
+import { Fragment, useMemo, useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 
 import { Routes } from '@/constants';
 import { createEvent, deleteEvent } from '@/requests';
-import { Tables } from '@/types';
+import { HabitWithEvents } from '@/types';
 
 import { EditEventDialog } from './EditEventDialog';
 
@@ -34,7 +34,7 @@ const TIME_WINDOW_OPTIONS = [7, 14, 21];
 export const ScrollingActivity = ({
   habitsWithEvents,
 }: {
-  habitsWithEvents: (Tables<'habit'> & { event?: Tables<'event'>[] })[];
+  habitsWithEvents: HabitWithEvents[];
 }) => {
   const [dateSpan, setDateSpan] = useState(TIME_WINDOW_OPTIONS[1]);
   const [weekStart, setWeekStart] = useState(() =>
@@ -73,14 +73,12 @@ export const ScrollingActivity = ({
       const dateList = Array.from({ length: dateSpan }, (_, i) => {
         const dateObj = addDays(weekStart, i);
         const dateStr = format(dateObj, 'yyyy-MM-dd');
-        const event = habit.event?.find(
-          (e: Tables<'event'>) => e.date === dateStr,
-        );
+        const event = habit.event?.find((e) => e.date === dateStr);
         return {
           date: dateStr,
           formattedDate: format(dateObj, 'EEE, MMM d, yyyy'),
           completed: !!event,
-          eventId: event?.id,
+          event: event,
         };
       });
       return {
@@ -106,7 +104,7 @@ export const ScrollingActivity = ({
     if (date === today) {
       borderStyles.borderLeftWidth = BORDER_WIDTH * 3;
       borderStyles.borderRightWidth = BORDER_WIDTH * 4;
-      borderStyles.backgroundColor = 'var(--accent-2)';
+      borderStyles.backgroundColor = 'var(--accent-3)';
       borderStyles.borderColor = 'var(--accent-8)';
     }
     if (col === dateSpan - 1) {
@@ -226,8 +224,8 @@ export const ScrollingActivity = ({
             );
           })}
           {habitsWithDateList.map((habit, row) => (
-            <>
-              <Tooltip key={habit.id} content={habit.name} delayDuration={1000}>
+            <Fragment key={habit.id}>
+              <Tooltip content={habit.name} delayDuration={1000}>
                 <Text
                   size="1"
                   mr="1"
@@ -257,12 +255,13 @@ export const ScrollingActivity = ({
               </Tooltip>
               {habit.dateList.map((data, col) => (
                 <EditEventDialog
+                  key={col}
                   date={data.date}
-                  isEventCompleted={!!data.eventId}
-                  habitName={habit.name}
+                  habit={habit}
+                  event={data.event}
                   onConfirm={() =>
                     onUpdateEvent({
-                      eventId: data.eventId || null,
+                      eventId: data.event?.id || null,
                       habitId: habit.id,
                       date: data.date,
                     })
@@ -323,7 +322,7 @@ export const ScrollingActivity = ({
                           <Box
                             m="auto"
                             style={{
-                              backgroundColor: '#818181',
+                              backgroundColor: 'var(--gray-11)',
                               width: 4,
                               height: 4,
                               borderRadius: '50%',
@@ -335,7 +334,7 @@ export const ScrollingActivity = ({
                   </Flex>
                 </EditEventDialog>
               ))}
-            </>
+            </Fragment>
           ))}
         </Grid>
       </ScrollArea>

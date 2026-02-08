@@ -16,7 +16,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { Routes } from '@/constants';
 import { archiveHabit, createHabit, updateHabit } from '@/requests';
-import { Tables } from '@/types';
+import { Habit } from '@/types';
 
 import { ColorSwatchPicker } from './ColorSwatchPicker';
 
@@ -25,7 +25,7 @@ export const AddEditHabitDialog = ({
   habit,
   children,
 }: {
-  habit?: Tables<'habit'>;
+  habit?: Habit;
   children?: React.ReactNode;
 }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -43,7 +43,7 @@ const AddEditHabitDialogContent = ({
   habit,
   setIsOpen,
 }: {
-  habit?: Tables<'habit'>;
+  habit?: Habit;
   setIsOpen: (newIsOpen: boolean) => void;
 }) => {
   const navigate = useNavigate();

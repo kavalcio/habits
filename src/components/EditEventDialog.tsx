@@ -1,21 +1,22 @@
 import { Button, Dialog, Flex, Strong, Text } from '@radix-ui/themes';
 import { format } from 'date-fns';
 
+import { Event, Habit } from '@/types';
 import { getLocalDate } from '@/utils';
 
 // TODO: prevent this dialog from closing when onConfirm fails
 export const EditEventDialog = ({
   children,
   date,
-  habitName,
-  isEventCompleted,
+  habit,
+  event,
   onClose,
   onConfirm,
 }: {
   children: React.ReactNode;
   date?: string;
-  habitName?: string;
-  isEventCompleted: boolean;
+  habit: Habit;
+  event?: Event;
   onClose?: () => void;
   onConfirm: () => void;
 }) => {
@@ -24,20 +25,19 @@ export const EditEventDialog = ({
       <Dialog.Content maxWidth="320px">
         <Flex direction="column" align="start">
           <Dialog.Title size="4" align="left">
-            {isEventCompleted ? 'Remove' : 'Add'} activity
-            {!!habitName && (
+            {event ? 'Remove' : 'Add'} activity
+            {!!habit?.name && (
               <Text>
                 {' '}
                 for{' '}
                 <Strong style={{ color: 'var(--accent-10)' }}>
-                  {habitName}
+                  {habit.name}
                 </Strong>
               </Text>
             )}
           </Dialog.Title>
           <Dialog.Description size="2" align="left">
-            Are you sure you want to {isEventCompleted ? 'remove' : 'add'}{' '}
-            activity on{' '}
+            Are you sure you want to {event ? 'remove' : 'add'} activity on{' '}
             <Strong>
               {!!date && format(getLocalDate(date), 'EEE, MMM d, yyyy')}
             </Strong>

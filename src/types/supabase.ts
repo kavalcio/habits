@@ -12,27 +12,10 @@ export type Json =
   | Json[];
 
 export type Database = {
-  // Allows to automatically instanciate createClient with right options
+  // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
     PostgrestVersion: '12.2.3 (519615d)';
-  };
-  api: {
-    Tables: {
-      [_ in never]: never;
-    };
-    Views: {
-      [_ in never]: never;
-    };
-    Functions: {
-      [_ in never]: never;
-    };
-    Enums: {
-      [_ in never]: never;
-    };
-    CompositeTypes: {
-      [_ in never]: never;
-    };
   };
   public: {
     Tables: {
@@ -65,6 +48,42 @@ export type Database = {
           },
         ];
       };
+      event_tag: {
+        Row: {
+          created_at: string;
+          event_id: number;
+          habit_tag_id: number;
+          id: number;
+        };
+        Insert: {
+          created_at?: string;
+          event_id: number;
+          habit_tag_id: number;
+          id?: number;
+        };
+        Update: {
+          created_at?: string;
+          event_id?: number;
+          habit_tag_id?: number;
+          id?: number;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'event_tag_event_id_fkey';
+            columns: ['event_id'];
+            isOneToOne: false;
+            referencedRelation: 'event';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'event_tag_habit_tag_id_fkey';
+            columns: ['habit_tag_id'];
+            isOneToOne: false;
+            referencedRelation: 'habit_tag';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
       habit: {
         Row: {
           color: string;
@@ -72,6 +91,7 @@ export type Database = {
           id: number;
           is_archived: boolean;
           name: string;
+          order: number | null;
           user_id: string;
         };
         Insert: {
@@ -80,6 +100,7 @@ export type Database = {
           id?: number;
           is_archived?: boolean;
           name: string;
+          order?: number | null;
           user_id?: string;
         };
         Update: {
@@ -88,9 +109,39 @@ export type Database = {
           id?: number;
           is_archived?: boolean;
           name?: string;
+          order?: number | null;
           user_id?: string;
         };
         Relationships: [];
+      };
+      habit_tag: {
+        Row: {
+          created_at: string;
+          habit_id: number;
+          id: number;
+          name: string;
+        };
+        Insert: {
+          created_at?: string;
+          habit_id: number;
+          id?: number;
+          name: string;
+        };
+        Update: {
+          created_at?: string;
+          habit_id?: number;
+          id?: number;
+          name?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'habit_tag_habit_id_fkey';
+            columns: ['habit_id'];
+            isOneToOne: false;
+            referencedRelation: 'habit';
+            referencedColumns: ['id'];
+          },
+        ];
       };
     };
     Views: {
@@ -229,9 +280,6 @@ export type CompositeTypes<
     : never;
 
 export const Constants = {
-  api: {
-    Enums: {},
-  },
   public: {
     Enums: {},
   },

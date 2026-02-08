@@ -5,7 +5,7 @@ export const fetchHabits = {
   queryFn: async () => {
     const { data, error } = await supabase
       .from('habit')
-      .select()
+      .select('*, habit_tag(*)')
       .eq('is_archived', false);
     if (error) throw error;
     return data ?? [];
@@ -17,7 +17,7 @@ export const fetchArchivedHabits = {
   queryFn: async () => {
     const { data, error } = await supabase
       .from('habit')
-      .select()
+      .select('*, habit_tag(*)')
       .eq('is_archived', true);
     if (error) throw error;
     return data ?? [];
@@ -29,7 +29,7 @@ export const fetchHabit = (habitId: number) => ({
   queryFn: async () => {
     const { data, error } = await supabase
       .from('habit')
-      .select()
+      .select('*, habit_tag(*)')
       .eq('is_archived', false)
       .eq('id', habitId);
     if (error) throw error;
@@ -43,7 +43,7 @@ export const fetchHabitWithEvents = (habitId: number) => ({
   queryFn: async () => {
     const { data, error } = await supabase
       .from('habit')
-      .select('*, event(*)')
+      .select('*, habit_tag(*), event(*, event_tag(*))')
       .eq('is_archived', false)
       .eq('id', habitId);
     if (error) throw error;
@@ -58,7 +58,7 @@ export const fetchHabitsWithEvents = {
     const { data, error } = await supabase
       .from('habit')
       // TODO: maybe add an optional date range for events here?
-      .select('*, event(*)')
+      .select('*, habit_tag(*), event(*, event_tag(*))')
       .eq('is_archived', false);
     if (error) throw error;
     return data ?? [];
