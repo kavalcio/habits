@@ -1,5 +1,3 @@
-import * as R from 'ramda';
-
 export type RouteType = {
   PATH: string;
   NAME: string;
@@ -49,9 +47,12 @@ export const RoutesConfig = {
   },
 } satisfies Record<string, RouteType>;
 
-export const Routes = R.mapObjIndexed((route) => route.PATH, RoutesConfig);
+export const Routes = Object.fromEntries(
+  Object.entries(RoutesConfig).map(([key, route]) => [key, route.PATH]),
+);
 
-export const AuthenticatedRoutes = R.pipe(
-  R.filter((route: RouteType) => route.IS_AUTHENTICATED),
-  R.mapObjIndexed((route: RouteType) => route.PATH),
-)(RoutesConfig);
+export const AuthenticatedRoutes = Object.fromEntries(
+  Object.entries(RoutesConfig)
+    .filter(([_, route]) => route.IS_AUTHENTICATED)
+    .map(([key, route]) => [key, route.PATH]),
+);

@@ -107,28 +107,30 @@ export const ScrollingActivity = ({
         <Heading size="4" align="left">
           Dashboard
         </Heading>
-        <Flex align="center" gap="1">
+        <Flex align="center" gap="2">
           <IconButton
             onClick={() => setWeekStart(subDays(weekStart, dateSpan))}
             variant="outline"
             aria-label="Previous week"
+            size="1"
           >
             <ChevronLeftIcon />
           </IconButton>
-          <Text size="2" style={{ width: 120 }}>
+          <Text size="1" style={{ width: 100 }}>
             {dateRangeLabel}
           </Text>
           <IconButton
             onClick={() => setWeekStart(addDays(weekStart, dateSpan))}
             variant="outline"
             aria-label="Next week"
+            size="1"
           >
             <ChevronRightIcon />
           </IconButton>
           <Tooltip content="Reset to current date" delayDuration={300}>
             <IconButton
               variant="outline"
-              size="2"
+              size="1"
               onClick={() =>
                 setWeekStart(
                   addDays(
@@ -142,7 +144,7 @@ export const ScrollingActivity = ({
             </IconButton>
           </Tooltip>
           <Select.Root
-            size="2"
+            size="1"
             value={`${dateSpan}`}
             onValueChange={(v) => setDateSpan(Number(v))}
           >
@@ -248,8 +250,10 @@ export const ScrollingActivity = ({
                       {data.completed ? (
                         <Box
                           style={{
-                            backgroundColor: `var(--${habit.color}-3)`,
-                            border: `2px solid var(--${habit.color}-8)`,
+                            // backgroundColor: `var(--${habit.color}-3)`,
+                            // border: `2px solid var(--${habit.color}-8)`,
+                            backgroundColor: `var(--accent-3)`,
+                            border: `2px solid var(--accent-8)`,
                             borderRadius: 4,
                             flex: 1,
                             marginTop: 8,

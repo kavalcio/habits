@@ -23,16 +23,43 @@ export const createHabitTag = {
 export const addTagsToEvent = {
   mutationFn: async ({
     eventId,
-    tagIds,
+    habitTagIds,
   }: {
     eventId: number;
-    tagIds: number[];
+    habitTagIds: number[];
   }) => {
     const { data, error } = await supabase
       .from('event_tag')
       .insert(
-        tagIds.map((tagId) => ({ event_id: eventId, habit_tag_id: tagId })),
+        habitTagIds.map((habitTagId) => ({
+          event_id: eventId,
+          habit_tag_id: habitTagId,
+        })),
       )
+      .select();
+    if (error) throw error;
+    return data ?? null;
+  },
+  onSuccess: async () => {
+    await queryClient.invalidateQueries({ queryKey: ['habitWithEvents'] });
+  },
+};
+
+export const removeTagsFromEvent = {
+  mutationFn: async ({
+    // eventId,
+    eventTagIds,
+  }: {
+    // eventId: number;
+    // tagIds: number[];
+    eventTagIds: number[];
+  }) => {
+    const { data, error } = await supabase
+      .from('event_tag')
+      .delete()
+      // .in('habit_tag_id', tagIds)
+      // .eq('event_id', eventId)
+      .in('id', eventTagIds)
       .select();
     if (error) throw error;
     return data ?? null;

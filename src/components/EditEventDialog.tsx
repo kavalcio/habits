@@ -1,35 +1,32 @@
-import { TrashIcon } from '@radix-ui/react-icons';
+import { Cross2Icon, PlusIcon, TrashIcon } from '@radix-ui/react-icons';
 import {
-  Box,
   Button,
   Dialog,
   Flex,
   IconButton,
+  Popover,
   Strong,
   Text,
   TextField,
 } from '@radix-ui/themes';
 import { useMutation } from '@tanstack/react-query';
 import { format } from 'date-fns';
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import {
   addTagsToEvent,
   createEvent,
   createHabitTag,
   deleteEvent,
+  removeTagsFromEvent,
 } from '@/requests';
 import { Event, Habit } from '@/types';
 import { getLocalDate } from '@/utils';
 
-// TODO: limit tag length to something
-// TODO: prevent this dialog from closing when onConfirm fails
 export const EditEventDialog = ({
-  children,
-  date,
-  habit,
-  event,
   onClose,
+  children,
+  ...args
 }: {
   children: React.ReactNode;
   date?: string;
@@ -37,23 +34,89 @@ export const EditEventDialog = ({
   event?: Event;
   onClose?: () => void;
 }) => {
+  return (
+    <Dialog.Root onOpenChange={(open) => !open && onClose?.()}>
+      <Dialog.Content maxWidth="420px">
+        <EditEventDialogContent {...args} onClose={onClose} />
+      </Dialog.Content>
+      {children}
+    </Dialog.Root>
+  );
+};
+
+// TODO: close tag popup when a tag is selected or new tag created
+// TODO: prevent this dialog from closing when onConfirm fails
+// TODO: allow creating event with tags, and allow updating existing event's tags
+// TODO: memoize functions?
+// TODO: if habitTag is already on this event, prevent adding it. filter it out of the potential tags list
+// TODO: dont allow creating habitTags with identical names
+// TODO: wrap tags in row if too many
+export const EditEventDialogContent = ({
+  date,
+  habit,
+  event,
+  onClose,
+}: {
+  date?: string;
+  habit: Habit;
+  event?: Event;
+  onClose?: () => void;
+}) => {
   const [tagInput, setTagInput] = useState('');
-  const [tagsToAdd, setTagsToAdd] = useState<number[]>([]);
+  const [tagInputDebounced, setTagInputDebounced] = useState('');
+
+  const [eventTags, setEventTags] = useState<
+    { eventTagId: number | null; habitTagId: number; label: string }[]
+  >(
+    event
+      ? (event.event_tag.map((et) => ({
+          eventTagId: et.id,
+          habitTagId: et.habit_tag_id,
+          label:
+            habit.habit_tag.find((ht) => ht.id === et.habit_tag_id)?.name ?? '',
+        })) ?? [])
+      : [],
+  );
 
   const createEventMutation = useMutation(createEvent);
   const deleteEventMutation = useMutation(deleteEvent);
   const createHabitTagMutation = useMutation(createHabitTag);
   const addTagsToEventMutation = useMutation(addTagsToEvent);
+  const removeTagsFromEventMutation = useMutation(removeTagsFromEvent);
+
+  // const onAddTagToEvent = async () => {
+  //   if (event) {
+  //     // TODO: do mutation to add tag right away
+  //   } else {
+  //     // TODO: somehow save the tags to be added, run mutations at the end after the event creation mutation is finished
+  //   }
+  // };
+
+  // const onRemoveTagFromEvent = async () => {
+  //   if (event) {
+  //     // TODO: run mutation to delete tag
+  //   } else {
+  //     // TODO: remove tag from the list of cached tags pending publish
+  //   }
+  // };
 
   const onCreateHabitTag = async () => {
     console.log('Creating habit tag with name', tagInput);
     if (!tagInput.trim()) return;
     try {
-      await createHabitTagMutation.mutateAsync({
+      const habitTag = await createHabitTagMutation.mutateAsync({
         habitId: habit.id,
         name: tagInput.trim(),
       });
+
+      // Queue up the new tag to be added to event
+      setEventTags((prev) => [
+        ...prev,
+        { eventTagId: null, habitTagId: habitTag.id, label: habitTag.name },
+      ]);
+
       setTagInput('');
+      setTagInputDebounced('');
     } catch (error) {
       console.error('Error creating habit tag', error);
     }
@@ -70,10 +133,30 @@ export const EditEventDialog = ({
         });
         eventId = response.id;
       }
-      if (tagsToAdd.length > 0) {
+
+      // Parse through eventTags. All tags with eventTagId null are new -> publish those.
+      // Find the diff between the event.event_tag array and the eventTags array. Any missing in eventTags are to be deleted -> delete those
+      const tagsToBeAdded = eventTags.filter(
+        (tag) =>
+          tag.eventTagId === null &&
+          !event?.event_tag.some((et) => et.habit_tag_id === tag.habitTagId),
+      );
+      if (tagsToBeAdded.length > 0) {
         await addTagsToEventMutation.mutateAsync({
           eventId: eventId!,
-          tagIds: tagsToAdd,
+          habitTagIds: tagsToBeAdded.map((tag) => tag.habitTagId),
+        });
+      }
+      const tagsToBeDeleted =
+        event?.event_tag
+          .filter(
+            (et) =>
+              !eventTags.some((tag) => tag.habitTagId === et.habit_tag_id),
+          )
+          .map((et) => ({ eventTagId: et.id })) ?? [];
+      if (tagsToBeDeleted.length > 0) {
+        await removeTagsFromEventMutation.mutateAsync({
+          eventTagIds: tagsToBeDeleted.map((tag) => tag.eventTagId!),
         });
       }
       onClose?.();
@@ -92,108 +175,136 @@ export const EditEventDialog = ({
     }
   };
 
+  useEffect(() => {
+    if (tagInput === '') {
+      setTagInputDebounced(tagInput);
+      return;
+    }
+    const handler = setTimeout(() => {
+      setTagInputDebounced(tagInput);
+    }, 200);
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [tagInput]);
+
+  const filteredHabitTags = useMemo(() => {
+    return habit.habit_tag.filter(
+      (t) =>
+        t.name.toLowerCase().indexOf(tagInputDebounced.toLowerCase()) !== -1,
+    );
+  }, [habit.habit_tag, tagInputDebounced]);
+
+  console.log('eventTags', eventTags);
+
   return (
-    <Dialog.Root onOpenChange={(open) => !open && onClose?.()}>
-      <Dialog.Content maxWidth="420px">
-        <Flex direction="column" align="start" gap="3">
-          <Flex direction="row" align="center" width="100%">
-            <Dialog.Title size="4" align="left" mb="0">
-              {/* {event ? 'Remove' : 'Add'} activity
-              {!!habit?.name && (
-                <Text>
-                  {' '}
-                  for{' '}
-                  <Strong style={{ color: 'var(--accent-10)' }}>
-                    {habit.name}
-                  </Strong>
+    <Flex direction="column" align="start" gap="3">
+      <Flex direction="row" align="center" width="100%">
+        <Dialog.Title size="4" align="left" mb="0">
+          {event ? 'Edit' : 'Add'} activity
+        </Dialog.Title>
+        {!!event && (
+          <Dialog.Close>
+            <IconButton
+              size="1"
+              variant="soft"
+              color="red"
+              ml="auto"
+              onClick={onDeleteEvent}
+            >
+              <TrashIcon />
+            </IconButton>
+          </Dialog.Close>
+        )}
+      </Flex>
+      <Text>Habit</Text>
+      <Strong style={{ color: 'var(--accent-10)' }}>{habit.name}</Strong>
+      <Text>Date</Text>
+      <Text>
+        {format(getLocalDate((date ?? event?.date)!), 'MMM dd, yyyy')}
+      </Text>
+      <Flex gap="2">
+        <Text>Tags</Text>
+        <Popover.Root>
+          <Popover.Trigger>
+            <IconButton variant="soft" color="gray" size="1">
+              <PlusIcon />
+            </IconButton>
+          </Popover.Trigger>
+          <Popover.Content>
+            <TextField.Root
+              size="1"
+              placeholder="Search or add tags"
+              value={tagInput}
+              onChange={(e) => setTagInput(e.target.value)}
+              mb="3"
+            />
+            <Flex gap="2" wrap="wrap">
+              {!tagInput && filteredHabitTags.length === 0 && (
+                <Text color="gray" size="1">
+                  No tags found
                 </Text>
-              )} */}
-              {event ? 'Edit' : 'Add'} activity
-            </Dialog.Title>
-            {!!event && (
-              <Dialog.Close>
-                <IconButton
+              )}
+              {!!tagInput && filteredHabitTags.length === 0 && (
+                <Button variant="soft" size="1" onClick={onCreateHabitTag}>
+                  <PlusIcon />
+                  Create {tagInput}
+                </Button>
+              )}
+              {filteredHabitTags.map((ht) => (
+                <Button
+                  key={ht.id}
                   size="1"
                   variant="soft"
-                  color="red"
-                  ml="auto"
-                  onClick={onDeleteEvent}
+                  onClick={() => {
+                    console.log('Clicked tag', ht.id);
+                    setEventTags((prev) => [
+                      ...prev,
+                      { eventTagId: null, habitTagId: ht.id, label: ht.name },
+                    ]);
+                  }}
                 >
-                  <TrashIcon />
-                </IconButton>
-              </Dialog.Close>
-            )}
-          </Flex>
-          <Text>Habit</Text>
-          <Strong style={{ color: 'var(--accent-10)' }}>{habit.name}</Strong>
-
-          <Text>Tags</Text>
-          <TextField.Root
-            placeholder="Add tag"
-            value={tagInput}
-            onChange={(e) => setTagInput(e.target.value)}
-          />
-          <Button onClick={onCreateHabitTag}>Add Tag</Button>
-          {/* <Flex gap="2" wrap="wrap">
-            {event?.event_tag.map((et) => (
-              <Text key={et.id} size="2" color="gray">
-                {event.habit_tag.find((ht) => ht.id === et.habit_tag_id)?.name}
-              </Text>
-            ))}
-          </Flex> */}
-          <Text>Available tags</Text>
-          <Flex gap="2" wrap="wrap">
-            {habit.habit_tag.map((ht) => (
-              <Button
-                key={ht.id}
-                size="2"
-                onClick={() => {
-                  if (tagsToAdd.includes(ht.id)) {
-                    setTagsToAdd((prev) => prev.filter((id) => id !== ht.id));
-                  } else {
-                    setTagsToAdd((prev) => [...prev, ht.id]);
-                  }
-                }}
-              >
-                <Text size="2" color="gray">
-                  {ht.name}
-                </Text>
-              </Button>
-            ))}
-          </Flex>
-          <Dialog.Description size="2" align="left">
-            Are you sure you want to {event ? 'remove' : 'add'} activity on{' '}
-            <Strong>
-              {!!date && format(getLocalDate(date), 'EEE, MMM d, yyyy')}
-            </Strong>
-            ?
-          </Dialog.Description>
-          <Flex width="100%" justify="end" gap="2" mt="4">
-            {/* {!!event && (
-              <Dialog.Close>
-                <Button
-                  color="red"
-                  variant="soft"
-                  onClick={onDeleteEvent}
-                  mr="auto"
-                >
-                  <TrashIcon />
-                  Delete
+                  <Text size="2" color="gray">
+                    {ht.name}
+                  </Text>
                 </Button>
-              </Dialog.Close>
-            )} */}
-            <Dialog.Close>
-              <Button variant="soft" onClick={onClose}>
-                Cancel
-              </Button>
-            </Dialog.Close>
-            <Dialog.Close>
-              <Button onClick={onSaveEvent}>{event ? 'Add' : 'Update'}</Button>
-            </Dialog.Close>
-          </Flex>
-        </Flex>
-      </Dialog.Content>
-      {children}
-    </Dialog.Root>
+              ))}
+            </Flex>
+          </Popover.Content>
+        </Popover.Root>
+        {eventTags.map((tag) => (
+          <Button
+            key={tag.habitTagId}
+            size="1"
+            variant="soft"
+            onClick={() => {
+              setEventTags((prev) =>
+                prev.filter((t) => t.habitTagId !== tag.habitTagId),
+              );
+            }}
+            style={{
+              display: 'flex',
+              paddingRight: 6,
+              gap: 6,
+            }}
+          >
+            <Text size="2" color="gray">
+              {tag.label}
+            </Text>
+            <Cross2Icon />
+          </Button>
+        ))}
+      </Flex>
+      <Flex width="100%" justify="end" gap="2" mt="4">
+        <Dialog.Close>
+          <Button variant="soft" onClick={onClose}>
+            Cancel
+          </Button>
+        </Dialog.Close>
+        <Dialog.Close>
+          <Button onClick={onSaveEvent}>{event ? 'Update' : 'Add'}</Button>
+        </Dialog.Close>
+      </Flex>
+    </Flex>
   );
 };
