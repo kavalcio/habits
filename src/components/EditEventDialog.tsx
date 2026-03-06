@@ -11,6 +11,7 @@ import {
 } from '@radix-ui/themes';
 import { useMutation } from '@tanstack/react-query';
 import { format } from 'date-fns';
+import { enqueueSnackbar } from 'notistack';
 import { useEffect, useMemo, useState } from 'react';
 
 import {
@@ -44,13 +45,10 @@ export const EditEventDialog = ({
   );
 };
 
+// TODO: show tags in some dashboard view. maybe the scrolling activity, or the daily log dialog
 // TODO: close tag popup when a tag is selected or new tag created
 // TODO: prevent this dialog from closing when onConfirm fails
-// TODO: allow creating event with tags, and allow updating existing event's tags
 // TODO: memoize functions?
-// TODO: if habitTag is already on this event, prevent adding it. filter it out of the potential tags list
-// TODO: dont allow creating habitTags with identical names
-// TODO: wrap tags in row if too many
 export const EditEventDialogContent = ({
   date,
   habit,
@@ -84,25 +82,29 @@ export const EditEventDialogContent = ({
   const addTagsToEventMutation = useMutation(addTagsToEvent);
   const removeTagsFromEventMutation = useMutation(removeTagsFromEvent);
 
-  // const onAddTagToEvent = async () => {
-  //   if (event) {
-  //     // TODO: do mutation to add tag right away
-  //   } else {
-  //     // TODO: somehow save the tags to be added, run mutations at the end after the event creation mutation is finished
-  //   }
-  // };
+  const addTagToList = (habitTagId: number, label: string) => {
+    const tagAlreadyInList = eventTags.some(
+      (et) => et.habitTagId === habitTagId,
+    );
+    if (tagAlreadyInList) return;
+    setEventTags((prev) => [...prev, { eventTagId: null, habitTagId, label }]);
+  };
 
-  // const onRemoveTagFromEvent = async () => {
-  //   if (event) {
-  //     // TODO: run mutation to delete tag
-  //   } else {
-  //     // TODO: remove tag from the list of cached tags pending publish
-  //   }
-  // };
+  const removeTagFromList = (habitTagId: number) => {
+    setEventTags((prev) => prev.filter((tag) => tag.habitTagId !== habitTagId));
+  };
 
   const onCreateHabitTag = async () => {
-    console.log('Creating habit tag with name', tagInput);
     if (!tagInput.trim()) return;
+    const tagNotUnique = habit.habit_tag.some(
+      (t) => t.name.toLowerCase() === tagInput.trim().toLowerCase(),
+    );
+    if (tagNotUnique) {
+      enqueueSnackbar('Tag with this name already exists', {
+        variant: 'warning',
+      });
+      return;
+    }
     try {
       const habitTag = await createHabitTagMutation.mutateAsync({
         habitId: habit.id,
@@ -191,9 +193,10 @@ export const EditEventDialogContent = ({
   const filteredHabitTags = useMemo(() => {
     return habit.habit_tag.filter(
       (t) =>
-        t.name.toLowerCase().indexOf(tagInputDebounced.toLowerCase()) !== -1,
+        t.name.toLowerCase().indexOf(tagInputDebounced.toLowerCase()) !== -1 &&
+        !eventTags.some((et) => et.habitTagId === t.id),
     );
-  }, [habit.habit_tag, tagInputDebounced]);
+  }, [habit.habit_tag, tagInputDebounced, eventTags]);
 
   console.log('eventTags', eventTags);
 
@@ -223,7 +226,7 @@ export const EditEventDialogContent = ({
       <Text>
         {format(getLocalDate((date ?? event?.date)!), 'MMM dd, yyyy')}
       </Text>
-      <Flex gap="2">
+      <Flex gap="2" wrap="wrap">
         <Text>Tags</Text>
         <Popover.Root>
           <Popover.Trigger>
@@ -256,13 +259,7 @@ export const EditEventDialogContent = ({
                   key={ht.id}
                   size="1"
                   variant="soft"
-                  onClick={() => {
-                    console.log('Clicked tag', ht.id);
-                    setEventTags((prev) => [
-                      ...prev,
-                      { eventTagId: null, habitTagId: ht.id, label: ht.name },
-                    ]);
-                  }}
+                  onClick={() => addTagToList(ht.id, ht.name)}
                 >
                   <Text size="2" color="gray">
                     {ht.name}
@@ -277,11 +274,7 @@ export const EditEventDialogContent = ({
             key={tag.habitTagId}
             size="1"
             variant="soft"
-            onClick={() => {
-              setEventTags((prev) =>
-                prev.filter((t) => t.habitTagId !== tag.habitTagId),
-              );
-            }}
+            onClick={() => removeTagFromList(tag.habitTagId)}
             style={{
               display: 'flex',
               paddingRight: 6,
