@@ -46,19 +46,10 @@ export const addTagsToEvent = {
 };
 
 export const removeTagsFromEvent = {
-  mutationFn: async ({
-    // eventId,
-    eventTagIds,
-  }: {
-    // eventId: number;
-    // tagIds: number[];
-    eventTagIds: number[];
-  }) => {
+  mutationFn: async ({ eventTagIds }: { eventTagIds: number[] }) => {
     const { data, error } = await supabase
       .from('event_tag')
       .delete()
-      // .in('habit_tag_id', tagIds)
-      // .eq('event_id', eventId)
       .in('id', eventTagIds)
       .select();
     if (error) throw error;

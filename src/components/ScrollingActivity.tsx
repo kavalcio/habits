@@ -202,12 +202,12 @@ export const ScrollingActivity = ({
               <Tooltip content={habit.name} delayDuration={1000}>
                 <Text
                   size="1"
-                  mr="1"
+                  mr="3"
                   asChild
                   style={{
                     gridColumnStart: '1',
                     gridColumnEnd: '3',
-                    textAlign: 'left',
+                    textAlign: 'right',
                     overflow: 'hidden',
                     textOverflow: 'ellipsis',
                     display: '-webkit-box',
@@ -250,10 +250,8 @@ export const ScrollingActivity = ({
                       {data.completed ? (
                         <Box
                           style={{
-                            // backgroundColor: `var(--${habit.color}-3)`,
-                            // border: `2px solid var(--${habit.color}-8)`,
-                            backgroundColor: `var(--accent-3)`,
-                            border: `2px solid var(--accent-8)`,
+                            backgroundColor: `var(--${habit.color}-3)`,
+                            border: `2px solid var(--${habit.color}-8)`,
                             borderRadius: 4,
                             flex: 1,
                             marginTop: 8,
@@ -280,6 +278,7 @@ export const ScrollingActivity = ({
                       ) : (
                         <Button
                           variant="ghost"
+                          color={habit.color as any}
                           style={{
                             width: 'calc(100% - 12px)',
                             height: 'calc(100% - 12px)',
@@ -291,7 +290,7 @@ export const ScrollingActivity = ({
                           <Box
                             m="auto"
                             style={{
-                              backgroundColor: 'var(--gray-11)',
+                              backgroundColor: 'var(--gray-10)',
                               width: 4,
                               height: 4,
                               borderRadius: '50%',

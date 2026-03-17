@@ -9,6 +9,8 @@ import {
   Table,
   Text,
   TextField,
+  Theme,
+  Tooltip,
 } from '@radix-ui/themes';
 import { useMutation } from '@tanstack/react-query';
 import { format } from 'date-fns';
@@ -201,130 +203,134 @@ export const EditEventDialogContent = ({
 
   console.log('eventTags', eventTags);
 
+  const dateString = date ?? event?.date;
+
   return (
-    <Flex direction="column" align="start" gap="3">
-      <Flex direction="row" align="center" width="100%">
-        <Dialog.Title size="4" align="left" mb="0">
-          {event ? 'Edit' : 'Add'} activity
-        </Dialog.Title>
-        {!!event && (
-          <Dialog.Close>
-            <IconButton
-              size="1"
-              variant="soft"
-              color="red"
-              ml="auto"
-              onClick={onDeleteEvent}
-            >
-              <TrashIcon />
-            </IconButton>
-          </Dialog.Close>
-        )}
-      </Flex>
-      <Table.Root style={{ width: '100%' }} size="2">
-        <Table.Body>
-          <Table.Row>
-            <Table.RowHeaderCell width="10px">
-              <Strong>Habit</Strong>
-            </Table.RowHeaderCell>
-            <Table.Cell>
-              <Strong style={{ color: 'var(--accent-10)' }}>
-                {habit.name}
-              </Strong>
-            </Table.Cell>
-          </Table.Row>
-          <Table.Row>
-            <Table.RowHeaderCell width="10px">
-              <Strong>Date</Strong>
-            </Table.RowHeaderCell>
-            <Table.Cell>
-              {format(getLocalDate((date ?? event?.date)!), 'MMM dd, yyyy')}
-            </Table.Cell>
-          </Table.Row>
-          <Table.Row>
-            <Table.RowHeaderCell width="10px">
-              <Strong>Tags</Strong>
-            </Table.RowHeaderCell>
-            <Table.Cell>
-              <Flex gap="2" wrap="wrap">
-                <Popover.Root>
-                  <Popover.Trigger>
-                    <IconButton variant="soft" color="gray" size="1">
-                      <PlusIcon />
-                    </IconButton>
-                  </Popover.Trigger>
-                  <Popover.Content>
-                    <TextField.Root
-                      size="1"
-                      placeholder="Search or add tags"
-                      value={tagInput}
-                      onChange={(e) => setTagInput(e.target.value)}
-                      mb="3"
-                    />
-                    <Flex gap="2" wrap="wrap">
-                      {!tagInput && filteredHabitTags.length === 0 && (
-                        <Text color="gray" size="1">
-                          No tags found
-                        </Text>
-                      )}
-                      {!!tagInput && filteredHabitTags.length === 0 && (
-                        <Button
-                          variant="soft"
-                          size="1"
-                          onClick={onCreateHabitTag}
-                        >
-                          <PlusIcon />
-                          Create {tagInput}
-                        </Button>
-                      )}
-                      {filteredHabitTags.map((ht) => (
-                        <Button
-                          key={ht.id}
-                          size="1"
-                          variant="soft"
-                          onClick={() => addTagToList(ht.id, ht.name)}
-                        >
-                          <Text size="2" color="gray">
-                            {ht.name}
+    <Theme accentColor={habit.color as any}>
+      <Flex direction="column" align="start" gap="3">
+        <Flex direction="row" align="center" width="100%">
+          <Dialog.Title size="4" align="left" mb="0">
+            {event ? 'Edit' : 'Add'} activity
+          </Dialog.Title>
+          {!!event && (
+            <Dialog.Close>
+              <Tooltip content="Delete activity" delayDuration={300}>
+                <IconButton
+                  size="1"
+                  variant="soft"
+                  ml="auto"
+                  onClick={onDeleteEvent}
+                >
+                  <TrashIcon />
+                </IconButton>
+              </Tooltip>
+            </Dialog.Close>
+          )}
+        </Flex>
+        <Table.Root style={{ width: '100%' }} size="2">
+          <Table.Body>
+            <Table.Row>
+              <Table.RowHeaderCell width="10px">
+                <Strong>Habit</Strong>
+              </Table.RowHeaderCell>
+              <Table.Cell>
+                <Strong style={{ color: 'var(--accent-10)' }}>
+                  {habit.name}
+                </Strong>
+              </Table.Cell>
+            </Table.Row>
+            <Table.Row>
+              <Table.RowHeaderCell width="10px">
+                <Strong>Date</Strong>
+              </Table.RowHeaderCell>
+              <Table.Cell>
+                {dateString &&
+                  format(getLocalDate(dateString), 'EEE, MMM dd, yyyy')}
+              </Table.Cell>
+            </Table.Row>
+            <Table.Row>
+              <Table.RowHeaderCell width="10px">
+                <Strong>Tags</Strong>
+              </Table.RowHeaderCell>
+              <Table.Cell>
+                <Flex gap="2" wrap="wrap">
+                  <Popover.Root>
+                    <Popover.Trigger>
+                      <IconButton variant="soft" color="gray" size="1">
+                        <PlusIcon />
+                      </IconButton>
+                    </Popover.Trigger>
+                    <Popover.Content>
+                      <TextField.Root
+                        size="1"
+                        placeholder="Search or add tags"
+                        value={tagInput}
+                        onChange={(e) => setTagInput(e.target.value)}
+                        mb="3"
+                      />
+                      <Flex gap="2" wrap="wrap">
+                        {!tagInput && filteredHabitTags.length === 0 && (
+                          <Text color="gray" size="1">
+                            No tags found
                           </Text>
-                        </Button>
-                      ))}
-                    </Flex>
-                  </Popover.Content>
-                </Popover.Root>
-                {eventTags.map((tag) => (
-                  <Button
-                    key={tag.habitTagId}
-                    size="1"
-                    variant="soft"
-                    onClick={() => removeTagFromList(tag.habitTagId)}
-                    style={{
-                      display: 'flex',
-                      paddingRight: 6,
-                      gap: 6,
-                    }}
-                  >
-                    <Text size="2" color="gray">
-                      {tag.label}
-                    </Text>
-                    <Cross2Icon />
-                  </Button>
-                ))}
-              </Flex>
-            </Table.Cell>
-          </Table.Row>
-        </Table.Body>
-      </Table.Root>
-      <Flex width="100%" justify="end" gap="2" mt="4">
-        <Dialog.Close>
-          <Button variant="soft" onClick={onClose}>
-            Cancel
-          </Button>
-        </Dialog.Close>
-        <Dialog.Close>
-          <Button onClick={onSaveEvent}>{event ? 'Update' : 'Add'}</Button>
-        </Dialog.Close>
+                        )}
+                        {!!tagInput && filteredHabitTags.length === 0 && (
+                          <Button
+                            variant="soft"
+                            size="1"
+                            onClick={onCreateHabitTag}
+                          >
+                            <PlusIcon />
+                            Create {tagInput}
+                          </Button>
+                        )}
+                        {filteredHabitTags.map((ht) => (
+                          <Button
+                            key={ht.id}
+                            size="1"
+                            variant="soft"
+                            onClick={() => addTagToList(ht.id, ht.name)}
+                          >
+                            <Text size="2" color="gray">
+                              {ht.name}
+                            </Text>
+                          </Button>
+                        ))}
+                      </Flex>
+                    </Popover.Content>
+                  </Popover.Root>
+                  {eventTags.map((tag) => (
+                    <Button
+                      key={tag.habitTagId}
+                      size="1"
+                      variant="soft"
+                      onClick={() => removeTagFromList(tag.habitTagId)}
+                      style={{
+                        display: 'flex',
+                        paddingRight: 6,
+                        gap: 6,
+                      }}
+                    >
+                      <Text size="2">{tag.label}</Text>
+                      <Cross2Icon />
+                    </Button>
+                  ))}
+                </Flex>
+              </Table.Cell>
+            </Table.Row>
+          </Table.Body>
+        </Table.Root>
+        <Flex width="100%" justify="end" gap="2" mt="4">
+          <Dialog.Close>
+            <Button variant="soft" onClick={onClose}>
+              Cancel
+            </Button>
+          </Dialog.Close>
+          <Dialog.Close>
+            <Button onClick={onSaveEvent}>{event ? 'Update' : 'Add'}</Button>
+          </Dialog.Close>
+        </Flex>
       </Flex>
-    </Flex>
+    </Theme>
   );
 };
