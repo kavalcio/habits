@@ -49,9 +49,6 @@ export const EditEventDialog = ({
 };
 
 // TODO: show tags in some dashboard view. maybe the scrolling activity, or the daily log dialog
-// TODO: close tag popup when a tag is selected or new tag created
-// TODO: prevent this dialog from closing when onConfirm fails
-// TODO: memoize functions?
 export const EditEventDialogContent = ({
   date,
   habit,

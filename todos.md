@@ -39,6 +39,7 @@ Improvement
 - add aria tags everywhere
 - Daily Log dialog looks a bit outdated now, polish it
 - for the dashboard scrollingactivity, can we stagger event data fetch (by date), instead of fetching all at once?
+- Allow picking which habits are shown on the ScrollingActivity component
 
 Notes
 - Name options
