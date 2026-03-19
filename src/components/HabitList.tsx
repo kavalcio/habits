@@ -50,7 +50,7 @@ export const HabitList = ({ habits }: { habits: Habit[] }) => {
                     borderRadius: 4,
                   }}
                 />
-                <Text>{habit.name}</Text>
+                <Text size="2">{habit.name}</Text>
               </Flex>
             </RouterLink>
           </Card>

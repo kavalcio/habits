@@ -53,6 +53,7 @@ export const deleteEvent = {
     if (error) throw error;
   },
   onSuccess: async () => {
+    enqueueSnackbar('Activity removed', { variant: 'success' });
     await Promise.all([
       queryClient.invalidateQueries({ queryKey: ['event'] }),
       queryClient.invalidateQueries({ queryKey: ['habitWithEvents'] }),

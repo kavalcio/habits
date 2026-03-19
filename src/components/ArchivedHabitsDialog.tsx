@@ -12,7 +12,6 @@ import {
   useThemeContext,
 } from '@radix-ui/themes';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { enqueueSnackbar } from 'notistack';
 
 import { fetchArchivedHabits, restoreHabit } from '@/requests';
 
@@ -38,10 +37,8 @@ const ArchivedHabitsDialogContent = () => {
   const onRestore = async (habitId: number) => {
     try {
       await restoreHabitMutation.mutateAsync(habitId);
-      enqueueSnackbar('Habit restored', { variant: 'success' });
     } catch (error) {
       console.error('Failed to restore habit', error);
-      enqueueSnackbar('Failed to restore habit', { variant: 'error' });
     }
   };
 

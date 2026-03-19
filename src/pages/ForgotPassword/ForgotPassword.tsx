@@ -20,7 +20,7 @@ export const ForgotPassword = () => {
   const onSubmit = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
     try {
-      await resetPasswordMutation.mutateAsync({ email });
+      await resetPasswordMutation.mutateAsync({ email: email.trim() });
       setShowConfirmation(true);
     } catch (error) {
       console.error(error);

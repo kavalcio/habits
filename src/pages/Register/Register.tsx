@@ -37,7 +37,7 @@ export const Register = () => {
         setFormError('Passwords do not match.');
         return;
       }
-      await registerMutation.mutateAsync({ email, password });
+      await registerMutation.mutateAsync({ email: email.trim(), password });
       setShowConfirmation(true);
     } catch (error) {
       setFormError((error as Error)?.message ?? 'Something went wrong.');

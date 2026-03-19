@@ -1,7 +1,7 @@
 import {
+  CalendarIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
-  ResetIcon,
 } from '@radix-ui/react-icons';
 import {
   Box,
@@ -17,18 +17,16 @@ import {
   Text,
   Tooltip,
 } from '@radix-ui/themes';
-import { useMutation } from '@tanstack/react-query';
 import { addDays, format, startOfWeek, subDays } from 'date-fns';
 import { Fragment, useMemo, useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 
 import { Routes } from '@/constants';
-import { createEvent, deleteEvent } from '@/requests';
 import { HabitWithEvents } from '@/types';
 
 import { EditEventDialog } from './EditEventDialog';
 
-const BORDER_WIDTH = 0.5;
+const BORDER_WIDTH = 1;
 const TIME_WINDOW_OPTIONS = [7, 14, 21];
 
 export const ScrollingActivity = ({
@@ -36,37 +34,14 @@ export const ScrollingActivity = ({
 }: {
   habitsWithEvents: HabitWithEvents[];
 }) => {
-  const [dateSpan, setDateSpan] = useState(TIME_WINDOW_OPTIONS[1]);
+  const [dateSpan, setDateSpan] = useState(() => {
+    const stored = localStorage.getItem('dateSpan');
+    return stored ? parseInt(stored, 10) : TIME_WINDOW_OPTIONS[1];
+  });
   const [weekStart, setWeekStart] = useState(() =>
     addDays(startOfWeek(new Date(), { weekStartsOn: 0 }), -(dateSpan - 7)),
   );
   const today = format(new Date(), 'yyyy-MM-dd');
-
-  const createEventMutation = useMutation(createEvent);
-  const deleteEventMutation = useMutation(deleteEvent);
-
-  const onUpdateEvent = async ({
-    eventId,
-    habitId,
-    date,
-  }: {
-    eventId: number | null;
-    habitId: number;
-    date: string;
-  }) => {
-    try {
-      if (eventId) {
-        await deleteEventMutation.mutateAsync(eventId);
-      } else {
-        await createEventMutation.mutateAsync({
-          habitId,
-          date,
-        });
-      }
-    } catch (error) {
-      console.error('Error updating event:', error);
-    }
-  };
 
   const habitsWithDateList = useMemo(() => {
     const habits = habitsWithEvents.map((habit) => {
@@ -96,16 +71,15 @@ export const ScrollingActivity = ({
       borderLeftWidth: 0,
       borderRightWidth: BORDER_WIDTH,
       backgroundColor: 'transparent',
-      borderColor: 'var(--gray-10)',
+      borderColor: 'var(--gray-3)',
     };
     if ([0, 6].includes(addDays(weekStart, col).getDay())) {
       borderStyles.backgroundColor = 'var(--gray-2)';
     }
     if (date === today) {
-      borderStyles.borderLeftWidth = BORDER_WIDTH * 3;
-      borderStyles.borderRightWidth = BORDER_WIDTH * 4;
-      borderStyles.backgroundColor = 'var(--accent-3)';
-      borderStyles.borderColor = 'var(--accent-8)';
+      borderStyles.borderLeftWidth = BORDER_WIDTH;
+      borderStyles.backgroundColor = 'var(--accent-2)';
+      borderStyles.borderColor = 'var(--accent-6)';
     }
     if (col === dateSpan - 1) {
       borderStyles.borderRightWidth = 0;
@@ -129,34 +103,41 @@ export const ScrollingActivity = ({
     }
   }, [weekStart, dateSpan]);
 
+  const updateDateSpan = (newSpan: number) => {
+    setDateSpan(newSpan);
+    localStorage.setItem('dateSpan', newSpan.toString());
+  };
+
   return (
     <Flex direction="column" gap="3" maxWidth="100%">
       <Flex align="center" justify="between" gap="2" wrap="wrap">
         <Heading size="4" align="left">
           Dashboard
         </Heading>
-        <Flex align="center" gap="1">
+        <Flex align="center" gap="2">
           <IconButton
-            onClick={() => setWeekStart(subDays(weekStart, dateSpan))}
+            onClick={() => setWeekStart(subDays(weekStart, 7))}
             variant="outline"
             aria-label="Previous week"
+            size="1"
           >
             <ChevronLeftIcon />
           </IconButton>
-          <Text size="2" style={{ width: 120 }}>
+          <Text size="1" style={{ width: 100 }}>
             {dateRangeLabel}
           </Text>
           <IconButton
-            onClick={() => setWeekStart(addDays(weekStart, dateSpan))}
+            onClick={() => setWeekStart(addDays(weekStart, 7))}
             variant="outline"
             aria-label="Next week"
+            size="1"
           >
             <ChevronRightIcon />
           </IconButton>
           <Tooltip content="Reset to current date" delayDuration={300}>
             <IconButton
               variant="outline"
-              size="2"
+              size="1"
               onClick={() =>
                 setWeekStart(
                   addDays(
@@ -166,13 +147,13 @@ export const ScrollingActivity = ({
                 )
               }
             >
-              <ResetIcon />
+              <CalendarIcon />
             </IconButton>
           </Tooltip>
           <Select.Root
-            size="2"
+            size="1"
             value={`${dateSpan}`}
-            onValueChange={(v) => setDateSpan(Number(v))}
+            onValueChange={(v) => updateDateSpan(Number(v))}
           >
             <Select.Trigger />
             <Select.Content>
@@ -228,12 +209,12 @@ export const ScrollingActivity = ({
               <Tooltip content={habit.name} delayDuration={1000}>
                 <Text
                   size="1"
-                  mr="1"
+                  mr="3"
                   asChild
                   style={{
                     gridColumnStart: '1',
                     gridColumnEnd: '3',
-                    textAlign: 'left',
+                    textAlign: 'right',
                     overflow: 'hidden',
                     textOverflow: 'ellipsis',
                     display: '-webkit-box',
@@ -259,18 +240,11 @@ export const ScrollingActivity = ({
                   date={data.date}
                   habit={habit}
                   event={data.event}
-                  onConfirm={() =>
-                    onUpdateEvent({
-                      eventId: data.event?.id || null,
-                      habitId: habit.id,
-                      date: data.date,
-                    })
-                  }
                 >
                   <Flex
                     m="auto"
                     style={{
-                      height: 40,
+                      height: 46,
                       width: '100%',
                       borderStyle: 'solid',
                       borderTopWidth: 0,
@@ -283,34 +257,65 @@ export const ScrollingActivity = ({
                       {data.completed ? (
                         <Box
                           style={{
-                            backgroundColor: `var(--${habit.color}-3)`,
-                            border: `2px solid var(--${habit.color}-8)`,
-                            borderRadius: 4,
+                            margin: 2,
                             flex: 1,
-                            marginTop: 8,
-                            marginBottom: 8,
-                            marginLeft:
-                              8 - (data.date === today ? BORDER_WIDTH * 3 : 0),
-                            marginRight:
-                              8 - (data.date === today ? BORDER_WIDTH * 3 : 0),
+                            overflow: 'hidden',
                           }}
                         >
                           <Button
-                            variant="ghost"
-                            color="gray"
+                            variant="soft"
+                            color={habit.color as any}
                             style={{
+                              // backgroundColor: `var(--${habit.color}-3)`,
+                              margin: 0,
+                              border: `2px solid var(--${habit.color}-8)`,
+                              overflow: 'hidden',
                               display: 'flex',
+                              flexGrow: 1,
                               width: '100%',
                               height: '100%',
-                              padding: 0,
-                              margin: 0,
-                              borderRadius: 0,
+                              padding: 4,
+                              borderRadius: 2,
+                              alignItems: 'start',
+                              justifyContent: 'start',
                             }}
-                          />
+                          >
+                            <Flex
+                              wrap="wrap"
+                              gap="1"
+                              align="start"
+                              justify="start"
+                              overflow="hidden"
+                            >
+                              {data.event?.event_tag.slice(0, 1).map((tag) => (
+                                <Text
+                                  key={tag.id}
+                                  size="1"
+                                  style={{
+                                    padding: '1px 3px',
+                                    borderRadius: 4,
+                                    backgroundColor:
+                                      'rgba(255, 255, 255, 0.15)',
+                                    textOverflow: 'ellipsis',
+                                    whiteSpace: 'nowrap',
+                                    fontSize: 11,
+                                    overflow: 'hidden',
+                                  }}
+                                >
+                                  {
+                                    habit.habit_tag.find(
+                                      (ht) => ht.id === tag.habit_tag_id,
+                                    )?.name
+                                  }
+                                </Text>
+                              ))}
+                            </Flex>
+                          </Button>
                         </Box>
                       ) : (
                         <Button
                           variant="ghost"
+                          color={habit.color as any}
                           style={{
                             width: 'calc(100% - 12px)',
                             height: 'calc(100% - 12px)',
@@ -322,7 +327,7 @@ export const ScrollingActivity = ({
                           <Box
                             m="auto"
                             style={{
-                              backgroundColor: 'var(--gray-11)',
+                              backgroundColor: 'var(--gray-10)',
                               width: 4,
                               height: 4,
                               borderRadius: '50%',

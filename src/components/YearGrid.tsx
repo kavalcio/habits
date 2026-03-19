@@ -9,11 +9,9 @@ import {
   Text,
   Tooltip,
 } from '@radix-ui/themes';
-import { useMutation } from '@tanstack/react-query';
 import { format } from 'date-fns';
 import { useMemo, useState } from 'react';
 
-import { createEvent, deleteEvent } from '@/requests';
 import { Event, HabitWithEvents } from '@/types';
 
 import { EditEventDialog } from './EditEventDialog';
@@ -51,9 +49,6 @@ export const YearGrid = ({ habit }: { habit: HabitWithEvents }) => {
 
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
 
-  const createEventMutation = useMutation(createEvent);
-  const deleteEventMutation = useMutation(deleteEvent);
-
   // Get all dates for the selected year (Jan 1 to Dec 31)
   const allDates = useMemo(() => {
     const start = new Date(selectedYear, 0, 1);
@@ -88,24 +83,6 @@ export const YearGrid = ({ habit }: { habit: HabitWithEvents }) => {
   const years = Array.from({ length: 10 }, (_, i) => currentYear - i);
 
   const today = format(new Date(), 'yyyy-MM-dd');
-
-  const onUpdateEvent = async () => {
-    try {
-      if (!selectedDate) return;
-      const dateData = allDates.find((d) => d?.date === selectedDate);
-      if (dateData?.completed) {
-        await deleteEventMutation.mutateAsync(dateData.event!.id);
-      } else {
-        await createEventMutation.mutateAsync({
-          habitId: habit.id,
-          date: selectedDate,
-        });
-      }
-      setSelectedDate(null);
-    } catch (error) {
-      console.error('Error updating event:', error);
-    }
-  };
 
   return (
     <Flex direction="column" gap="2" maxWidth="100%" mx="auto">
@@ -153,7 +130,6 @@ export const YearGrid = ({ habit }: { habit: HabitWithEvents }) => {
           habit={habit}
           event={allDates.find((d) => d?.date === selectedDate)?.event}
           onClose={() => setSelectedDate(null)}
-          onConfirm={onUpdateEvent}
         >
           <Flex direction="row" align="start" mb="1">
             <Flex direction="column" gap={`${GRID_GAP_SIZE}px`} mr="2">

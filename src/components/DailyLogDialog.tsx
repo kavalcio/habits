@@ -28,6 +28,7 @@ import { getLocalDate } from '@/utils';
 
 import { Calendar } from './Calendar';
 
+// TODO: this is a bit outdated, maybe remove this whole dialog?
 export const DailyLogDialog = () => {
   return (
     <Dialog.Root>

@@ -1,7 +1,7 @@
 import {
+  CalendarIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
-  ResetIcon,
 } from '@radix-ui/react-icons';
 import {
   Button,
@@ -188,7 +188,7 @@ export const Calendar = ({
               onReturnToToday?.(today);
             }}
           >
-            <ResetIcon />
+            <CalendarIcon />
           </IconButton>
         </Tooltip>
       </Flex>
@@ -212,8 +212,8 @@ export const Calendar = ({
                   ...(muted && { color: 'var(--gray-9)' }),
                   ...(date === today &&
                     !muted && {
-                    border: '2px solid var(--white-a8)',
-                  }),
+                      border: '2px solid var(--white-a8)',
+                    }),
                 }}
                 onClick={() => {
                   if (date && onDateSelect) {
