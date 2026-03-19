@@ -48,7 +48,6 @@ export const EditEventDialog = ({
   );
 };
 
-// TODO: show tags in some dashboard view. maybe the scrolling activity, or the daily log dialog
 export const EditEventDialogContent = ({
   date,
   habit,
