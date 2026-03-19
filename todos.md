@@ -6,12 +6,11 @@ Core Features
 - Some analytics and graphs on habit details page
   - rolling weekly/monthly average graph
 - Create a logo, use in header and favicon
-- add a promo/index page at root '/'
-  - or merge root and dashboard into one
 - add more toasts for more actions
 - 404 page
 - error boundary page
 - clean up loading/error states of pages
+- make root page look decent
 
 Optional Features
 - allow pinning habits, and only show pinned habits on dashboard
