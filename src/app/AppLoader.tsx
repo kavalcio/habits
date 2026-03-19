@@ -27,7 +27,10 @@ export const AppLoader = () => {
         panelBackground="solid"
         radius="large"
       >
-        <SnackbarProvider classes={{ containerRoot: 'z-alert' }}>
+        <SnackbarProvider
+          classes={{ containerRoot: 'z-alert' }}
+          style={{ padding: '2px 6px', fontSize: 12 }}
+        >
           <Header isDarkMode={isDarkMode} setIsDarkMode={setIsDarkMode} />
           <Box m={{ initial: '4', sm: '6' }}>
             <Outlet />

@@ -211,16 +211,14 @@ export const EditEventDialogContent = ({
           </Dialog.Title>
           {!!event && (
             <Dialog.Close>
-              <Tooltip content="Delete activity" delayDuration={300}>
-                <IconButton
-                  size="1"
-                  variant="soft"
-                  ml="auto"
-                  onClick={onDeleteEvent}
-                >
-                  <TrashIcon />
-                </IconButton>
-              </Tooltip>
+              <IconButton
+                size="1"
+                variant="soft"
+                ml="auto"
+                onClick={onDeleteEvent}
+              >
+                <TrashIcon />
+              </IconButton>
             </Dialog.Close>
           )}
         </Flex>
