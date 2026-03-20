@@ -1,3 +1,5 @@
+import { enqueueSnackbar } from 'notistack';
+
 import { queryClient, supabase } from './supabase';
 
 export const register = {
@@ -86,6 +88,7 @@ export const updateEmail = {
     return data.user;
   },
   onSuccess: async () => {
+    enqueueSnackbar('Email updated', { variant: 'success' });
     await queryClient.invalidateQueries({ queryKey: ['user'] });
   },
 };
@@ -95,6 +98,9 @@ export const updatePassword = {
     const { data, error } = await supabase.auth.updateUser({ password });
     if (error) throw error;
     return data.user;
+  },
+  onSuccess: async () => {
+    enqueueSnackbar('Password updated', { variant: 'success' });
   },
 };
 
@@ -113,6 +119,7 @@ export const updateName = {
     return data.user;
   },
   onSuccess: async () => {
+    enqueueSnackbar('User name updated', { variant: 'success' });
     await queryClient.invalidateQueries({ queryKey: ['user'] });
   },
 };

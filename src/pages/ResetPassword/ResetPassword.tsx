@@ -10,7 +10,6 @@ import {
   TextField,
 } from '@radix-ui/themes';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { enqueueSnackbar } from 'notistack';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -40,7 +39,6 @@ export const ResetPassword = () => {
         return;
       }
       await updatePasswordMutation.mutateAsync({ password });
-      enqueueSnackbar('Password updated successfully.', { variant: 'success' });
       navigate(Routes.DASHBOARD, { replace: true });
     } catch (error) {
       setFormError((error as Error)?.message ?? 'Something went wrong.');

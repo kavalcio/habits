@@ -1,10 +1,10 @@
-import { animate, createScope, JSAnimation, Scope } from 'animejs';
+import { animate, createScope, JSAnimation, Scope, stagger } from 'animejs';
 import { useEffect, useRef } from 'react';
 
 const DURATION = 4000;
 const ITEM_COUNT = 6;
+const EASE_DURATION = 1.7;
 
-// TODO: make it somewhat interactive, e.g. offset items based on cursor position
 export const AbacusRow = ({
   id,
   reversed = false,
@@ -26,9 +26,14 @@ export const AbacusRow = ({
       targets.forEach((target, i) => {
         const animation = animate(target, {
           x: [
-            { from: -100, to: 75, ease: 'in(1.5)', duration: DURATION / 3 },
+            {
+              from: -100,
+              to: 75,
+              ease: `out(${EASE_DURATION})`,
+              duration: DURATION / 3,
+            },
             { to: 275, ease: 'none', duration: DURATION },
-            { to: 450, ease: 'in(1.5)', duration: DURATION / 3 },
+            { to: 450, ease: `in(${EASE_DURATION})`, duration: DURATION / 3 },
             { to: -100, ease: 'none', duration: 0 },
           ],
           // opacity: [
@@ -38,8 +43,8 @@ export const AbacusRow = ({
           // ],
           loop: true,
           loopDelay: 0,
-          reversed,
-        }).seek(i * 1115);
+          // reversed,
+        }).seek(i * 1115 + id * 700);
 
         animations.push(animation);
       });

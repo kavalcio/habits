@@ -71,7 +71,7 @@ export const Header = ({
           >
             <Link asChild>
               <RouterLink to={Routes.DASHBOARD}>
-                <Text>Dashboard</Text>
+                <Text size="2">Dashboard</Text>
               </RouterLink>
             </Link>
             {session && <DailyLogDialog />}

@@ -20,7 +20,6 @@ import { Habit } from '@/types';
 
 import { ColorSwatchPicker } from './ColorSwatchPicker';
 
-// TODO: show error toast on success/failure
 export const AddEditHabitDialog = ({
   habit,
   children,
