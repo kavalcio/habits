@@ -58,7 +58,7 @@ export const Header = ({
               }}
               to="/"
             >
-              temper
+              ordo
             </RouterLink>
           </Text>
           <Flex
