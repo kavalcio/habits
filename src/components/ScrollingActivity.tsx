@@ -78,8 +78,8 @@ export const ScrollingActivity = ({
     }
     if (date === today) {
       borderStyles.borderLeftWidth = BORDER_WIDTH;
-      borderStyles.backgroundColor = 'var(--accent-2)';
-      borderStyles.borderColor = 'var(--accent-6)';
+      borderStyles.backgroundColor = 'var(--accent-1)';
+      borderStyles.borderColor = 'var(--accent-5)';
     }
     if (col === dateSpan - 1) {
       borderStyles.borderRightWidth = 0;

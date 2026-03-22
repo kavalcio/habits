@@ -1,4 +1,4 @@
-import { ExclamationTriangleIcon, ResetIcon } from '@radix-ui/react-icons';
+import { ExclamationTriangleIcon } from '@radix-ui/react-icons';
 import {
   Box,
   Button,
@@ -28,7 +28,9 @@ function readStoredAppearance(): 'light' | 'dark' {
 
 function errorMessage(error: unknown): string {
   if (isRouteErrorResponse(error)) {
-    return error.statusText || error.data?.toString?.() || 'Something went wrong';
+    return (
+      error.statusText || error.data?.toString?.() || 'Something went wrong'
+    );
   }
   if (error instanceof Error) {
     return error.message;

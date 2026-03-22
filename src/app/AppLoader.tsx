@@ -23,6 +23,7 @@ export const AppLoader = () => {
     <AuthWrapper>
       <Theme
         appearance={isDarkMode ? 'dark' : 'light'}
+        grayColor="slate"
         accentColor="orange"
         panelBackground="solid"
         radius="large"

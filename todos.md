@@ -1,24 +1,27 @@
 Bugs
 - on going away from the tab and coming back, queries get refetched. could be a config of useQuery, or could be a react shenanigan
 - some custom colors dont work for the light theme, fix those
+- In profile page edit forms, nordpass thinks pressing Edit or Cancel counts as logging in
 
 Core Features
 - Some analytics and graphs on habit details page
-  - rolling weekly/monthly average graph
+  - [ ] rolling weekly/monthly average graph
+  - [ ] Total days completed (all time)
+  - [ ] Total days completed (month)
+  - [ ] Total days completed (year)
+  - [ ] Average days completed (per week)
+  - [ ] % of days completed over last 7 / 30 / 90 days
+  - [ ] Current streak
+  - [ ] Longest streak
+  - [ ] Best day of the week
 - Create a logo, use in header and favicon
-- add more toasts for more actions
-- 404 page
-- error boundary page
-- clean up loading/error states of pages
 - make root page look decent
 
 Optional Features
+- pick custom font
 - allow pinning habits, and only show pinned habits on dashboard
 - allow changing the order of habits (at least the pinned ones)
-- undo button that reverts last event addition/removal
-- some animation on the home page. maybe an abacus-like line of boxes (similar to the progress box in the yearly grid) that move to the left or right on a string
-  - maybe use anime.js
-  - maybe add the same animation to page logo on the top left, but only play when hovered
+- add the home page abacus animation to page logo on the top left, but only play when hovered
 - Add custom page scrollbar style
 - allow importing events from csv
 - allow exporting events to csv
@@ -27,7 +30,7 @@ Optional Features
   - allow filtering/grouping by these qualifiers/quantifiers?
 - google oauth
 - allow picking an icon for each habit
-- pick custom font
+- undo button that reverts last event addition/removal
 
 Improvement
 - use Callout element when showing error on screen
