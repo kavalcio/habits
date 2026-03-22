@@ -15,6 +15,7 @@ import { useParams } from 'react-router-dom';
 
 import {
   AddEditHabitDialog,
+  Chart,
   EventCalendar,
   FormError,
   YearGrid,
@@ -24,7 +25,6 @@ import { fetchHabitWithEvents } from '@/requests';
 export const HabitOverview = () => {
   const params = useParams();
 
-  // TODO: check for if habitId is a valid number
   const habitId = Number(params.habitId);
 
   const {
@@ -78,6 +78,7 @@ export const HabitOverview = () => {
           </Flex>
           <YearGrid habit={habit} />
           <EventCalendar habit={habit} />
+          <Chart />
         </Flex>
       </Container>
     </Theme>
