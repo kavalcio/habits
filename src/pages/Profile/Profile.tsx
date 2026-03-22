@@ -24,8 +24,6 @@ import {
   updatePassword,
 } from '@/requests';
 
-// TODO: nordpass thinks pressing Edit or Cancel counts as logging in
-// TODO: show toast on error/success
 export const Profile = () => {
   const navigate = useNavigate();
 

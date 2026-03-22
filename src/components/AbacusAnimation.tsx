@@ -83,7 +83,7 @@ export const AbacusAnimation = () => {
             userSelect: 'none',
           }}
         >
-          <Heading size="8">temper</Heading>
+          <Heading size="8">ordo</Heading>
         </div>
         <div
           style={{

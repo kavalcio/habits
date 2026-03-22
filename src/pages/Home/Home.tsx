@@ -26,9 +26,9 @@ export const Home = () => {
         gap="8"
       >
         <Flex direction="column" gap="5" flexGrow="1">
-          <Heading size="6">Welcome to Temper</Heading>
+          <Heading size="6">Welcome to Ordo</Heading>
           <Text size="3" color="gray">
-            Temper is a habit tracking app designed to help you build, monitor,
+            Ordo is a habit tracking app designed to help you build, monitor,
             and maintain positive routines. Track your progress, visualize your
             streaks, and stay motivated every day.
           </Text>

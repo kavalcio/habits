@@ -82,6 +82,7 @@ export const createHabit = {
     // const newHabit = data[0];
     // if (!newHabit) return;
     // queryClient.setQueryData(['habit', { id: newHabit.id }], newHabit);
+    enqueueSnackbar('Habit created', { variant: 'success' });
     await Promise.all([
       queryClient.invalidateQueries({ queryKey: ['habit'] }),
       queryClient.invalidateQueries({ queryKey: ['habitWithEvents'] }),
@@ -108,6 +109,7 @@ export const updateHabit = {
     return data[0] ?? null;
   },
   onSuccess: async () => {
+    enqueueSnackbar('Habit updated', { variant: 'success' });
     await Promise.all([
       queryClient.invalidateQueries({ queryKey: ['habit'] }),
       queryClient.invalidateQueries({ queryKey: ['habitWithEvents'] }),
@@ -126,6 +128,7 @@ export const archiveHabit = {
     return data[0] ?? null;
   },
   onSuccess: async () => {
+    enqueueSnackbar('Habit archived', { variant: 'success' });
     await Promise.all([
       queryClient.invalidateQueries({ queryKey: ['habit'] }),
       queryClient.invalidateQueries({ queryKey: ['habitWithEvents'] }),

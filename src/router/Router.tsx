@@ -12,17 +12,19 @@ import {
   HabitOverview,
   Home,
   Login,
+  NotFound,
   Profile,
   Register,
   ResetPassword,
 } from '../pages';
 
+import { RouteErrorPage } from './RouteErrorPage';
+
 const router = createBrowserRouter([
   {
     path: Routes.ROOT,
     element: <AppLoader />,
-    // TODO: replace with proper error element
-    errorElement: <div>Error...</div>,
+    errorElement: <RouteErrorPage />,
     children: [
       {
         path: Routes.ROOT,
@@ -55,6 +57,10 @@ const router = createBrowserRouter([
       {
         path: Routes.PROFILE,
         element: <Profile />,
+      },
+      {
+        path: '*',
+        element: <NotFound />,
       },
     ],
   },
