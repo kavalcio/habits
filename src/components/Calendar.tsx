@@ -148,7 +148,7 @@ export const Calendar = ({
   const CellWrapper = enableDialogTrigger ? Dialog.Trigger : React.Fragment;
 
   return (
-    <Flex width={`${TOTAL_WIDTH}px`} direction="column" gap="1">
+    <Flex width={`${TOTAL_WIDTH}px`} direction="column" gap="1" flexShrink="0">
       <Flex width="100%" justify="between" gap="1">
         <IconButton
           variant="outline"

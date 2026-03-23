@@ -22,15 +22,24 @@ export const Chart = () => {
 
     // Apply the options to the chart
     chartInstanceRef.current.setOption({
+      grid: {
+        left: 0,
+        right: 0,
+        top: 0,
+        bottom: 0,
+      },
       xAxis: {
         type: 'category',
         // boundaryGap: false,
-        boundaryGap: [0, '30%'],
+        // boundaryGap: [0, '30%'],
+        boundaryGap: true,
         show: false,
       },
       yAxis: {
         type: 'value',
-        boundaryGap: [0, '30%'],
+        // boundaryGap: false,
+        // boundaryGap: [0, '30%'],
+        boundaryGap: ['20%', '20%'],
         axisLabel: {
           show: false,
         },
@@ -93,5 +102,5 @@ export const Chart = () => {
     };
   }, [theme, chartRef]);
 
-  return <div ref={chartRef} style={{ width: '600px', height: '400px' }}></div>;
+  return <div ref={chartRef} style={{ width: '100%', height: '100%' }}></div>;
 };

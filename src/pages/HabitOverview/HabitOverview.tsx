@@ -1,5 +1,6 @@
 import { Pencil1Icon } from '@radix-ui/react-icons';
 import {
+  Box,
   Callout,
   Container,
   Dialog,
@@ -77,8 +78,19 @@ export const HabitOverview = () => {
             </AddEditHabitDialog>
           </Flex>
           <YearGrid habit={habit} />
-          <EventCalendar habit={habit} />
-          <Chart />
+          <Flex direction="row" align="start">
+            <EventCalendar habit={habit} />
+            <Box
+              style={{
+                flexGrow: 1,
+                height: 300,
+                borderRadius: 6,
+                border: '2px solid white',
+              }}
+            >
+              <Chart />
+            </Box>
+          </Flex>
         </Flex>
       </Container>
     </Theme>
