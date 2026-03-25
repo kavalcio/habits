@@ -38,9 +38,7 @@ export const HabitOverview = () => {
 
   const chartData = useMemo(() => calculateChartData(habit), [habit]);
 
-  console.log(chartData);
-
-  if (isPending) {
+  if (isPending || !chartData) {
     return (
       <Flex align="center" justify="center" style={{ minHeight: 300 }}>
         <Spinner size="3" />
@@ -87,19 +85,21 @@ export const HabitOverview = () => {
           <Flex direction="row" align="start" gap="3">
             <EventCalendar habit={habit} />
             <Box style={styles.chartContainer}>
-              <Chart series={chartData?.daysCompletedPerWeek || []} />
+              <Chart series={[chartData?.daysCompletedPerWeek.all]} />
               <Heading size="3" style={styles.chartTitle}>
                 Weekly Activity
               </Heading>
             </Box>
           </Flex>
+          {chartData?.daysCompletedPerWeek.perTag.length > 0 && (
+            <Box style={styles.chartContainer}>
+              <Chart series={chartData?.daysCompletedPerWeek.perTag} />
+              <Heading size="3" style={styles.chartTitle}>
+                Tags Used
+              </Heading>
+            </Box>
+          )}
           <Flex direction="row" align="start" gap="3">
-            <Box style={styles.chartContainer}>
-              <Chart series={chartData?.daysCompletedPerWeek || []} />
-            </Box>
-            <Box style={styles.chartContainer}>
-              <Chart series={chartData?.daysCompletedPerWeek || []} />
-            </Box>
             <Box style={styles.chartContainer}>
               <Flex direction="column" p="3" align="start" height="100%">
                 <Heading size="3" mb="2">
@@ -139,11 +139,10 @@ export const HabitOverview = () => {
 const styles = {
   chartContainer: {
     position: 'relative',
-    flex: 1,
+    flexGrow: 1,
     height: 200,
     borderRadius: 6,
-    border: '2px solid var(--gray-11)',
-    overflow: 'hidden',
+    border: '1px solid var(--gray-11)',
   },
   chartTitle: {
     position: 'absolute',

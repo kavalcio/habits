@@ -5,10 +5,10 @@ Bugs
 
 Core Features
 - Some analytics and graphs on habit details page
-  - [ ] Total days completed (all time)
-  - [ ] Total days completed (month)
-  - [ ] Total days completed (year)
-  - [ ] Average days completed (per week)
+  - [x] Total days completed (all time)
+  - [x] Total days completed (month)
+  - [x] Total days completed (year)
+  - [x] Average days completed (per week)
   - [x] Days completed per week (for the last year)
   - [ ] % of days completed over last 7 / 30 / 90 days
   - [ ] Current streak
