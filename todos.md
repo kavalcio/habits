@@ -5,15 +5,16 @@ Bugs
 
 Core Features
 - Some analytics and graphs on habit details page
-  - [ ] rolling weekly/monthly average graph
   - [ ] Total days completed (all time)
   - [ ] Total days completed (month)
   - [ ] Total days completed (year)
   - [ ] Average days completed (per week)
+  - [x] Days completed per week (for the last year)
   - [ ] % of days completed over last 7 / 30 / 90 days
   - [ ] Current streak
   - [ ] Longest streak
   - [ ] Best day of the week
+  - [ ] How many times each tag is used
 - Create a logo, use in header and favicon
 - make root page look decent
 

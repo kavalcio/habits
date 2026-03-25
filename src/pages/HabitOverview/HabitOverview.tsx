@@ -12,6 +12,7 @@ import {
   Theme,
 } from '@radix-ui/themes';
 import { useQuery } from '@tanstack/react-query';
+import { useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 
 import {
@@ -22,6 +23,7 @@ import {
   YearGrid,
 } from '@/components';
 import { fetchHabitWithEvents } from '@/requests';
+import { calculateChartData } from '@/utils';
 
 export const HabitOverview = () => {
   const params = useParams();
@@ -33,6 +35,10 @@ export const HabitOverview = () => {
     error,
     isPending,
   } = useQuery(fetchHabitWithEvents(habitId));
+
+  const chartData = useMemo(() => calculateChartData(habit), [habit]);
+
+  console.log(chartData);
 
   if (isPending) {
     return (
@@ -78,17 +84,50 @@ export const HabitOverview = () => {
             </AddEditHabitDialog>
           </Flex>
           <YearGrid habit={habit} />
-          <Flex direction="row" align="start">
+          <Flex direction="row" align="start" gap="3">
             <EventCalendar habit={habit} />
-            <Box
-              style={{
-                flexGrow: 1,
-                height: 300,
-                borderRadius: 6,
-                border: '2px solid white',
-              }}
-            >
-              <Chart />
+            <Box style={styles.chartContainer}>
+              <Chart series={chartData?.daysCompletedPerWeek || []} />
+              <Heading size="3" style={styles.chartTitle}>
+                Weekly Activity
+              </Heading>
+            </Box>
+          </Flex>
+          <Flex direction="row" align="start" gap="3">
+            <Box style={styles.chartContainer}>
+              <Chart series={chartData?.daysCompletedPerWeek || []} />
+            </Box>
+            <Box style={styles.chartContainer}>
+              <Chart series={chartData?.daysCompletedPerWeek || []} />
+            </Box>
+            <Box style={styles.chartContainer}>
+              <Flex direction="column" p="3" align="start" height="100%">
+                <Heading size="3" mb="2">
+                  Activity
+                </Heading>
+                <Flex align="center" justify="between" width="100%">
+                  <Text size="1">Last 30 days</Text>
+                  <Text size="6">{chartData?.eventCountLast30Days}</Text>
+                </Flex>
+                <Flex align="center" justify="between" width="100%">
+                  <Text size="1">Last 12 months</Text>
+                  <Text size="6">{chartData?.eventCountLast12Months}</Text>
+                </Flex>
+                <Flex align="center" justify="between" width="100%">
+                  <Text size="1">All time</Text>
+                  <Text size="6">{chartData?.eventCountAllTime}</Text>
+                </Flex>
+              </Flex>
+            </Box>
+            <Box style={styles.chartContainer}>
+              <Flex direction="column" p="3" align="start" height="100%">
+                <Heading size="3" mb="2">
+                  Weekly average
+                </Heading>
+                <Text size="8">
+                  {chartData?.averageEventsCompletedPerWeek.toFixed(2)}
+                </Text>
+              </Flex>
             </Box>
           </Flex>
         </Flex>
@@ -96,3 +135,22 @@ export const HabitOverview = () => {
     </Theme>
   );
 };
+
+const styles = {
+  chartContainer: {
+    position: 'relative',
+    flex: 1,
+    height: 200,
+    borderRadius: 6,
+    border: '2px solid var(--gray-11)',
+    overflow: 'hidden',
+  },
+  chartTitle: {
+    position: 'absolute',
+    top: 2,
+    left: 2,
+    padding: 10,
+    backgroundColor: 'var(--gray-1)',
+    borderRadius: 6,
+  },
+} as const;

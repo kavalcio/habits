@@ -5,7 +5,9 @@ import { useEffect, useRef } from 'react';
 
 // Accessing the alpha variant directly
 
-export const Chart = () => {
+// TODO: add skeleton if series is null, allow nullable series
+// TODO: handle resize, right now graph width stays constant
+export const Chart = ({ series }: { series: { x: string; y: number }[] }) => {
   // console.log(echarts);
   const chartRef = useRef(null);
   const chartInstanceRef = useRef<echarts.EChartsType | null>(null);
@@ -39,7 +41,7 @@ export const Chart = () => {
         type: 'value',
         // boundaryGap: false,
         // boundaryGap: [0, '30%'],
-        boundaryGap: ['20%', '20%'],
+        boundaryGap: ['10%', '10%'],
         axisLabel: {
           show: false,
         },
@@ -53,7 +55,7 @@ export const Chart = () => {
       series: [
         {
           type: 'line',
-          smooth: 0.6,
+          smooth: 0.8,
           symbol: 'none',
           lineStyle: {
             // color: '#5470C6',
@@ -61,7 +63,7 @@ export const Chart = () => {
             // color: 'var(--accent-8)',
             // color: colors[theme.accentColor][`${theme.accentColor}6`],
             color,
-            width: 5,
+            width: 2,
           },
           areaStyle: {
             color: {
@@ -81,17 +83,7 @@ export const Chart = () => {
               ],
             },
           },
-          data: [
-            ['2019-10-10', 200],
-            ['2019-10-11', 560],
-            ['2019-10-12', 750],
-            ['2019-10-13', 580],
-            ['2019-10-14', 250],
-            ['2019-10-15', 300],
-            ['2019-10-16', 450],
-            ['2019-10-17', 300],
-            ['2019-10-18', 100],
-          ],
+          data: series.map((point) => [point.x, point.y]),
         },
       ],
     });
@@ -100,7 +92,7 @@ export const Chart = () => {
     return () => {
       chartInstanceRef.current?.dispose();
     };
-  }, [theme, chartRef]);
+  }, [theme, chartRef, series]);
 
   return <div ref={chartRef} style={{ width: '100%', height: '100%' }}></div>;
 };
