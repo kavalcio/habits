@@ -83,7 +83,16 @@ export const AbacusAnimation = () => {
             userSelect: 'none',
           }}
         >
-          <Heading size="8">ordo</Heading>
+          <Heading
+            style={{
+              fontSize: 42,
+              letterSpacing: -1,
+              lineHeight: 0,
+              fontFamily: 'Jost, sans-serif',
+            }}
+          >
+            ordo
+          </Heading>
         </div>
         <div
           style={{

@@ -14,9 +14,8 @@ Core Features
   - [ ] Current streak
   - [ ] Longest streak
   - [ ] Best day of the week
-  - [ ] How many times each tag is used
+  - [x] How many times each tag is used
 - Create a logo, use in header and favicon
-- make root page look decent
 
 Optional Features
 - pick custom font

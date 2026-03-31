@@ -54,7 +54,10 @@ export const Header = ({
                 color: 'inherit',
                 textDecoration: 'inherit',
                 fontWeight: 600,
-                fontSize: 20,
+                fontSize: 25,
+                letterSpacing: -1,
+                lineHeight: 0,
+                fontFamily: 'Jost, sans-serif',
               }}
               to="/"
             >
