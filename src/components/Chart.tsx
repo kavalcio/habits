@@ -20,6 +20,7 @@ export const Chart = ({
   const theme = useThemeContext();
 
   useEffect(() => {
+    // @ts-expect-error: ignore color type error
     const primaryColor = colors[theme.accentColor][`${theme.accentColor}9`];
 
     chartInstanceRef.current = echarts.init(chartRef.current);
@@ -33,6 +34,11 @@ export const Chart = ({
       },
       tooltip: {
         trigger: 'axis',
+        backgroundColor: 'var(--gray-1)',
+        borderColor: 'var(--gray-10)',
+        textStyle: {
+          color: 'var(--gray-12)',
+        },
       },
       xAxis: {
         type: 'category',
@@ -81,7 +87,6 @@ export const Chart = ({
       })),
     });
 
-    // Cleanup function to dispose of the chart instance
     return () => {
       chartInstanceRef.current?.dispose();
     };

@@ -4,19 +4,21 @@ import {
   Dialog,
   Flex,
   IconButton,
+  Link,
   Popover,
   Strong,
   Table,
   Text,
   TextField,
   Theme,
-  Tooltip,
 } from '@radix-ui/themes';
 import { useMutation } from '@tanstack/react-query';
 import { format } from 'date-fns';
 import { enqueueSnackbar } from 'notistack';
 import { useEffect, useMemo, useState } from 'react';
+import { Link as RouterLink } from 'react-router-dom';
 
+import { Routes } from '@/constants';
 import {
   addTagsToEvent,
   createEvent,
@@ -228,9 +230,22 @@ export const EditEventDialogContent = ({
                 <Strong>Habit</Strong>
               </Table.RowHeaderCell>
               <Table.Cell>
-                <Strong style={{ color: 'var(--accent-10)' }}>
-                  {habit.name}
-                </Strong>
+                <Link
+                  asChild
+                  style={{
+                    color: 'var(--accent-10)',
+                    fontWeight: 600,
+                  }}
+                >
+                  <RouterLink
+                    to={Routes.HABIT_OVERVIEW.replace(
+                      ':habitId',
+                      habit.id.toString(),
+                    )}
+                  >
+                    {habit.name}
+                  </RouterLink>
+                </Link>
               </Table.Cell>
             </Table.Row>
             <Table.Row>

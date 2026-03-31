@@ -142,14 +142,15 @@ const styles = {
     flexGrow: 1,
     height: 200,
     borderRadius: 6,
-    border: '1px solid var(--gray-11)',
+    border: '1px solid var(--gray-8)',
+    backgroundColor: 'var(--gray-2)',
   },
   chartTitle: {
     position: 'absolute',
     top: 2,
     left: 2,
     padding: 10,
-    backgroundColor: 'var(--gray-1)',
+    backgroundColor: 'var(--gray-2)',
     borderRadius: 6,
   },
 } as const;

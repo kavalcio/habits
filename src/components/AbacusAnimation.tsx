@@ -89,6 +89,7 @@ export const AbacusAnimation = () => {
               letterSpacing: -1,
               lineHeight: 0,
               fontFamily: 'Jost, sans-serif',
+              fontWeight: 700,
             }}
           >
             ordo

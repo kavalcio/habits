@@ -83,9 +83,9 @@ export const calculateChartData = (habit?: HabitWithEvents) => {
   );
   daysCompletedPerWeek.forEach((week) => {
     Object.keys(week.tagsCompleted).forEach((tag) => {
-      tagSeries[tag].data.push({
+      tagSeries[+tag].data.push({
         x: format(week.startDate, 'MMM dd yyyy'),
-        y: week.tagsCompleted[tag],
+        y: week.tagsCompleted[+tag],
       });
     });
   });
@@ -102,7 +102,7 @@ export const calculateChartData = (habit?: HabitWithEvents) => {
       all: {
         name: 'All',
         data: daysCompletedPerWeek.map((week) => ({
-          x: format(week.startDate, 'MMM dd yyyy'),
+          x: format(week.startDate, 'MMM dd, yyyy'),
           y: week.daysCompleted,
         })),
       },

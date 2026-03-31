@@ -1,4 +1,4 @@
-import { animate, createScope, JSAnimation, Scope, stagger } from 'animejs';
+import { animate, createScope, JSAnimation, Scope } from 'animejs';
 import { useEffect, useRef } from 'react';
 
 const DURATION = 4000;

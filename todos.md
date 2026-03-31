@@ -10,38 +10,30 @@ Core Features
   - [x] Total days completed (year)
   - [x] Average days completed (per week)
   - [x] Days completed per week (for the last year)
-  - [ ] % of days completed over last 7 / 30 / 90 days
-  - [ ] Current streak
-  - [ ] Longest streak
-  - [ ] Best day of the week
   - [x] How many times each tag is used
 - Create a logo, use in header and favicon
 
 Optional Features
-- pick custom font
 - allow pinning habits, and only show pinned habits on dashboard
-- allow changing the order of habits (at least the pinned ones)
+  - Allow picking which habits are shown on the ScrollingActivity component
+  - allow changing the order of habits (at least the pinned ones)
 - add the home page abacus animation to page logo on the top left, but only play when hovered
 - Add custom page scrollbar style
 - allow importing events from csv
 - allow exporting events to csv
-- allow adding tags/quantifiers/qualifiers to events?
-  - e.g. muscle group for workouts
-  - allow filtering/grouping by these qualifiers/quantifiers?
+- allow filtering/grouping events by tag?
 - google oauth
 - allow picking an icon for each habit
 - undo button that reverts last event addition/removal
 
 Improvement
+- Daily Log dialog looks a bit outdated now, polish it
 - use Callout element when showing error on screen
 - can we memoize queries between pages? we keep refetching habit/event data
   - This might already be a thing
 - optimization: prefetch habit data when user hovers on the habit card on the dashboard, before they even click
 - submit login/register form on enter key press
-- add aria tags everywhere
-- Daily Log dialog looks a bit outdated now, polish it
 - for the dashboard scrollingactivity, can we stagger event data fetch (by date), instead of fetching all at once?
-- Allow picking which habits are shown on the ScrollingActivity component
 
 Notes
 - Name options
