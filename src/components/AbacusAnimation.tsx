@@ -1,4 +1,4 @@
-import { Box, Container, Heading } from '@radix-ui/themes';
+import { Box, Container, Heading, useThemeContext } from '@radix-ui/themes';
 import { JSAnimation, Scope } from 'animejs';
 import { useEffect, useRef, useState } from 'react';
 
@@ -13,6 +13,7 @@ const ABACUS_ROWS = [
 ];
 
 export const AbacusAnimation = () => {
+  const theme = useThemeContext();
   const containerRef = useRef<HTMLDivElement>(null);
   const [scopes, setScopes] = useState<Record<number, Scope>>([]);
 
@@ -46,6 +47,11 @@ export const AbacusAnimation = () => {
       element?.removeEventListener('mouseleave', handleMouseLeave);
     };
   }, [scopes]);
+
+  const sceneBackgroundColor =
+    theme.appearance === 'dark'
+      ? 'color(display-p3 0.067 0.07 0.063)'
+      : 'white';
 
   return (
     <Container size="3">
@@ -102,8 +108,7 @@ export const AbacusAnimation = () => {
             top: 0,
             width: 150,
             height: '100%',
-            background:
-              'linear-gradient(to left, transparent 0%, color(display-p3 0.067 0.07 0.063) 100%)',
+            background: `linear-gradient(to left, transparent 0%, ${sceneBackgroundColor} 100%)`,
           }}
         />
         <div
@@ -113,8 +118,7 @@ export const AbacusAnimation = () => {
             top: 0,
             width: 150,
             height: '100%',
-            background:
-              'linear-gradient(to right, transparent 0%, color(display-p3 0.067 0.07 0.063) 100%)',
+            background: `linear-gradient(to right, transparent 0%, ${sceneBackgroundColor} 100%)`,
           }}
         />
       </Box>
