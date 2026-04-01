@@ -3,17 +3,7 @@ Bugs
 - some custom colors dont work for the light theme, fix those
 - In profile page edit forms, nordpass thinks pressing Edit or Cancel counts as logging in
 
-Core Features
-- Some analytics and graphs on habit details page
-  - [x] Total days completed (all time)
-  - [x] Total days completed (month)
-  - [x] Total days completed (year)
-  - [x] Average days completed (per week)
-  - [x] Days completed per week (for the last year)
-  - [x] How many times each tag is used
-- Create a logo, use in header and favicon
-
-Optional Features
+Features
 - allow pinning habits, and only show pinned habits on dashboard
   - Allow picking which habits are shown on the ScrollingActivity component
   - allow changing the order of habits (at least the pinned ones)
@@ -26,7 +16,7 @@ Optional Features
 - allow picking an icon for each habit
 - undo button that reverts last event addition/removal
 
-Improvement
+Improvements
 - Daily Log dialog looks a bit outdated now, polish it
 - use Callout element when showing error on screen
 - can we memoize queries between pages? we keep refetching habit/event data
