@@ -20,6 +20,7 @@ import {
   Chart,
   EventCalendar,
   FormError,
+  ScrollingActivity,
   YearGrid,
 } from '@/components';
 import { fetchHabitWithEvents } from '@/requests';
@@ -81,8 +82,9 @@ export const HabitOverview = () => {
               </Dialog.Trigger>
             </AddEditHabitDialog>
           </Flex>
+          <ScrollingActivity habitsWithEvents={[habit]} singleItemView={true} />
           <YearGrid habit={habit} />
-          <Flex direction="row" align="start" gap="3">
+          <Flex direction="row" align="start" gap="5">
             <EventCalendar habit={habit} />
             <Box style={styles.chartContainer}>
               <Chart series={[chartData?.daysCompletedPerWeek.all]} />
@@ -100,35 +102,41 @@ export const HabitOverview = () => {
             </Box>
           )}
           <Flex direction="row" align="start" gap="3">
-            <Box style={styles.chartContainer}>
+            {/* <Box style={styles.chartContainer}>
               <Flex direction="column" p="3" align="start" height="100%">
                 <Heading size="3" mb="2">
                   Activity
                 </Heading>
                 <Flex align="center" justify="between" width="100%">
                   <Text size="1">Last 30 days</Text>
-                  <Text size="6">{chartData?.eventCountLast30Days}</Text>
+                  <Text size="6" style={styles.chartBigText}>
+                    {chartData?.eventCountLast30Days}
+                  </Text>
                 </Flex>
                 <Flex align="center" justify="between" width="100%">
                   <Text size="1">Last 12 months</Text>
-                  <Text size="6">{chartData?.eventCountLast12Months}</Text>
+                  <Text size="6" style={styles.chartBigText}>
+                    {chartData?.eventCountLast12Months}
+                  </Text>
                 </Flex>
                 <Flex align="center" justify="between" width="100%">
                   <Text size="1">All time</Text>
-                  <Text size="6">{chartData?.eventCountAllTime}</Text>
+                  <Text size="6" style={styles.chartBigText}>
+                    {chartData?.eventCountAllTime}
+                  </Text>
                 </Flex>
               </Flex>
-            </Box>
-            <Box style={styles.chartContainer}>
+            </Box> */}
+            {/* <Box style={styles.chartContainer}>
               <Flex direction="column" p="3" align="start" height="100%">
                 <Heading size="3" mb="2">
                   Weekly average
                 </Heading>
-                <Text size="8">
+                <Text size="8" style={styles.chartBigText}>
                   {chartData?.averageEventsCompletedPerWeek.toFixed(2)}
                 </Text>
               </Flex>
-            </Box>
+            </Box> */}
           </Flex>
         </Flex>
       </Container>
@@ -152,5 +160,9 @@ const styles = {
     padding: 10,
     backgroundColor: 'var(--gray-2)',
     borderRadius: 6,
+  },
+  chartBigText: {
+    fontWeight: 700,
+    // fontSize: 30,
   },
 } as const;

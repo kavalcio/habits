@@ -21,13 +21,13 @@ export const calculateChartData = (habit?: HabitWithEvents) => {
   const twelveMonthsAgo = new Date();
   twelveMonthsAgo.setMonth(currentDate.getMonth() - 12);
 
-  const eventCountAllTime = events.length;
-  const eventCountLast30Days = events.filter((event) => {
-    return event.date >= thirtyDaysAgo && event.date <= currentDate;
-  }).length;
-  const eventCountLast12Months = events.filter((event) => {
-    return event.date >= twelveMonthsAgo && event.date <= currentDate;
-  }).length;
+  // const eventCountAllTime = events.length;
+  // const eventCountLast30Days = events.filter((event) => {
+  //   return event.date >= thirtyDaysAgo && event.date <= currentDate;
+  // }).length;
+  // const eventCountLast12Months = events.filter((event) => {
+  //   return event.date >= twelveMonthsAgo && event.date <= currentDate;
+  // }).length;
 
   const firstEventDate = events.length > 0 ? events[0].date : null;
   const weekRange = firstEventDate
@@ -90,14 +90,14 @@ export const calculateChartData = (habit?: HabitWithEvents) => {
     });
   });
 
-  const averageEventsCompletedPerWeek =
-    daysCompletedPerWeek.reduce((acc, week) => acc + week.daysCompleted, 0) /
-    weekRange;
+  // const averageEventsCompletedPerWeek =
+  //   daysCompletedPerWeek.reduce((acc, week) => acc + week.daysCompleted, 0) /
+  //   weekRange;
 
   return {
-    eventCountAllTime,
-    eventCountLast30Days,
-    eventCountLast12Months,
+    // eventCountAllTime,
+    // eventCountLast30Days,
+    // eventCountLast12Months,
     daysCompletedPerWeek: {
       all: {
         name: 'All',
@@ -108,6 +108,6 @@ export const calculateChartData = (habit?: HabitWithEvents) => {
       },
       perTag: Object.values(tagSeries),
     },
-    averageEventsCompletedPerWeek,
+    // averageEventsCompletedPerWeek,
   };
 };
