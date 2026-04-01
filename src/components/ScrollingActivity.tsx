@@ -9,7 +9,6 @@ import {
   Dialog,
   Flex,
   Grid,
-  Heading,
   IconButton,
   Link,
   ScrollArea,
@@ -31,8 +30,10 @@ const TIME_WINDOW_OPTIONS = [7, 14, 21];
 
 export const ScrollingActivity = ({
   habitsWithEvents,
+  singleItemView = false,
 }: {
   habitsWithEvents: HabitWithEvents[];
+  singleItemView?: boolean;
 }) => {
   const [dateSpan, setDateSpan] = useState(() => {
     const stored = localStorage.getItem('dateSpan');
@@ -110,65 +111,60 @@ export const ScrollingActivity = ({
 
   return (
     <Flex direction="column" gap="3" maxWidth="100%">
-      <Flex align="center" justify="between" gap="2" wrap="wrap">
-        <Heading size="4" align="left">
-          Dashboard
-        </Heading>
-        <Flex align="center" gap="2">
+      <Flex ml="auto" align="center" gap="2">
+        <IconButton
+          onClick={() => setWeekStart(subDays(weekStart, 7))}
+          variant="outline"
+          aria-label="Previous week"
+          size="1"
+        >
+          <ChevronLeftIcon />
+        </IconButton>
+        <Text size="1" style={{ width: 100 }}>
+          {dateRangeLabel}
+        </Text>
+        <IconButton
+          onClick={() => setWeekStart(addDays(weekStart, 7))}
+          variant="outline"
+          aria-label="Next week"
+          size="1"
+        >
+          <ChevronRightIcon />
+        </IconButton>
+        <Tooltip content="Reset to current date" delayDuration={300}>
           <IconButton
-            onClick={() => setWeekStart(subDays(weekStart, 7))}
             variant="outline"
-            aria-label="Previous week"
             size="1"
+            onClick={() =>
+              setWeekStart(
+                addDays(
+                  startOfWeek(new Date(), { weekStartsOn: 0 }),
+                  -(dateSpan - 7),
+                ),
+              )
+            }
           >
-            <ChevronLeftIcon />
+            <CalendarIcon />
           </IconButton>
-          <Text size="1" style={{ width: 100 }}>
-            {dateRangeLabel}
-          </Text>
-          <IconButton
-            onClick={() => setWeekStart(addDays(weekStart, 7))}
-            variant="outline"
-            aria-label="Next week"
-            size="1"
-          >
-            <ChevronRightIcon />
-          </IconButton>
-          <Tooltip content="Reset to current date" delayDuration={300}>
-            <IconButton
-              variant="outline"
-              size="1"
-              onClick={() =>
-                setWeekStart(
-                  addDays(
-                    startOfWeek(new Date(), { weekStartsOn: 0 }),
-                    -(dateSpan - 7),
-                  ),
-                )
-              }
-            >
-              <CalendarIcon />
-            </IconButton>
-          </Tooltip>
-          <Select.Root
-            size="1"
-            value={`${dateSpan}`}
-            onValueChange={(v) => updateDateSpan(Number(v))}
-          >
-            <Select.Trigger />
-            <Select.Content>
-              {TIME_WINDOW_OPTIONS.map((days) => (
-                <Select.Item key={days} value={days.toString()}>
-                  {days} days
-                </Select.Item>
-              ))}
-            </Select.Content>
-          </Select.Root>
-        </Flex>
+        </Tooltip>
+        <Select.Root
+          size="1"
+          value={`${dateSpan}`}
+          onValueChange={(v) => updateDateSpan(Number(v))}
+        >
+          <Select.Trigger />
+          <Select.Content>
+            {TIME_WINDOW_OPTIONS.map((days) => (
+              <Select.Item key={days} value={days.toString()}>
+                {days} days
+              </Select.Item>
+            ))}
+          </Select.Content>
+        </Select.Root>
       </Flex>
       <ScrollArea scrollbars="horizontal" scrollHideDelay={600}>
         <Grid
-          columns={`${dateSpan + 2}`}
+          columns={`${singleItemView ? dateSpan : dateSpan + 2}`}
           flow="row"
           width="100%"
           justify="center"
@@ -176,9 +172,13 @@ export const ScrollingActivity = ({
           minWidth={`${dateSpan === 7 ? 400 : dateSpan === 14 ? 600 : 800}px`}
           pb="3"
         >
-          {/* Two empty divs to take up first two cells in the row, used by the habit label column */}
-          <div />
-          <div />
+          {!singleItemView && (
+            // Two empty divs to take up first two cells in the row, used by the habit label column
+            <>
+              <div />
+              <div />
+            </>
+          )}
           {Array.from({ length: dateSpan }, (_, i) => {
             const dateObj = addDays(weekStart, i);
             return (
@@ -206,34 +206,36 @@ export const ScrollingActivity = ({
           })}
           {habitsWithDateList.map((habit, row) => (
             <Fragment key={habit.id}>
-              <Tooltip content={habit.name} delayDuration={1000}>
-                <Text
-                  size="1"
-                  mr="3"
-                  asChild
-                  style={{
-                    gridColumnStart: '1',
-                    gridColumnEnd: '3',
-                    textAlign: 'right',
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                    display: '-webkit-box',
-                    WebkitLineClamp: 2,
-                    WebkitBoxOrient: 'vertical',
-                  }}
-                >
-                  <Link asChild style={{ color: 'var(--gray-12)' }}>
-                    <RouterLink
-                      to={Routes.HABIT_OVERVIEW.replace(
-                        ':habitId',
-                        habit.id.toString(),
-                      )}
-                    >
-                      {habit.name}
-                    </RouterLink>
-                  </Link>
-                </Text>
-              </Tooltip>
+              {!singleItemView && (
+                <Tooltip content={habit.name} delayDuration={1000}>
+                  <Text
+                    size="1"
+                    mr="3"
+                    asChild
+                    style={{
+                      gridColumnStart: '1',
+                      gridColumnEnd: '3',
+                      textAlign: 'right',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      display: '-webkit-box',
+                      WebkitLineClamp: 2,
+                      WebkitBoxOrient: 'vertical',
+                    }}
+                  >
+                    <Link asChild style={{ color: 'var(--gray-12)' }}>
+                      <RouterLink
+                        to={Routes.HABIT_OVERVIEW.replace(
+                          ':habitId',
+                          habit.id.toString(),
+                        )}
+                      >
+                        {habit.name}
+                      </RouterLink>
+                    </Link>
+                  </Text>
+                </Tooltip>
+              )}
               {habit.dateList.map((data, col) => (
                 <EditEventDialog
                   key={col}
@@ -244,13 +246,14 @@ export const ScrollingActivity = ({
                   <Flex
                     m="auto"
                     style={{
-                      height: 46,
+                      height: singleItemView ? 120 : 46,
                       width: '100%',
                       borderStyle: 'solid',
                       borderTopWidth: 0,
                       borderBottomWidth:
                         row === habitCount - 1 ? 0 : BORDER_WIDTH,
                       ...getCellStyles(data.date, col),
+                      ...(singleItemView ? { borderWidth: 1 } : {}),
                     }}
                   >
                     <Dialog.Trigger>
@@ -287,28 +290,35 @@ export const ScrollingActivity = ({
                               justify="start"
                               overflow="hidden"
                             >
-                              {data.event?.event_tag.slice(0, 1).map((tag) => (
-                                <Text
-                                  key={tag.id}
-                                  size="1"
-                                  style={{
-                                    padding: '1px 3px',
-                                    borderRadius: 4,
-                                    backgroundColor:
-                                      'rgba(255, 255, 255, 0.15)',
-                                    textOverflow: 'ellipsis',
-                                    whiteSpace: 'nowrap',
-                                    fontSize: 11,
-                                    overflow: 'hidden',
-                                  }}
-                                >
-                                  {
-                                    habit.habit_tag.find(
-                                      (ht) => ht.id === tag.habit_tag_id,
-                                    )?.name
-                                  }
-                                </Text>
-                              ))}
+                              {data.event?.event_tag
+                                .slice(
+                                  0,
+                                  singleItemView
+                                    ? data.event?.event_tag.length
+                                    : 1,
+                                )
+                                .map((tag) => (
+                                  <Text
+                                    key={tag.id}
+                                    size="1"
+                                    style={{
+                                      padding: '1px 3px',
+                                      borderRadius: 4,
+                                      backgroundColor:
+                                        'rgba(255, 255, 255, 0.15)',
+                                      textOverflow: 'ellipsis',
+                                      whiteSpace: 'nowrap',
+                                      fontSize: 11,
+                                      overflow: 'hidden',
+                                    }}
+                                  >
+                                    {
+                                      habit.habit_tag.find(
+                                        (ht) => ht.id === tag.habit_tag_id,
+                                      )?.name
+                                    }
+                                  </Text>
+                                ))}
                             </Flex>
                           </Button>
                         </Box>

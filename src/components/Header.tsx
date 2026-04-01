@@ -9,13 +9,14 @@ import {
   Button,
   Container,
   Flex,
+  Heading,
   IconButton,
   Link,
   Popover,
   Text,
 } from '@radix-ui/themes';
 import { useQuery } from '@tanstack/react-query';
-import React from 'react';
+import React, { useState } from 'react';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 
 import { Routes } from '@/constants';
@@ -32,7 +33,7 @@ export const Header = ({
 }) => {
   const navigate = useNavigate();
   const { data: session, isPending } = useQuery(fetchSession);
-  const [isMenuOpen, setIsMenuOpen] = React.useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
     <Box
@@ -48,19 +49,22 @@ export const Header = ({
     >
       <Container size="3">
         <Flex justify="between" align="center" gap="4">
-          <Text asChild>
+          <Heading asChild>
             <RouterLink
               style={{
                 color: 'inherit',
                 textDecoration: 'inherit',
-                fontWeight: 600,
-                fontSize: 20,
+                fontWeight: 700,
+                fontSize: 25,
+                letterSpacing: -1,
+                lineHeight: 0,
+                fontFamily: 'Jost, sans-serif',
               }}
               to="/"
             >
               ordo
             </RouterLink>
-          </Text>
+          </Heading>
           <Flex
             gap="4"
             align="center"

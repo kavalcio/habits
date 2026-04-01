@@ -3,6 +3,7 @@ export * from './AbacusRow';
 export * from './AddEditHabitDialog';
 export * from './ArchivedHabitsDialog';
 export * from './Calendar';
+export * from './Chart';
 export * from './ColorSwatchPicker';
 export * from './DailyLogDialog';
 export * from './EditEventDialog';
