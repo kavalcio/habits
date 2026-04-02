@@ -59,9 +59,21 @@ export const Header = ({
                 letterSpacing: -1,
                 lineHeight: 0,
                 fontFamily: 'Jost, sans-serif',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 3,
               }}
               to="/"
             >
+              <img
+                src="./logo.svg"
+                alt="Logo"
+                style={{
+                  width: 20,
+                  height: 20,
+                  paddingTop: 4,
+                }}
+              />
               ordo
             </RouterLink>
           </Heading>

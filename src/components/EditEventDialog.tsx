@@ -63,6 +63,7 @@ export const EditEventDialogContent = ({
 }) => {
   const [tagInput, setTagInput] = useState('');
   const [tagInputDebounced, setTagInputDebounced] = useState('');
+  const [tagPopoverOpen, setTagPopoverOpen] = useState(false);
 
   const [eventTags, setEventTags] = useState<
     { eventTagId: number | null; habitTagId: number; label: string }[]
@@ -89,6 +90,7 @@ export const EditEventDialogContent = ({
     );
     if (tagAlreadyInList) return;
     setEventTags((prev) => [...prev, { eventTagId: null, habitTagId, label }]);
+    setTagPopoverOpen(false);
   };
 
   const removeTagFromList = (habitTagId: number) => {
@@ -120,6 +122,7 @@ export const EditEventDialogContent = ({
 
       setTagInput('');
       setTagInputDebounced('');
+      setTagPopoverOpen(false);
     } catch (error) {
       console.error('Error creating habit tag', error);
     }
@@ -263,7 +266,10 @@ export const EditEventDialogContent = ({
               </Table.RowHeaderCell>
               <Table.Cell>
                 <Flex gap="2" wrap="wrap">
-                  <Popover.Root>
+                  <Popover.Root
+                    open={tagPopoverOpen}
+                    onOpenChange={setTagPopoverOpen}
+                  >
                     <Popover.Trigger>
                       <IconButton variant="soft" color="gray" size="1">
                         <PlusIcon />
